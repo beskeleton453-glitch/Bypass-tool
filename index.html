@@ -3,54 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lua Obfuscator Pro</title>
+<title>Lua Obfuscator Pro v2</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:-apple-system,Roboto,sans-serif; background:#0a0a0f; color:#e0e0e0; min-height:100vh; padding:16px; }
-  .c { max-width:720px; margin:0 auto; }
-  h1 { font-size:1.2rem; text-align:center; margin-bottom:4px; background:linear-gradient(135deg,#00e676,#9c27b0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .s { text-align:center; font-size:.75rem; color:#666; margin-bottom:16px; }
-  .card { background:#12121a; border-radius:12px; padding:14px; margin-bottom:12px; border:1px solid #1f1f2e; }
-  .ct { font-size:.72rem; color:#29b6f6; text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px; }
-  textarea { width:100%; padding:10px; background:#0a0a0f; border:1px solid #2a2a3a; border-radius:8px; color:#fff; font-family:monospace; font-size:.8rem; outline:none; resize:vertical; height:160px; line-height:1.5; }
-  textarea:focus { border-color:#00e676; }
-  .lvls { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:10px; }
-  .lvl { padding:10px 4px; text-align:center; background:#0a0a0f; border:2px solid #2a2a3a; border-radius:8px; cursor:pointer; font-size:.72rem; font-weight:700; color:#666; transition:all .2s; }
-  .lvl.active { border-color:#00e676; color:#00e676; background:rgba(0,230,118,.1); }
-  .lvl .n { font-size:1.1rem; display:block; margin-bottom:2px; }
-  .opts { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
-  .opts label { display:flex; align-items:center; gap:4px; padding:5px 9px; background:#0a0a0f; border-radius:6px; cursor:pointer; font-size:.7rem; color:#aaa; }
-  .opts input { width:14px; height:14px; accent-color:#00e676; }
-  button { width:100%; padding:12px; margin-top:10px; background:linear-gradient(135deg,#00e676,#29b6f6); border:none; border-radius:10px; color:#0a0a0f; font-weight:700; font-size:.9rem; cursor:pointer; }
-  button:disabled { opacity:.4; cursor:not-allowed; }
-  .row { display:flex; gap:8px; }
-  .row button { flex:1; margin-top:0; }
-  .gray { background:linear-gradient(135deg,#333,#555); color:#fff; }
-  .stat { font-size:.72rem; color:#888; margin-top:8px; line-height:1.5; }
-  .res { display:none; margin-top:12px; }
-  .res.show { display:block; }
-  .lbl { font-size:.7rem; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; margin-top:10px; }
-  .lnk { color:#00e676; font-family:monospace; font-size:.75rem; word-break:break-all; background:#0a0a0f; padding:10px; border-radius:8px; border:1px solid #1f1f2e; }
-  .code { background:#06060a; padding:12px; border-radius:8px; font-family:monospace; font-size:.72rem; color:#c0a0d0; word-break:break-all; line-height:1.5; border:1px solid #1f1f2e; }
-  .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#00e676,#9c27b0); color:#fff; padding:12px 24px; border-radius:12px; font-weight:700; font-size:.82rem; z-index:999; box-shadow:0 8px 32px rgba(0,0,0,.5); }
-  .info { font-size:.7rem; color:#666; margin-top:6px; font-style:italic; }
-  #historyList { margin-top: 8px; }
-  .history-item { font-size: .7rem; color: #ccc; background: #0a0a0f; padding: 8px; border-radius: 6px; border: 1px solid #1f1f2e; margin-bottom: 4px; word-break: break-all; }
-  .history-item a { color: #29b6f6; text-decoration: none; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px}
+  .c{max-width:720px;margin:0 auto}
+  h1{font-size:1.2rem;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#00e676,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
+  .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
+  .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px}
+  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;resize:vertical;height:160px;line-height:1.5}
+  textarea:focus{border-color:#00e676}
+  .lvls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+  .lvl{padding:10px 4px;text-align:center;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;font-size:.7rem;font-weight:700;color:#666;transition:all .2s}
+  .lvl.active{border-color:#00e676;color:#00e676;background:rgba(0,230,118,.1)}
+  .lvl .n{font-size:1.1rem;display:block;margin-bottom:2px}
+  .opts{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .opts label{display:flex;align-items:center;gap:4px;padding:5px 9px;background:#0a0a0f;border-radius:6px;cursor:pointer;font-size:.7rem;color:#aaa}
+  .opts input{width:14px;height:14px;accent-color:#00e676}
+  button{width:100%;padding:12px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:10px;color:#0a0a0f;font-weight:700;font-size:.9rem;cursor:pointer}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:8px}
+  .row button{flex:1;margin-top:0}
+  .gray{background:linear-gradient(135deg,#333,#555);color:#fff}
+  .stat{font-size:.72rem;color:#888;margin-top:8px;line-height:1.5}
+  .res{display:none;margin-top:12px}
+  .res.show{display:block}
+  .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
+  .lnk{color:#00e676;font-family:monospace;font-size:.75rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
+  .code{background:#06060a;padding:12px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e}
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
+  .hist-item{font-size:.68rem;color:#ccc;background:#0a0a0f;padding:8px;border-radius:6px;border:1px solid #1f1f2e;margin-bottom:4px;word-break:break-all}
+  .hist-item .t{color:#555;font-size:.62rem}
+  .hist-item .l{color:#29b6f6;margin-top:3px}
 </style>
 </head>
 <body>
 <div class="c">
-  <h1>🔒 Lua Obfuscator Pro</h1>
-  <p class="s">5 cấp độ bảo mật • Tùy chọn bypass • Tự động upload</p>
+  <h1>🔒 Lua Obfuscator Pro v2</h1>
+  <p class="s">Fix rename bug • 5 cấp độ • Lịch sử link • Upload file</p>
 
   <div class="card">
     <div class="ct">📝 Code Lua của bạn</div>
     <textarea id="code" placeholder="Paste code Lua gốc vào đây..."></textarea>
-    <div class="row">
+    <div class="row" style="margin-top:8px;">
       <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file .txt</button>
       <input type="file" id="fileInput" accept=".txt,.lua" style="display:none" onchange="loadFile(event)">
     </div>
+    <div class="info" id="sizeInfo">Chưa có code</div>
   </div>
 
   <div class="card">
@@ -69,13 +70,13 @@
     <div class="ct">⚙️ Tùy chọn nâng cao</div>
     <div class="opts">
       <label><input type="checkbox" id="oXor" checked> XOR string</label>
-      <label><input type="checkbox" id="oRename" checked> Đổi tên biến</label>
-      <label><input type="checkbox" id="oNum" checked> Mã hóa số</label>
-      <label><input type="checkbox" id="oDead"> Dead code</label>
+      <label><input type="checkbox" id="oRename" checked> Đổi biến (đã fix)</label>
+      <label><input type="checkbox" id="oNum" checked> Mã số</label>
+      <label><input type="checkbox" id="oDead"> Code rác</label>
       <label><input type="checkbox" id="oAnti"> Anti-tamper</label>
       <label><input type="checkbox" id="oWrap"> Function wrap</label>
     </div>
-    <div class="info">Tick tay để ghi đè cấu hình mặc định của cấp độ.</div>
+    <div class="info">Mặc định theo cấp độ. Tick tay để ghi đè.</div>
     <div class="row" style="margin-top:10px;">
       <button id="btn" onclick="gen()">🚀 Tạo link loader</button>
       <button class="gray" style="flex:0 0 60px;" onclick="clr()">🗑️</button>
@@ -96,373 +97,501 @@
   <div class="card">
     <div class="ct">📜 Lịch sử link đã tạo</div>
     <div id="historyList"><div class="info">Chưa có link nào.</div></div>
-    <div class="row" style="margin-top:10px;">
-      <button class="gray" onclick="clearHistory()">🗑️ Xóa lịch sử</button>
-    </div>
+    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa lịch sử</button>
   </div>
 </div>
 
 <script>
 let currentLvl = 1;
 const LVL_INFO = {
-  1: 'Cấp 1: Xóa comment + nén code.',
-  2: 'Cấp 2: + XOR string đơn giản.',
-  3: 'Cấp 3: + Đổi tên biến + mã hóa số.',
-  4: 'Cấp 4: + Dead code + anti-tamper + chia string 4 mảnh.',
-  5: 'Cấp 5: + Function wrap + anti-dump + decoder 3 bước.'
+  1:'Cấp 1: Xóa comment + nén code.',
+  2:'Cấp 2: + XOR string.',
+  3:'Cấp 3: + Đổi tên biến + mã hóa số.',
+  4:'Cấp 4: + Code rác + anti-tamper + chia string 4 mảnh.',
+  5:'Cấp 5: + Function wrap + anti-dump + decoder 3 bước.'
 };
 const LVL_DEFAULT = {
-  1: { xor:false, rename:false, num:false, dead:false, anti:false, wrap:false },
-  2: { xor:true,  rename:false, num:false, dead:false, anti:false, wrap:false },
-  3: { xor:true,  rename:true,  num:true,  dead:false, anti:false, wrap:false },
-  4: { xor:true,  rename:true,  num:true,  dead:true,  anti:true,  wrap:false },
-  5: { xor:true,  rename:true,  num:true,  dead:true,  anti:true,  wrap:true  }
+  1:{xor:0,rename:0,num:0,dead:0,anti:0,wrap:0},
+  2:{xor:1,rename:0,num:0,dead:0,anti:0,wrap:0},
+  3:{xor:1,rename:1,num:1,dead:0,anti:0,wrap:0},
+  4:{xor:1,rename:1,num:1,dead:1,anti:1,wrap:0},
+  5:{xor:1,rename:1,num:1,dead:1,anti:1,wrap:1}
 };
+const LUA_KW = new Set(['and','break','do','else','elseif','end','false','for','function','if','in','local','nil','not','or','repeat','return','then','true','until','while','goto','self']);
 
-function setLvl(n) {
+function setLvl(n){
   currentLvl = n;
-  document.querySelectorAll('.lvl').forEach(e => e.classList.toggle('active', +e.dataset.lvl === n));
+  document.querySelectorAll('.lvl').forEach(e=>e.classList.toggle('active', +e.dataset.lvl===n));
   document.getElementById('lvlInfo').textContent = LVL_INFO[n];
   const d = LVL_DEFAULT[n];
-  document.getElementById('oXor').checked = d.xor;
-  document.getElementById('oRename').checked = d.rename;
-  document.getElementById('oNum').checked = d.num;
-  document.getElementById('oDead').checked = d.dead;
-  document.getElementById('oAnti').checked = d.anti;
-  document.getElementById('oWrap').checked = d.wrap;
+  document.getElementById('oXor').checked = !!d.xor;
+  document.getElementById('oRename').checked = !!d.rename;
+  document.getElementById('oNum').checked = !!d.num;
+  document.getElementById('oDead').checked = !!d.dead;
+  document.getElementById('oAnti').checked = !!d.anti;
+  document.getElementById('oWrap').checked = !!d.wrap;
 }
 
-function R(len) {
-  const c1 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-  const c2 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
-  let s = c1[Math.floor(Math.random() * c1.length)];
-  for (let i = 1; i < len; i++) s += c2[Math.floor(Math.random() * c2.length)];
+function R(len){
+  const c1='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+  const c2='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+  let s=c1[Math.floor(Math.random()*c1.length)];
+  for(let i=1;i<len;i++)s+=c2[Math.floor(Math.random()*c2.length)];
   return s;
 }
 
-function stripComments(code) {
-  let o = '', i = 0, n = code.length;
-  while (i < n) {
-    const c = code[i];
-    if (c === '"' || c === "'") {
-      const q = c; o += c; i++;
-      while (i < n) {
-        if (code[i] === '\\' && i + 1 < n) { o += code[i] + code[i+1]; i += 2; }
-        else if (code[i] === q) { o += code[i]; i++; break; }
-        else { o += code[i]; i++; }
+/* ============ LUA TOKENIZER (có position) ============ */
+function tokenizeLua(code){
+  const tokens=[];
+  let i=0;const n=code.length;
+  const isD=c=>(c>='0'&&c<='9');
+  const isA=c=>((c>='a'&&c<='z')||(c>='A'&&c<='Z')||c==='_');
+  const isAl=c=>isA(c)||isD(c);
+  while(i<n){
+    const c=code[i];
+    if(/\s/.test(c)){i++;continue;}
+    // Comment
+    if(code.substr(i,2)==='--'){
+      if(code.substr(i,4)==='--[['){
+        const e=code.indexOf(']]',i+4);
+        i=e===-1?n:e+2;continue;
       }
+      const e=code.indexOf('\n',i);
+      i=e===-1?n:e;continue;
+    }
+    // Long string [[...]] or [=[...]=] (skip level for simplicity)
+    if(code.substr(i,2)==='[['){
+      const start=i;
+      const e=code.indexOf(']]',i+2);
+      const end=e===-1?n:e+2;
+      tokens.push({type:'string',value:code.substring(start,end),start,end});
+      i=end;continue;
+    }
+    // Normal string
+    if(c==='"'||c==="'"){
+      const q=c;const start=i;i++;
+      while(i<n){
+        if(code[i]==='\\'&&i+1<n)i+=2;
+        else if(code[i]===q){i++;break;}
+        else i++;
+      }
+      tokens.push({type:'string',value:code.substring(start,i),start,end:i});
       continue;
     }
-    if (code.substr(i, 2) === '[[') {
-      const e = code.indexOf(']]', i + 2);
-      if (e === -1) { o += code.substr(i); break; }
-      o += code.substring(i, e + 2); i = e + 2; continue;
+    // Number
+    if(isD(c)||(c==='.'&&isD(code[i+1]))){
+      const start=i;
+      if(c==='0'&&(code[i+1]==='x'||code[i+1]==='X')){
+        i+=2;while(i<n&&/[0-9a-fA-F]/.test(code[i]))i++;
+      } else {
+        while(i<n&&isD(code[i]))i++;
+        if(code[i]==='.'){i++;while(i<n&&isD(code[i]))i++;}
+        if(code[i]==='e'||code[i]==='E'){i++;if(code[i]==='+'||code[i]==='-')i++;while(i<n&&isD(code[i]))i++;}
+      }
+      tokens.push({type:'number',value:code.substring(start,i),start,end:i});
+      continue;
     }
-    if (code.substr(i, 4) === '--[[') {
-      const e = code.indexOf(']]', i + 4); i = e === -1 ? n : e + 2; continue;
+    // Identifier / keyword
+    if(isA(c)){
+      const start=i;
+      while(i<n&&isAl(code[i]))i++;
+      tokens.push({type:'id',value:code.substring(start,i),start,end:i});
+      continue;
     }
-    if (code.substr(i, 2) === '--') {
-      const e = code.indexOf('\n', i); i = e === -1 ? n : e; continue;
+    // Multi-char ops
+    const three=code.substr(i,3);
+    if(three==='...'){tokens.push({type:'op',value:'...',start:i,end:i+3});i+=3;continue;}
+    const two=code.substr(i,2);
+    if(['==','~=','<=','>=','..','::'].includes(two)){
+      tokens.push({type:'op',value:two,start:i,end:i+2});i+=2;continue;
     }
-    o += c; i++;
+    tokens.push({type:'op',value:c,start:i,end:i+1});i++;
   }
-  return o;
+  return tokens;
 }
 
-function parseStr(raw) {
-  const bytes = []; let j = 0;
-  const escMap = { n:10, t:9, r:13, a:7, b:8, f:12, v:11, '\\':92, '"':34, "'":39 };
-  while (j < raw.length) {
-    if (raw[j] === '\\' && j + 1 < raw.length) {
-      const nxt = raw[j+1];
-      if (escMap[nxt] !== undefined) { bytes.push(escMap[nxt]); j += 2; }
-      else if (/\d/.test(nxt)) {
-        let k = j + 1, num = '';
-        while (k < raw.length && num.length < 3 && /\d/.test(raw[k])) { num += raw[k]; k++; }
-        bytes.push(parseInt(num) & 0xFF); j = k;
-      } else { bytes.push(nxt.charCodeAt(0) & 0xFF); j += 2; }
+/* ============ RENAME VARS (FIXED) ============ */
+function renameVars(code){
+  const tokens = tokenizeLua(code);
+  const map = {};
+
+  // Pass 1: tìm local declarations
+  for(let i=0;i<tokens.length;i++){
+    const tok = tokens[i];
+    if(tok.type==='id' && tok.value==='local'){
+      let j = i+1;
+      if(tokens[j] && tokens[j].type==='id' && tokens[j].value==='function'){
+        j++;
+        if(tokens[j] && tokens[j].type==='id'){
+          const nm = tokens[j].value;
+          if(!LUA_KW.has(nm) && !map[nm]) map[nm] = R(10);
+        }
+      } else {
+        while(j<tokens.length && tokens[j].type==='id'){
+          const nm = tokens[j].value;
+          if(!LUA_KW.has(nm) && !map[nm]) map[nm] = R(10);
+          j++;
+          if(tokens[j] && tokens[j].value===','){j++;continue;}
+          break;
+        }
+      }
+    }
+  }
+
+  // Pass 2: đánh dấu những token được phép đổi
+  const renameable = new Array(tokens.length).fill(false);
+  let braceDepth = 0;
+  for(let i=0;i<tokens.length;i++){
+    const tok = tokens[i];
+    if(tok.value==='{') braceDepth++;
+    else if(tok.value==='}') braceDepth--;
+    if(tok.type!=='id' || !map[tok.value]) continue;
+
+    const prev = tokens[i-1];
+    const next = tokens[i+1];
+
+    // Bỏ qua member access: abc.xyz hoặc abc:xyz
+    if(prev && prev.type==='op' && (prev.value==='.'||prev.value===':')) continue;
+    // Bỏ qua table key: {key=val}
+    if(braceDepth>0 && next && next.value==='=') continue;
+    // Bỏ qua label: ::name::
+    if(prev && prev.value==='::') continue;
+
+    renameable[i] = true;
+  }
+
+  // Pass 3: apply từ cuối về đầu
+  const reps = [];
+  for(let i=0;i<tokens.length;i++){
+    if(renameable[i]) reps.push({start:tokens[i].start, end:tokens[i].end, value:map[tokens[i].value]});
+  }
+  reps.sort((a,b)=>b.start-a.start);
+  for(const r of reps){
+    code = code.substring(0,r.start) + r.value + code.substring(r.end);
+  }
+  return code;
+}
+
+/* ============ STRING ENCRYPTION ============ */
+function parseStr(raw){
+  const bytes=[];let j=0;
+  const escMap={n:10,t:9,r:13,a:7,b:8,f:12,v:11,'\\':92,'"':34,"'":39};
+  while(j<raw.length){
+    if(raw[j]==='\\' && j+1<raw.length){
+      const nxt=raw[j+1];
+      if(escMap[nxt]!==undefined){bytes.push(escMap[nxt]);j+=2;}
+      else if(/\d/.test(nxt)){
+        let k=j+1,num='';
+        while(k<raw.length && num.length<3 && /\d/.test(raw[k])){num+=raw[k];k++;}
+        bytes.push(parseInt(num)&0xFF);j=k;
+      } else {bytes.push(nxt.charCodeAt(0)&0xFF);j+=2;}
     } else {
-      const cc = raw.charCodeAt(j);
-      if (cc < 128) bytes.push(cc);
-      else if (cc < 2048) { bytes.push(0xC0 | (cc >> 6)); bytes.push(0x80 | (cc & 0x3F)); }
-      else { bytes.push(0xE0 | (cc >> 12)); bytes.push(0x80 | ((cc >> 6) & 0x3F)); bytes.push(0x80 | (cc & 0x3F)); }
+      const cc=raw.charCodeAt(j);
+      if(cc<128)bytes.push(cc);
+      else if(cc<2048){bytes.push(0xC0|(cc>>6));bytes.push(0x80|(cc&0x3F));}
+      else {bytes.push(0xE0|(cc>>12));bytes.push(0x80|((cc>>6)&0x3F));bytes.push(0x80|(cc&0x3F));}
       j++;
     }
   }
   return bytes;
 }
 
-function encryptStrings(code, key, shift, decoderName, splitChunks) {
-  let o = '', i = 0, n = code.length, count = 0;
-  while (i < n) {
-    if (code.substr(i, 2) === '[[') {
-      const e = code.indexOf(']]', i + 2);
-      if (e === -1) { o += code.substr(i); break; }
-      o += code.substring(i, e + 2); i = e + 2; continue;
+function encryptStrings(code,key,shift,dName,split){
+  let o='',i=0,n=code.length,count=0;
+  while(i<n){
+    if(code.substr(i,2)==='[['){
+      const e=code.indexOf(']]',i+2);
+      if(e===-1){o+=code.substr(i);break;}
+      o+=code.substring(i,e+2);i=e+2;continue;
     }
-    const c = code[i];
-    if (c === '"' || c === "'") {
-      const q = c; i++;
-      const start = i;
-      while (i < n) {
-        if (code[i] === '\\' && i + 1 < n) i += 2;
-        else if (code[i] === q) break;
+    const c=code[i];
+    if(c==='"'||c==="'"){
+      const q=c;i++;const start=i;
+      while(i<n){
+        if(code[i]==='\\'&&i+1<n)i+=2;
+        else if(code[i]===q)break;
         else i++;
       }
-      const raw = code.substring(start, i); i++;
-      const bytes = parseStr(raw);
-      if (bytes.length === 0) { o += '""'; continue; }
-      if (splitChunks && bytes.length > 8) {
-        const chunkSize = Math.ceil(bytes.length / 4);
-        const chunks = [];
-        for (let k = 0; k < bytes.length; k += chunkSize) chunks.push(bytes.slice(k, k + chunkSize));
-        while (chunks.length < 4) chunks.push([0]);
-        const parts = chunks.map(ch => {
-          const enc = ch.map((b, idx) => ((b ^ key) + shift + idx) & 0xFF);
-          return decoderName + '(' + enc.join(',') + ')';
+      const raw=code.substring(start,i);i++;
+      const bytes=parseStr(raw);
+      if(bytes.length===0){o+='""';continue;}
+      if(split && bytes.length>8){
+        const cs=Math.ceil(bytes.length/4);
+        const chunks=[];
+        for(let k=0;k<bytes.length;k+=cs)chunks.push(bytes.slice(k,k+cs));
+        while(chunks.length<4)chunks.push([0]);
+        const parts=chunks.map(ch=>{
+          const enc=ch.map((b,idx)=>((b^key)+shift+idx)&0xFF);
+          return dName+'('+enc.join(',')+')';
         });
-        o += '(' + parts.join('..') + ')';
+        o+='('+parts.join('..')+')';
       } else {
-        const enc = bytes.map((b, idx) => ((b ^ key) + shift + idx) & 0xFF);
-        o += decoderName + '(' + enc.join(',') + ')';
+        const enc=bytes.map((b,idx)=>((b^key)+shift+idx)&0xFF);
+        o+=dName+'('+enc.join(',')+')';
       }
-      count++;
+      count++;continue;
+    }
+    o+=c;i++;
+  }
+  return {code:o,count};
+}
+
+function buildDecoder(name,key,shift){
+  const a=R(8),b=R(8),c=R(8),d=R(8);
+  return 'local '+name+'=function(...)'
+    +'local '+a+'={...} local '+b+'={} '
+    +'local '+c+'=bit32 and bit32.bxor or function(x,y) local r,p=0,1 while x>0 or y>0 do local u,v=x%2,y%2 if u~=v then r=r+p end x=math.floor(x/2) y=math.floor(y/2) p=p*2 end return r end '
+    +'for '+d+'=1,#'+a+' do '
+    +b+'['+d+']=string.char('+c+'((('+a+'['+d+']-'+shift+'-'+d+'+1)%256),'+key+')) '
+    +'end return table.concat('+b+') end\n';
+}
+
+function encodeNumbers(code){
+  const tokens = tokenizeLua(code);
+  const reps = [];
+  for(const tok of tokens){
+    if(tok.type!=='number') continue;
+    const raw = tok.value;
+    const n = parseInt(raw);
+    if(isNaN(n) || n===0 || n===1) continue;
+    if(raw.startsWith('0x')||raw.startsWith('0X')) continue;
+    if(raw.includes('.')) continue;
+    const choice = Math.floor(Math.random()*3);
+    let val;
+    if(choice===0) val = 'tonumber("'+n.toString(16)+'",16)';
+    else if(choice===1){
+      const a = Math.floor(Math.random()*(n-1))+1;
+      val = '('+a+'+'+(n-a)+')';
+    } else val = '0x'+n.toString(16);
+    reps.push({start:tok.start,end:tok.end,value:val});
+  }
+  reps.sort((a,b)=>b.start-a.start);
+  for(const r of reps) code = code.substring(0,r.start)+r.value+code.substring(r.end);
+  return code;
+}
+
+function injectDeadCode(code){
+  let junk='';
+  const cnt=Math.floor(Math.random()*4)+3;
+  for(let i=0;i<cnt;i++){
+    const nm=R(10),v1=R(8),v2=R(8);
+    const ch=Math.floor(Math.random()*4);
+    if(ch===0)junk+='local '+nm+'=function('+v1+') return '+v1+' end\n';
+    else if(ch===1)junk+='local '+nm+'=function('+v1+') return '+v1+'*2 end\n';
+    else if(ch===2)junk+='local '+nm+'=function('+v1+','+v2+') return '+v1+'+'+v2+' end\n';
+    else junk+='local '+nm+'=('+(Math.floor(Math.random()*900)+100)+'*'+(Math.floor(Math.random()*9)+1)+')\n';
+  }
+  return junk+code;
+}
+
+function addAntiTamper(code){
+  const g=R(10),t=Math.floor(Math.random()*90000)+10000;
+  return "local "+g+"="+t+" if _G['"+g+"_k'] and _G['"+g+"_k']~="+g+" then return end _G['"+g+"_k']="+g+"\n"+code;
+}
+
+function addAntiDump(code){
+  return "if string.dump and rawget(_G,'\\0sd\\0') and string.dump~=rawget(_G,'\\0sd\\0') then return end rawset(_G,'\\0sd\\0',string.dump) "+code;
+}
+
+function wrapFunctions(code,layers){
+  for(let i=0;i<layers;i++){
+    const w=R(12),a=R(6);
+    code='local '+w+'=function('+a+')\n'+code+'\nend\n'+w+'(nil)';
+  }
+  return code;
+}
+
+function minify(code){
+  return code.split('\n').map(l=>l.trim()).filter(l=>l).join('\n');
+}
+
+function stripComments(code){
+  let o='',i=0,n=code.length;
+  while(i<n){
+    const c=code[i];
+    if(c==='"'||c==="'"){
+      const q=c;o+=c;i++;
+      while(i<n){
+        if(code[i]==='\\'&&i+1<n){o+=code[i]+code[i+1];i+=2;}
+        else if(code[i]===q){o+=code[i];i++;break;}
+        else{o+=code[i];i++;}
+      }
       continue;
     }
-    o += c; i++;
-  }
-  return { code: o, count };
-}
-
-function buildDecoder(name, key, shift) {
-  const a = R(8), b = R(8), c = R(8), d = R(8), e = R(8);
-  return 'local ' + name + '=function(...)'
-    + 'local ' + a + '={...} local ' + b + '={} '
-    + 'local ' + c + '=bit32 and bit32.bxor or function(x,y) local r,p=0,1 while x>0 or y>0 do local u,v=x%2,y%2 if u~=v then r=r+p end x=math.floor(x/2) y=math.floor(y/2) p=p*2 end return r end '
-    + 'for ' + d + '=1,#' + a + ' do '
-    + b + '[' + d + ']=string.char(' + c + '(((' + a + '[' + d + ']-' + shift + '-' + d + '+1)%256),' + key + ')) '
-    + 'end return table.concat(' + b + ') end\n';
-}
-
-function renameVars(code) {
-  const kw = new Set(['and','break','do','else','elseif','end','false','for','function','if','in','local','nil','not','or','repeat','return','then','true','until','while','goto','self']);
-  const map = {};
-  const re1 = /\blocal\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\s*,\s*[a-zA-Z_][a-zA-Z0-9_]*)*)/g;
-  let m;
-  while ((m = re1.exec(code))) {
-    for (const nm of m[1].split(',')) {
-      const t = nm.trim();
-      if (t && !kw.has(t) && !map[t]) map[t] = R(10);
+    if(code.substr(i,2)==='[['){
+      const e=code.indexOf(']]',i+2);
+      if(e===-1){o+=code.substr(i);break;}
+      o+=code.substring(i,e+2);i=e+2;continue;
     }
+    if(code.substr(i,4)==='--[['){
+      const e=code.indexOf(']]',i+4);i=e===-1?n:e+2;continue;
+    }
+    if(code.substr(i,2)==='--'){
+      const e=code.indexOf('\n',i);i=e===-1?n:e;continue;
+    }
+    o+=c;i++;
   }
-  const re2 = /\blocal\s+function\s+([a-zA-Z_][a-zA-Z0-9_]*)/g;
-  while ((m = re2.exec(code))) {
-    const t = m[1];
-    if (!kw.has(t) && !map[t]) map[t] = R(10);
-  }
-  const keys = Object.keys(map).sort((a, b) => b.length - a.length);
-  for (const k of keys) {
-    code = code.replace(new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g'), map[k]);
-  }
-  return code;
+  return o;
 }
 
-function encodeNumbers(code) {
-  return code.replace(/(?<![\w.])(\d+)(?![\w.])/g, (m, num) => {
-    const n = parseInt(num);
-    if (n === 0 || n === 1) return num;
-    const choice = Math.floor(Math.random() * 3);
-    if (choice === 0) return 'tonumber("' + n.toString(16) + '",16)';
-    if (choice === 1) { const a = Math.floor(Math.random() * (n - 1)) + 1; return '(' + a + '+' + (n - a) + ')'; }
-    return '0x' + n.toString(16);
-  });
-}
+function obfuscate(code){
+  const orig=code.length;
+  const useXor=document.getElementById('oXor').checked;
+  const useRename=document.getElementById('oRename').checked;
+  const useNum=document.getElementById('oNum').checked;
+  const useDead=document.getElementById('oDead').checked;
+  const useAnti=document.getElementById('oAnti').checked;
+  const useWrap=document.getElementById('oWrap').checked;
+  const split = currentLvl>=4;
 
-function injectDeadCode(code) {
-  let junk = '';
-  const cnt = Math.floor(Math.random() * 4) + 3;
-  for (let i = 0; i < cnt; i++) {
-    const nm = R(10), v1 = R(8), v2 = R(8);
-    const choice = Math.floor(Math.random() * 4);
-    if (choice === 0) junk += 'local ' + nm + '=function(' + v1 + ') return ' + v1 + ' end\n';
-    else if (choice === 1) junk += 'local ' + nm + '=function(' + v1 + ') return ' + v1 + '*2 end\n';
-    else if (choice === 2) junk += 'local ' + nm + '=function(' + v1 + ',' + v2 + ') return ' + v1 + '+' + v2 + ' end\n';
-    else junk += 'local ' + nm + '=(' + (Math.floor(Math.random()*900)+100) + '*' + (Math.floor(Math.random()*9)+1) + ')\n';
-  }
-  return junk + code;
-}
-
-function addAntiTamper(code) {
-  const g = R(10), t = Math.floor(Math.random() * 90000) + 10000;
-  return "local " + g + "=" + t + " if _G['" + g + "_k'] and _G['" + g + "_k']~=" + g + " then return end _G['" + g + "_k']=" + g + "\n" + code;
-}
-
-function addAntiDump(code) {
-  return "if string.dump and rawget(_G,'\\0sd\\0') and string.dump~=rawget(_G,'\\0sd\\0') then return end rawset(_G,'\\0sd\\0',string.dump) " + code;
-}
-
-function wrapFunctions(code, layers) {
-  for (let i = 0; i < layers; i++) {
-    const w = R(12), a = R(6);
-    code = 'local ' + w + '=function(' + a + ')\n' + code + '\nend\n' + w + '(nil)';
-  }
-  return code;
-}
-
-function minify(code) {
-  return code.split('\n').map(l => l.trim()).filter(l => l).join('\n');
-}
-
-function obfuscate(code) {
-  const orig = code.length;
-  const useXor = document.getElementById('oXor').checked;
-  const useRename = document.getElementById('oRename').checked;
-  const useNum = document.getElementById('oNum').checked;
-  const useDead = document.getElementById('oDead').checked;
-  const useAnti = document.getElementById('oAnti').checked;
-  const useWrap = document.getElementById('oWrap').checked;
-  const split = currentLvl >= 4;
-
+  // QUAN TRỌNG: đổi biến TRƯỚC khi strip comments, vì tokenizer cần comment positions đúng
+  // Nhưng stripComments chỉ xóa comment, không ảnh hưởng tokenizer
+  // Thứ tự: rename TRƯỚC (dùng tokenizer), rồi mới strip comment
+  if(useRename) code = renameVars(code);
   code = stripComments(code);
-  if (useRename) code = renameVars(code);
 
-  let strCount = 0;
-  if (useXor) {
-    const key = Math.floor(Math.random() * 200) + 30;
-    const shift = Math.floor(Math.random() * 100) + 10;
-    const dName = R(12);
-    const r = encryptStrings(code, key, shift, dName, split);
-    code = buildDecoder(dName, key, shift) + r.code;
-    strCount = r.count;
+  let strCount=0;
+  if(useXor){
+    const key=Math.floor(Math.random()*200)+30;
+    const shift=Math.floor(Math.random()*100)+10;
+    const dName=R(12);
+    const r=encryptStrings(code,key,shift,dName,split);
+    code=buildDecoder(dName,key,shift)+r.code;
+    strCount=r.count;
   }
 
-  if (useNum) code = encodeNumbers(code);
-  if (useDead) code = injectDeadCode(code);
-  if (useAnti) code = addAntiTamper(code);
-  code = addAntiDump(code);
-  if (useWrap) code = wrapFunctions(code, 3);
-  code = minify(code);
+  if(useNum) code=encodeNumbers(code);
+  if(useDead) code=injectDeadCode(code);
+  if(useAnti) code=addAntiTamper(code);
+  code=addAntiDump(code);
+  if(useWrap) code=wrapFunctions(code,3);
+  code=minify(code);
 
-  return { code, stats: { orig, final: code.length, strings: strCount } };
+  return {code,stats:{orig,final:code.length,strings:strCount}};
 }
 
-async function upPastefy(content) {
-  const r = await fetch('https://pastefy.app/api/v2/paste', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content, type: 'PASTE', title: 'loader' })
+/* ============ UPLOAD ============ */
+async function upPastefy(content){
+  const r=await fetch('https://pastefy.app/api/v2/paste',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({content,type:'PASTE',title:'loader'})
   });
-  const d = await r.json();
-  if (d.id) return 'https://pastefy.app/' + d.id + '/raw';
+  const d=await r.json();
+  if(d.id)return 'https://pastefy.app/'+d.id+'/raw';
   throw new Error('pastefy fail');
 }
-
-async function upDpaste(content) {
-  const fd = new FormData();
-  fd.append('content', content);
-  fd.append('format', 'url');
-  const r = await fetch('https://dpaste.com/api/v2/', { method: 'POST', body: fd });
-  const u = (await r.text()).trim();
-  if (u.startsWith('https://')) return u + '.txt';
+async function upDpaste(content){
+  const fd=new FormData();
+  fd.append('content',content);
+  fd.append('format','url');
+  const r=await fetch('https://dpaste.com/api/v2/',{method:'POST',body:fd});
+  const u=(await r.text()).trim();
+  if(u.startsWith('https://'))return u+'.txt';
   throw new Error('dpaste fail');
 }
-
-async function up0x0(content) {
-  const fd = new FormData();
-  fd.append('file', new Blob([content], { type: 'text/plain' }), 'l.lua');
-  const r = await fetch('https://0x0.st', { method: 'POST', body: fd });
-  const u = (await r.text()).trim();
-  if (u.startsWith('http')) return u;
+async function up0x0(content){
+  const fd=new FormData();
+  fd.append('file',new Blob([content],{type:'text/plain'}),'l.lua');
+  const r=await fetch('https://0x0.st',{method:'POST',body:fd});
+  const u=(await r.text()).trim();
+  if(u.startsWith('http'))return u;
   throw new Error('0x0 fail');
 }
-
-async function upload(content) {
-  const svcs = [upPastefy, upDpaste, up0x0];
-  let err = 'all failed';
-  for (const fn of svcs) {
-    try { return await fn(content); } catch (e) { err = e.message; }
+async function upload(content){
+  const svcs=[upPastefy,upDpaste,up0x0];
+  let err='all failed';
+  for(const fn of svcs){
+    try{return await fn(content);}catch(e){err=e.message;}
   }
   throw new Error(err);
 }
 
-function toast(msg) {
-  const e = document.createElement('div');
-  e.className = 'toast'; e.textContent = msg;
+function toast(msg){
+  const e=document.createElement('div');
+  e.className='toast';e.textContent=msg;
   document.body.appendChild(e);
-  setTimeout(() => e.remove(), 3000);
+  setTimeout(()=>e.remove(),3000);
 }
 
-function saveHistory(url, loader) {
-  let h = JSON.parse(localStorage.getItem('obfHistory') || '[]');
-  h.unshift({ url, loader, time: new Date().toLocaleString('vi-VN') });
-  if (h.length > 20) h = h.slice(0, 20);
-  localStorage.setItem('obfHistory', JSON.stringify(h));
+/* ============ HISTORY ============ */
+function saveHistory(url,loader){
+  let h=JSON.parse(localStorage.getItem('obfHistory')||'[]');
+  h.unshift({url,loader,time:new Date().toLocaleString('vi-VN')});
+  if(h.length>20)h=h.slice(0,20);
+  localStorage.setItem('obfHistory',JSON.stringify(h));
   renderHistory();
 }
-
-function renderHistory() {
-  const h = JSON.parse(localStorage.getItem('obfHistory') || '[]');
-  const el = document.getElementById('historyList');
-  if (h.length === 0) { el.innerHTML = '<div class="info">Chưa có link nào.</div>'; return; }
-  el.innerHTML = h.map((item, i) => 
-    '<div class="history-item">' +
-      '<div style="color:#666;font-size:.65rem">' + item.time + '</div>' +
-      '<div style="margin-top:4px">' + item.loader + '</div>' +
-    '</div>'
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem('obfHistory')||'[]');
+  const el=document.getElementById('historyList');
+  if(h.length===0){el.innerHTML='<div class="info">Chưa có link nào.</div>';return;}
+  el.innerHTML=h.map(item=>
+    '<div class="hist-item"><div class="t">'+item.time+'</div><div class="l">'+item.loader+'</div></div>'
   ).join('');
 }
-
-function clearHistory() {
-  if (!confirm('Xóa toàn bộ lịch sử?')) return;
+function clearHistory(){
+  if(!confirm('Xóa toàn bộ lịch sử?'))return;
   localStorage.removeItem('obfHistory');
   renderHistory();
 }
 
-function loadFile(e) {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => { document.getElementById('code').value = ev.target.result; toast('Đã tải file!'); };
+/* ============ FILE LOAD ============ */
+function loadFile(e){
+  const f=e.target.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    document.getElementById('code').value=ev.target.result;
+    document.getElementById('sizeInfo').textContent=ev.target.result.length+' ký tự';
+    toast('Đã tải file!');
+  };
   r.readAsText(f);
 }
 
-async function gen() {
-  const raw = document.getElementById('code').value;
-  if (!raw.trim()) { toast('Chưa có code'); return; }
-  const btn = document.getElementById('btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Đang mã hóa...';
-  try {
-    const r = obfuscate(raw);
-    document.getElementById('stat').innerHTML =
-      '📊 Gốc: <b>' + r.stats.orig + '</b> → Sau: <b style="color:#e91e63">' + r.stats.final + '</b> ký tự (x' +
-      (r.stats.final / r.stats.orig).toFixed(2) + ') · Cấp ' + currentLvl + ' · Chuỗi: <b>' + r.stats.strings + '</b>';
-    btn.textContent = '⏳ Đang upload...';
-    const url = await upload(r.code);
-    const loader = 'loadstring(game:HttpGet("' + url + '"))()';
-    document.getElementById('url').textContent = url;
-    document.getElementById('loader').textContent = loader;
+/* ============ GENERATE ============ */
+async function gen(){
+  const raw=document.getElementById('code').value;
+  if(!raw.trim()){toast('Chưa có code');return;}
+  const btn=document.getElementById('btn');
+  btn.disabled=true;
+  btn.textContent='⏳ Đang mã hóa...';
+  try{
+    const r=obfuscate(raw);
+    document.getElementById('stat').innerHTML=
+      '📊 Gốc: <b>'+r.stats.orig+'</b> → Sau: <b style="color:#e91e63">'+r.stats.final+'</b> (x'+
+      (r.stats.final/r.stats.orig).toFixed(2)+') · Cấp '+currentLvl+' · Chuỗi: <b>'+r.stats.strings+'</b>';
+    btn.textContent='⏳ Đang upload...';
+    const url=await upload(r.code);
+    const loader='loadstring(game:HttpGet("'+url+'"))()';
+    document.getElementById('url').textContent=url;
+    document.getElementById('loader').textContent=loader;
     document.getElementById('res').classList.add('show');
-    saveHistory(url, loader);
-    toast('✅ Xong! Cấp ' + currentLvl);
-  } catch (e) {
-    toast('❌ ' + e.message);
-    document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
+    saveHistory(url,loader);
+    toast('✅ Xong! Cấp '+currentLvl);
+  }catch(e){
+    toast('❌ '+e.message);
+    document.getElementById('stat').textContent='Lỗi: '+e.message;
   }
-  btn.disabled = false;
-  btn.textContent = '🚀 Tạo link loader';
+  btn.disabled=false;
+  btn.textContent='🚀 Tạo link loader';
 }
-
-function cp(id) {
-  const t = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(() => toast('Đã copy!'));
+function cp(id){
+  const t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(()=>toast('Đã copy!'));
 }
-
-function clr() {
-  document.getElementById('code').value = '';
-  document.getElementById('stat').textContent = '';
+function clr(){
+  document.getElementById('code').value='';
+  document.getElementById('stat').textContent='';
+  document.getElementById('sizeInfo').textContent='Chưa có code';
   document.getElementById('res').classList.remove('show');
 }
+
+// Đếm ký tự khi paste (chỉ update text, không xử lý gì nặng)
+document.getElementById('code').addEventListener('input', e=>{
+  const len = e.target.value.length;
+  document.getElementById('sizeInfo').textContent = len>0 ? len+' ký tự' : 'Chưa có code';
+});
 
 setLvl(1);
 renderHistory();
