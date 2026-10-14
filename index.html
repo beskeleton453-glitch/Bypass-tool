@@ -3,149 +3,280 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bypass Tool</title>
+<title>Lua Loader Generator</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0a0a0f; color: #e0e0e0;
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .box {
-    width: 100%; max-width: 500px;
-    background: #12121a; border-radius: 16px;
-    padding: 24px; border: 1px solid #1f1f2e;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 {
-    font-size: 1.4rem; text-align: center; margin-bottom: 6px;
-    background: linear-gradient(135deg, #00e676, #29b6f6);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 20px; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.3rem; text-align: center; margin-bottom: 4px; background: linear-gradient(135deg, #00e676, #29b6f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .sub { text-align: center; font-size: .8rem; color: #666; margin-bottom: 20px; }
-  label { display: block; font-size: .8rem; color: #aaa; margin-bottom: 8px; }
-  input {
-    width: 100%; padding: 14px 16px;
-    background: #0a0a0f; border: 1px solid #2a2a3a;
-    border-radius: 10px; color: #fff; font-size: .9rem;
-    outline: none; font-family: monospace;
-  }
-  input:focus { border-color: #00e676; }
-  button {
-    width: 100%; padding: 14px; margin-top: 14px;
-    background: linear-gradient(135deg, #00e676, #29b6f6);
-    border: none; border-radius: 10px; color: #0a0a0f;
-    font-weight: 700; font-size: 1rem; cursor: pointer;
-  }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  .result {
-    margin-top: 20px; padding: 14px;
-    background: #0a0a0f; border-radius: 10px;
-    border: 1px solid #1f1f2e;
-    font-size: .82rem; line-height: 1.5;
-    display: none; word-break: break-all;
-  }
+  .card { background: #12121a; border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid #1f1f2e; }
+  .card-title { font-size: .75rem; color: #29b6f6; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
+  textarea { width: 100%; padding: 12px; background: #0a0a0f; border: 1px solid #2a2a3a; border-radius: 8px; color: #fff; font-family: monospace; font-size: .8rem; outline: none; resize: vertical; height: 180px; line-height: 1.5; }
+  textarea:focus { border-color: #00e676; }
+  button { width: 100%; padding: 12px; margin-top: 10px; background: linear-gradient(135deg, #00e676, #29b6f6); border: none; border-radius: 10px; color: #0a0a0f; font-weight: 700; font-size: .9rem; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-row button { margin-top: 0; flex: 1; }
+  .result { display: none; margin-top: 12px; background: #0a0a0f; border-radius: 10px; padding: 14px; border: 1px solid #1f1f2e; word-break: break-all; }
   .result.show { display: block; }
-  .result .label { color: #888; font-size: .7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .result a { color: #00e676; text-decoration: none; font-weight: 600; }
-  .result .copy {
-    margin-top: 10px; padding: 8px 14px;
-    background: #1f1f2e; color: #aaa;
-    border: none; border-radius: 6px;
-    font-size: .75rem; width: auto; cursor: pointer;
-  }
-  .error { color: #ff1744; }
-  .success { color: #00e676; }
-  .loading { color: #ffd700; }
-  .footer { text-align: center; margin-top: 20px; font-size: .7rem; color: #444; }
-  .spinner {
-    display: inline-block; width: 12px; height: 12px;
-    border: 2px solid #ffd700; border-top-color: transparent;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-    margin-right: 6px; vertical-align: middle;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .lbl { font-size: .7rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .lnk { color: #00e676; font-family: monospace; font-size: .78rem; }
+  .code-block { background: #06060a; padding: 12px; border-radius: 8px; font-family: monospace; font-size: .75rem; color: #c0a0d0; word-break: break-all; line-height: 1.5; margin-top: 6px; }
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #00e676, #29b6f6); color: #0a0a0f; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: .85rem; z-index: 999; }
+  .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font-size: .72rem; }
+  .opts label { display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: #0a0a0f; border-radius: 6px; cursor: pointer; }
+  .opts input { width: 14px; height: 14px; accent-color: #00e676; }
 </style>
 </head>
 <body>
-<div class="box">
-  <h1>🔓 Bypass Tool</h1>
-  <p class="sub">Vượt link rút gọn nhanh chóng</p>
+<div class="container">
+  <h1>🚀 Lua Loader Generator</h1>
+  <p class="sub">Paste code → Nhận link loadstring để chạy trong Delta</p>
 
-  <label>Dán link rút gọn</label>
-  <input id="url" type="text" placeholder="https://link4m.co/abc123..." autocomplete="off">
+  <div class="card">
+    <div class="card-title">📝 Code Lua của bạn</div>
+    <textarea id="code" placeholder="Paste code Lua gốc vào đây..."></textarea>
+    <div class="opts">
+      <label><input type="checkbox" id="optObf" checked> Mã hóa</label>
+      <label><input type="checkbox" id="optMin" checked> Nén</label>
+    </div>
+    <div class="btn-row">
+      <button id="btn" onclick="generate()">🚀 Tạo link loader</button>
+      <button style="background:#333;color:#fff;flex:0 0 80px;" onclick="clearAll()">🗑️</button>
+    </div>
+    <div id="stats" style="font-size:.72rem;color:#888;margin-top:8px;"></div>
+  </div>
 
-  <button id="btn" onclick="bypass()">🚀 Bypass ngay</button>
-
-  <div id="res" class="result"></div>
-
-  <div class="footer">Made with GitHub Pages</div>
+  <div class="card" id="resCard" style="display:none;">
+    <div class="card-title">✅ Link Loader của bạn</div>
+    <div class="result show" style="margin-top:0;">
+      <div class="lbl">Link trực tiếp</div>
+      <div class="lnk" id="rawUrl"></div>
+      <div class="lbl" style="margin-top:12px;">Dán vào Delta Executor</div>
+      <div class="code-block" id="loaderCode"></div>
+      <div class="btn-row" style="margin-top:10px;">
+        <button onclick="copyLoader()">📋 Copy loader</button>
+        <button onclick="copyRaw()" style="background:#333;color:#fff;">📋 Copy link</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-async function bypass() {
-  const url = document.getElementById('url').value.trim();
-  const res = document.getElementById('res');
-  const btn = document.getElementById('btn');
+function randId(len) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+  const rest = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+  let s = chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 1; i < len; i++) s += rest[Math.floor(Math.random() * rest.length)];
+  return s;
+}
 
-  if (!url) {
-    res.className = 'result show';
-    res.innerHTML = '<span class="error">⚠️ Vui lòng nhập link</span>';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Đang xử lý...';
-  res.className = 'result show';
-  res.innerHTML = '<span class="loading">⏳ Đang bypass, vui lòng chờ...</span>';
-
-  // Thử lần lượt nhiều API để tăng tỉ lệ thành công
-  const apis = [
-    { name: 'bypass.vip', url: 'https://api.bypass.vip/bypass?url=' },
-    { name: 'bypass.city', url: 'https://api.bypass.city/bypass?url=' }
-  ];
-
-  let lastError = 'Không có API nào phản hồi';
-  for (const api of apis) {
-    try {
-      const r = await fetch(api.url + encodeURIComponent(url));
-      if (!r.ok) { lastError = 'HTTP ' + r.status; continue; }
-      const data = await r.json();
-      const finalUrl = data.result || data.url || data.destination;
-      if (finalUrl) {
-        res.innerHTML =
-          '<div class="label">✅ Link gốc</div>' +
-          '<a href="' + finalUrl + '" target="_blank">' + finalUrl + '</a>' +
-          '<button class="copy" onclick="copy(\'' + finalUrl.replace(/'/g, "\\'") + '\')">📋 Copy</button>' +
-          '<div style="margin-top:8px;font-size:.7rem;color:#666;">API: ' + api.name + '</div>';
-        btn.disabled = false;
-        btn.innerHTML = '🚀 Bypass ngay';
-        return;
+function stripComments(code) {
+  let out = '', i = 0, n = code.length;
+  while (i < n) {
+    const c = code[i];
+    if (c === '"' || c === "'") {
+      const q = c; out += c; i++;
+      while (i < n) {
+        if (code[i] === '\\' && i + 1 < n) { out += code[i] + code[i+1]; i += 2; }
+        else if (code[i] === q) { out += code[i]; i++; break; }
+        else { out += code[i]; i++; }
       }
-    } catch (e) {
-      lastError = e.message;
+      continue;
     }
+    if (code.substr(i, 2) === '[[') {
+      const e = code.indexOf(']]', i + 2);
+      if (e === -1) { out += code.substr(i); break; }
+      out += code.substring(i, e + 2); i = e + 2; continue;
+    }
+    if (code.substr(i, 4) === '--[[') {
+      const e = code.indexOf(']]', i + 4);
+      i = e === -1 ? n : e + 2; continue;
+    }
+    if (code.substr(i, 2) === '--') {
+      const e = code.indexOf('\n', i);
+      i = e === -1 ? n : e; continue;
+    }
+    out += c; i++;
   }
-
-  res.innerHTML = '<span class="error">❌ Không bypass được: ' + lastError + '</span>';
-  btn.disabled = false;
-  btn.innerHTML = '🚀 Bypass ngay';
+  return out;
 }
 
-function copy(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const res = document.getElementById('res');
-    const old = res.innerHTML;
-    res.innerHTML = '<span class="success">✅ Đã copy vào clipboard!</span>';
-    setTimeout(() => { res.innerHTML = old; }, 1500);
+function encryptStrings(code, key, decoderName) {
+  let out = '', i = 0, n = code.length, count = 0;
+  while (i < n) {
+    const c = code[i];
+    if (code.substr(i, 2) === '[[') {
+      const e = code.indexOf(']]', i + 2);
+      if (e === -1) { out += code.substr(i); break; }
+      out += code.substring(i, e + 2); i = e + 2; continue;
+    }
+    if (c === '"' || c === "'") {
+      const q = c; i++;
+      const start = i;
+      while (i < n) {
+        if (code[i] === '\\' && i + 1 < n) i += 2;
+        else if (code[i] === q) break;
+        else i++;
+      }
+      const raw = code.substring(start, i); i++;
+      const bytes = [];
+      let j = 0;
+      const escMap = { n: 10, t: 9, r: 13, a: 7, b: 8, f: 12, v: 11, '\\': 92, '"': 34, "'": 39 };
+      while (j < raw.length) {
+        if (raw[j] === '\\' && j + 1 < raw.length) {
+          const nxt = raw[j+1];
+          if (escMap[nxt] !== undefined) { bytes.push(escMap[nxt]); j += 2; }
+          else if (/\d/.test(nxt)) {
+            let k = j + 1, num = '';
+            while (k < raw.length && num.length < 3 && /\d/.test(raw[k])) { num += raw[k]; k++; }
+            bytes.push(parseInt(num) & 0xFF); j = k;
+          } else { bytes.push(nxt.charCodeAt(0) & 0xFF); j += 2; }
+        } else {
+          const cc = raw.charCodeAt(j);
+          if (cc < 128) bytes.push(cc);
+          else if (cc < 2048) { bytes.push(0xC0 | (cc >> 6)); bytes.push(0x80 | (cc & 0x3F)); }
+          else { bytes.push(0xE0 | (cc >> 12)); bytes.push(0x80 | ((cc >> 6) & 0x3F)); bytes.push(0x80 | (cc & 0x3F)); }
+          j++;
+        }
+      }
+      if (bytes.length === 0) { out += '""'; continue; }
+      const enc = bytes.map(b => (b ^ key) & 0xFF);
+      out += decoderName + '(' + enc.join(',') + ')';
+      count++;
+      continue;
+    }
+    out += c; i++;
+  }
+  return { code: out, count };
+}
+
+function buildDecoder(name, key) {
+  const v1 = randId(8), v2 = randId(8), v3 = randId(8), v4 = randId(8);
+  return `local ${name}=function(...) local ${v1}={...} local ${v2}={} local ${v3}=bit32 and bit32.bxor or function(a,b) local r,p=0,1 while a>0 or b>0 do local x,y=a%2,b%2 if x~=y then r=r+p end a=math.floor(a/2) b=math.floor(b/2) p=p*2 end return r end for ${v4}=1,#${v1} do ${v2}[${v4}]=string.char(${v3}(${v1}[${v4}],${key})) end return table.concat(${v2}) end\n`;
+}
+
+function minify(code) {
+  return code.split('\n').map(l => l.trim()).filter(l => l).join('\n');
+}
+
+function addAntiTamper(code) {
+  const g = randId(10), t = Math.floor(Math.random() * 90000) + 10000;
+  return `local ${g}=${t} if _G['${g}_k'] and _G['${g}_k']~=${g} then return end _G['${g}_k']=${g}\n` + code;
+}
+
+function obfuscate(code) {
+  const origSize = code.length;
+  code = stripComments(code);
+  const key = Math.floor(Math.random() * 200) + 30;
+  const dName = randId(12);
+  const r = encryptStrings(code, key, dName);
+  code = buildDecoder(dName, key) + r.code;
+  code = addAntiTamper(code);
+  code = minify(code);
+  return { code, stats: { orig: origSize, final: code.length, strings: r.count } };
+}
+
+async function uploadToPastefy(content) {
+  const res = await fetch('https://pastefy.app/api/v2/paste', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content, type: 'PASTE', title: 'loader' })
   });
+  const data = await res.json();
+  if (data.id) return 'https://pastefy.app/' + data.id + '/raw';
+  throw new Error('Pastefy lỗi');
 }
 
-// Cho phép nhấn Enter để bypass
-document.getElementById('url').addEventListener('keypress', e => {
-  if (e.key === 'Enter') bypass();
-});
+async function uploadToDpaste(content) {
+  const fd = new FormData();
+  fd.append('content', content);
+  fd.append('format', 'url');
+  const res = await fetch('https://dpaste.com/api/v2/', { method: 'POST', body: fd });
+  const url = (await res.text()).trim();
+  if (url.startsWith('https://')) return url + '.txt';
+  throw new Error('Dpaste lỗi');
+}
+
+async function uploadTo0x0(content) {
+  const fd = new FormData();
+  fd.append('file', new Blob([content], { type: 'text/plain' }), 'loader.lua');
+  const res = await fetch('https://0x0.st', { method: 'POST', body: fd });
+  const url = (await res.text()).trim();
+  if (url.startsWith('http')) return url;
+  throw new Error('0x0.st lỗi');
+}
+
+async function uploadCode(content) {
+  const services = [uploadToPastefy, uploadToDpaste, uploadTo0x0];
+  let lastErr = 'Không service nào hoạt động';
+  for (const fn of services) {
+    try { return await fn(content); }
+    catch (e) { lastErr = e.message; }
+  }
+  throw new Error(lastErr);
+}
+
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+async function generate() {
+  const raw = document.getElementById('code').value;
+  if (!raw.trim()) { toast('Chưa có code'); return; }
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang xử lý...';
+
+  let finalCode = raw;
+  let statsText = '';
+
+  try {
+    if (document.getElementById('optObf').checked) {
+      const r = obfuscate(raw);
+      finalCode = r.code;
+      statsText = `📊 Gốc: ${r.stats.orig} → Sau mã hóa: ${r.stats.final} ký tự · Chuỗi: ${r.stats.strings}`;
+    } else if (document.getElementById('optMin').checked) {
+      finalCode = minify(raw);
+      statsText = `📊 Gốc: ${raw.length} → Nén: ${finalCode.length}`;
+    } else {
+      statsText = `📊 Kích thước: ${finalCode.length}`;
+    }
+    document.getElementById('stats').textContent = statsText;
+
+    btn.textContent = '⏳ Đang upload...';
+    const url = await uploadCode(finalCode);
+
+    document.getElementById('rawUrl').textContent = url;
+    document.getElementById('loaderCode').textContent = `loadstring(game:HttpGet("${url}"))()`;
+    document.getElementById('resCard').style.display = 'block';
+    toast('✅ Đã tạo link!');
+  } catch (e) {
+    toast('❌ ' + e.message);
+    document.getElementById('stats').textContent = 'Lỗi: ' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = '🚀 Tạo link loader';
+}
+
+function copyLoader() {
+  const t = document.getElementById('loaderCode').textContent;
+  navigator.clipboard.writeText(t).then(() => toast('Đã copy loader!'));
+}
+function copyRaw() {
+  const t = document.getElementById('rawUrl').textContent;
+  navigator.clipboard.writeText(t).then(() => toast('Đã copy link!'));
+}
+function clearAll() {
+  document.getElementById('code').value = '';
+  document.getElementById('stats').textContent = '';
+  document.getElementById('resCard').style.display = 'none';
+}
 </script>
 </body>
 </html>
