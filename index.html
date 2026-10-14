@@ -34,6 +34,9 @@
   .code { background:#06060a; padding:12px; border-radius:8px; font-family:monospace; font-size:.72rem; color:#c0a0d0; word-break:break-all; line-height:1.5; border:1px solid #1f1f2e; }
   .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#00e676,#9c27b0); color:#fff; padding:12px 24px; border-radius:12px; font-weight:700; font-size:.82rem; z-index:999; box-shadow:0 8px 32px rgba(0,0,0,.5); }
   .info { font-size:.7rem; color:#666; margin-top:6px; font-style:italic; }
+  #historyList { margin-top: 8px; }
+  .history-item { font-size: .7rem; color: #ccc; background: #0a0a0f; padding: 8px; border-radius: 6px; border: 1px solid #1f1f2e; margin-bottom: 4px; word-break: break-all; }
+  .history-item a { color: #29b6f6; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -44,7 +47,10 @@
   <div class="card">
     <div class="ct">📝 Code Lua của bạn</div>
     <textarea id="code" placeholder="Paste code Lua gốc vào đây..."></textarea>
-    <div class="info">💡 Code càng phức tạp thì cấp 4-5 xử lý càng lâu.</div>
+    <div class="row">
+      <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file .txt</button>
+      <input type="file" id="fileInput" accept=".txt,.lua" style="display:none" onchange="loadFile(event)">
+    </div>
   </div>
 
   <div class="card">
@@ -86,11 +92,18 @@
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <div class="ct">📜 Lịch sử link đã tạo</div>
+    <div id="historyList"><div class="info">Chưa có link nào.</div></div>
+    <div class="row" style="margin-top:10px;">
+      <button class="gray" onclick="clearHistory()">🗑️ Xóa lịch sử</button>
+    </div>
+  </div>
 </div>
 
 <script>
 let currentLvl = 1;
-
 const LVL_INFO = {
   1: 'Cấp 1: Xóa comment + nén code.',
   2: 'Cấp 2: + XOR string đơn giản.',
@@ -98,13 +111,12 @@ const LVL_INFO = {
   4: 'Cấp 4: + Dead code + anti-tamper + chia string 4 mảnh.',
   5: 'Cấp 5: + Function wrap + anti-dump + decoder 3 bước.'
 };
-
 const LVL_DEFAULT = {
-  1: { xor: false, rename: false, num: false, dead: false, anti: false, wrap: false },
-  2: { xor: true,  rename: false, num: false, dead: false, anti: false, wrap: false },
-  3: { xor: true,  rename: true,  num: true,  dead: false, anti: false, wrap: false },
-  4: { xor: true,  rename: true,  num: true,  dead: true,  anti: true,  wrap: false },
-  5: { xor: true,  rename: true,  num: true,  dead: true,  anti: true,  wrap: true  }
+  1: { xor:false, rename:false, num:false, dead:false, anti:false, wrap:false },
+  2: { xor:true,  rename:false, num:false, dead:false, anti:false, wrap:false },
+  3: { xor:true,  rename:true,  num:true,  dead:false, anti:false, wrap:false },
+  4: { xor:true,  rename:true,  num:true,  dead:true,  anti:true,  wrap:false },
+  5: { xor:true,  rename:true,  num:true,  dead:true,  anti:true,  wrap:true  }
 };
 
 function setLvl(n) {
@@ -380,6 +392,40 @@ function toast(msg) {
   setTimeout(() => e.remove(), 3000);
 }
 
+function saveHistory(url, loader) {
+  let h = JSON.parse(localStorage.getItem('obfHistory') || '[]');
+  h.unshift({ url, loader, time: new Date().toLocaleString('vi-VN') });
+  if (h.length > 20) h = h.slice(0, 20);
+  localStorage.setItem('obfHistory', JSON.stringify(h));
+  renderHistory();
+}
+
+function renderHistory() {
+  const h = JSON.parse(localStorage.getItem('obfHistory') || '[]');
+  const el = document.getElementById('historyList');
+  if (h.length === 0) { el.innerHTML = '<div class="info">Chưa có link nào.</div>'; return; }
+  el.innerHTML = h.map((item, i) => 
+    '<div class="history-item">' +
+      '<div style="color:#666;font-size:.65rem">' + item.time + '</div>' +
+      '<div style="margin-top:4px">' + item.loader + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function clearHistory() {
+  if (!confirm('Xóa toàn bộ lịch sử?')) return;
+  localStorage.removeItem('obfHistory');
+  renderHistory();
+}
+
+function loadFile(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { document.getElementById('code').value = ev.target.result; toast('Đã tải file!'); };
+  r.readAsText(f);
+}
+
 async function gen() {
   const raw = document.getElementById('code').value;
   if (!raw.trim()) { toast('Chưa có code'); return; }
@@ -393,9 +439,11 @@ async function gen() {
       (r.stats.final / r.stats.orig).toFixed(2) + ') · Cấp ' + currentLvl + ' · Chuỗi: <b>' + r.stats.strings + '</b>';
     btn.textContent = '⏳ Đang upload...';
     const url = await upload(r.code);
+    const loader = 'loadstring(game:HttpGet("' + url + '"))()';
     document.getElementById('url').textContent = url;
-    document.getElementById('loader').textContent = 'loadstring(game:HttpGet("' + url + '"))()';
+    document.getElementById('loader').textContent = loader;
     document.getElementById('res').classList.add('show');
+    saveHistory(url, loader);
     toast('✅ Xong! Cấp ' + currentLvl);
   } catch (e) {
     toast('❌ ' + e.message);
@@ -417,6 +465,7 @@ function clr() {
 }
 
 setLvl(1);
+renderHistory();
 </script>
 </body>
 </html>
