@@ -27,7 +27,7 @@
   .res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap}
+  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#00e676;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
   .modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
@@ -35,13 +35,12 @@
   .mode.active{border-color:#9c27b0;color:#e91e63;background:rgba(233,30,99,.08)}
   .mode .ic{font-size:1.2rem;display:block;margin-bottom:2px}
   .mode .d{font-size:.58rem;color:#666;margin-top:2px;line-height:1.3}
-  .warn{background:rgba(255,152,0,.1);border-left:3px solid #ff9800;padding:10px;border-radius:6px;font-size:.7rem;color:#ffcc80;margin-top:8px;line-height:1.5}
 </style>
 </head>
 <body>
 <div class="c">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">Trả về loadstring 1 dòng • 3 chế độ</p>
+  <p class="s">Auto-submit key • Progress bar • Không treo</p>
 
   <div class="card">
     <div class="ct">🔑 GitHub Token</div>
@@ -64,26 +63,26 @@
   </div>
 
   <div class="card">
-    <div class="ct">🎭 Chế độ bảo vệ</div>
+    <div class="ct">🎭 Chế độ</div>
     <div class="modes">
       <div class="mode active" data-mode="ask" onclick="setMode('ask')">
         <span class="ic">🔒</span>Hỏi key
-        <div class="d">Key không trong file</div>
+        <div class="d">Auto-submit</div>
       </div>
       <div class="mode" data-mode="embed" onclick="setMode('embed')">
         <span class="ic">🎁</span>Nhúng key
-        <div class="d">Chạy là dùng</div>
+        <div class="d">Chạy ngay</div>
       </div>
       <div class="mode" data-mode="none" onclick="setMode('none')">
         <span class="ic">📄</span>Không khóa
-        <div class="d">Ai cũng chạy</div>
+        <div class="d">Không mã hóa</div>
       </div>
     </div>
   </div>
 
   <div class="card" id="keyCard">
-    <div class="ct">🔑 Key mã hóa</div>
-    <input type="text" id="key" placeholder="Nhập key (khuyến nghị 16+ ký tự)">
+    <div class="ct">🔑 Key</div>
+    <input type="text" id="key" placeholder="Key (16+ ký tự)">
     <div class="row" style="margin-top:10px;">
       <button class="gray" onclick="genKey()">🎲 Random 24 ký tự</button>
     </div>
@@ -93,8 +92,8 @@
     <button id="btn" class="purple" onclick="gen()">🚀 Tạo loadstring</button>
     <div class="stat" id="stat"></div>
     <div class="res" id="res">
-      <div class="lbl">📋 Copy dòng này vào Delta</div>
-      <div class="code" id="loader" style="color:#00e676;font-size:.78rem;"></div>
+      <div class="lbl">📋 Paste dòng này vào Delta</div>
+      <div class="code" id="loader"></div>
       <div class="row" style="margin-top:10px;">
         <button onclick="cp('loader')">📋 Copy loadstring</button>
         <button class="gray" onclick="openGist()">🌐 Gist</button>
@@ -115,21 +114,17 @@ function toast(msg){
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),3000);
 }
-
 function setMode(m){
   currentMode = m;
   document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('active', e.dataset.mode===m));
   document.getElementById('keyCard').style.display = (m === 'none') ? 'none' : 'block';
 }
-
 function genKey(){
   const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let s='';
   for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];
   document.getElementById('key').value = s;
 }
-
-/* ===== TOKEN ===== */
 function saveToken(){
   const t = document.getElementById('token').value.trim();
   if(!t){ toast('Chưa nhập'); return; }
@@ -155,8 +150,6 @@ function updateTokenInfo(){
     el.style.color = '#666';
   }
 }
-
-/* ===== FILE ===== */
 function loadFile(e){
   const f = e.target.files[0];
   if(!f) return;
@@ -188,7 +181,6 @@ function deriveKeyTable(masterKey){
   }
   return table;
 }
-
 function strToBytes(str){
   const bytes=[];
   for(let i=0;i<str.length;i++){
@@ -201,7 +193,6 @@ function strToBytes(str){
   }
   return bytes;
 }
-
 function encryptBytes(plainBytes, key){
   const MAGIC = [75,76,80,50,10];
   const data = MAGIC.concat(plainBytes);
@@ -221,7 +212,6 @@ function encryptBytes(plainBytes, key){
   }
   return out;
 }
-
 function bytesToBase64(bytes){
   let bin='';
   const CHUNK=8192;
@@ -231,7 +221,7 @@ function bytesToBase64(bytes){
   return btoa(bin);
 }
 
-/* ===== LUA DECODE CODE ===== */
+/* ===== LUA DECODE (với YIELD để không treo) ===== */
 function luaDecodeCode(){
   return `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -266,12 +256,14 @@ local function __deriveTable(masterKey)
   end
   return t
 end
-local function __decrypt(enc, masterKey)
+local function __decrypt(enc, masterKey, progressCb)
   local table=__deriveTable(masterKey)
   local out={}
   local prev=0
   local prev2=0
-  for i=1,#enc do
+  local total=#enc
+  local batch=0
+  for i=1,total do
     local e=enc:byte(i)
     local idx=bit32.band(i-1,255)
     local k=table[idx]
@@ -282,6 +274,12 @@ local function __decrypt(enc, masterKey)
     out[i]=string.char(v)
     prev2=prev
     prev=e
+    batch=batch+1
+    if batch>=2048 then
+      batch=0
+      if progressCb then progressCb(i, total) end
+      task.wait()
+    end
   end
   return table.concat(out)
 end`;
@@ -292,22 +290,23 @@ function buildFullLoader(payloadB64, key, mode){
   const decodeCode = luaDecodeCode();
   
   if(mode === 'embed'){
-    return `-- Gist Loader Pro (embedded key)
+    return `-- Gist Loader Pro
 local __payload=[[${payloadB64}]]
 ${decodeCode}
 local __enc=__b64decode(__payload)
 local __data=__decrypt(__enc,"${key}")
-if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Failed to decrypt") return end
+if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Failed") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
   }
   
-  // ask mode
-  return `-- Gist Loader Pro (ask key)
+  // ask mode với auto-submit
+  return `-- Gist Loader Pro
 local __payload=[[${payloadB64}]]
 ${decodeCode}
 local __enc=__b64decode(__payload)
 local Players=game:GetService("Players")
+local UIS=game:GetService("UserInputService")
 local plr=Players.LocalPlayer
 local pg=plr:WaitForChild("PlayerGui")
 local sg=Instance.new("ScreenGui")
@@ -315,8 +314,8 @@ sg.Name="GistLoaderKey"
 sg.ResetOnSpawn=false
 sg.Parent=pg
 local f=Instance.new("Frame")
-f.Size=UDim2.new(0,320,0,180)
-f.Position=UDim2.new(0.5,-160,0.5,-90)
+f.Size=UDim2.new(0,340,0,200)
+f.Position=UDim2.new(0.5,-170,0.5,-100)
 f.BackgroundColor3=Color3.fromRGB(15,15,22)
 f.BorderSizePixel=0
 f.Parent=sg
@@ -333,15 +332,16 @@ tt.Font=Enum.Font.GothamBold
 tt.TextSize=16
 tt.Parent=f
 local bx=Instance.new("TextBox")
-bx.Size=UDim2.new(1,-20,0,40)
+bx.Size=UDim2.new(1,-20,0,42)
 bx.Position=UDim2.new(0,10,0,42)
 bx.BackgroundColor3=Color3.fromRGB(8,8,12)
 bx.TextColor3=Color3.fromRGB(255,255,255)
-bx.PlaceholderText="Nhập key..."
+bx.PlaceholderText="Nhập key (auto chạy khi đúng)..."
 bx.Text=""
 bx.Font=Enum.Font.Gotham
 bx.TextSize=14
 bx.ClearTextOnFocus=false
+bx.TextEditable=true
 bx.Parent=f
 Instance.new("UICorner",bx).CornerRadius=UDim.new(0,8)
 local bt=Instance.new("TextButton")
@@ -356,32 +356,82 @@ bt.Parent=f
 Instance.new("UICorner",bt).CornerRadius=UDim.new(0,8)
 local st=Instance.new("TextLabel")
 st.Size=UDim2.new(1,-20,0,20)
-st.Position=UDim2.new(0,10,1,-24)
+st.Position=UDim2.new(0,10,1,-26)
 st.BackgroundTransparency=1
 st.Text=""
 st.TextColor3=Color3.fromRGB(255,100,100)
 st.Font=Enum.Font.Gotham
 st.TextSize=12
 st.Parent=f
-bt.MouseButton1Click:Connect(function()
-  local k=bx.Text
-  if #k==0 then st.Text="⚠ Nhập key" return end
+
+local __busy=false
+local __tried={}
+
+local function __try(k)
+  if __busy then return end
+  if #k==0 then return end
+  if __tried[k] then return end
+  __busy=true
   st.Text="⏳ Đang giải mã..."
   st.TextColor3=Color3.fromRGB(255,200,100)
   task.wait(0.05)
-  local data=__decrypt(__enc,k)
+  local ok2,data=pcall(function()
+    return __decrypt(__enc,k,function(i,total)
+      local pct=math.floor(i/total*100)
+      st.Text="⏳ Đang giải mã... "..pct.."%"
+    end)
+  end)
+  if not ok2 or not data then
+    st.Text="❌ Lỗi giải mã"
+    st.TextColor3=Color3.fromRGB(255,80,80)
+    __busy=false
+    return
+  end
   if data:sub(1,5)~="KLP2\\n" then
     st.Text="❌ Key sai!"
     st.TextColor3=Color3.fromRGB(255,80,80)
+    __tried[k]=true
+    __busy=false
     return
   end
   st.Text="✅ Đang chạy..."
   st.TextColor3=Color3.fromRGB(0,230,118)
-  task.wait(0.2)
+  task.wait(0.15)
   sg:Destroy()
   local ok,err=pcall(function() loadstring(data:sub(6))() end)
   if not ok then warn("[Loader] "..tostring(err)) end
-end)`;
+  __busy=false
+end
+
+local __lastText=""
+local __debounceTick=0
+bx:GetPropertyChangedSignal("Text"):Connect(function()
+  local t=bx.Text
+  if t==__lastText then return end
+  __lastText=t
+  if #t<4 then return end
+  __debounceTick=__debounceTick+1
+  local myTick=__debounceTick
+  task.delay(0.8,function()
+    if myTick==__debounceTick and not __busy then
+      __try(bx.Text)
+    end
+  end)
+end)
+
+bx.FocusLost:Connect(function(enterPressed)
+  if enterPressed then __try(bx.Text) end
+end)
+
+bt.MouseButton1Click:Connect(function()
+  __try(bx.Text)
+end)
+
+-- Tự focus vào textbox khi mở
+task.wait(0.1)
+if bx and bx.Parent then
+  pcall(function() bx:CaptureFocus() end)
+end`;
 }
 
 /* ===== GITHUB GIST ===== */
@@ -420,7 +470,7 @@ async function gen(){
   if(currentMode !== 'none'){
     key = document.getElementById('key').value.trim();
     if(!key){ key = 'KLP' + Math.random().toString(36).substring(2, 20); document.getElementById('key').value = key; }
-    if(key.length < 6){ toast('Key phải từ 6 ký tự'); return; }
+    if(key.length < 6){ toast('Key từ 6 ký tự'); return; }
   }
 
   const btn = document.getElementById('btn');
@@ -433,11 +483,9 @@ async function gen(){
     let uploadContent, filename;
 
     if(currentMode === 'none'){
-      // Upload script thẳng
       uploadContent = raw;
       filename = 'script_' + rand + '.lua';
     } else {
-      // Mã hóa → Base64 → Nhúng vào code loader → Upload code loader
       const plainBytes = strToBytes(raw);
       const encBytes = encryptBytes(plainBytes, key);
       const b64 = bytesToBase64(encBytes);
@@ -449,7 +497,6 @@ async function gen(){
     const gist = await createGist(uploadContent, filename);
     currentGist = gist.gistUrl;
 
-    // Trả về LOADSTRING NGẮN — đây là cái user paste vào Delta
     const loadstringLine = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
     
     document.getElementById('loader').textContent = loadstringLine;
@@ -466,7 +513,7 @@ async function gen(){
     
     const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
-    toast('✅ Đã tạo! Copy dòng xanh → paste vào Delta');
+    toast('✅ Xong! Copy dòng xanh');
   } catch(e){
     toast('❌ ' + e.message);
     document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
@@ -477,7 +524,7 @@ async function gen(){
 
 function cp(id){
   const t = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(() => toast('Đã copy loadstring!'));
+  navigator.clipboard.writeText(t).then(() => toast('Đã copy!'));
 }
 function openGist(){
   if(currentGist) window.open(currentGist, '_blank');
