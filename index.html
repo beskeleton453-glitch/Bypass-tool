@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lua Obfuscator Pro v2</title>
+<title>Key-Locked Loader</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px}
@@ -12,470 +12,308 @@
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
   .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
   .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px}
-  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;resize:vertical;height:160px;line-height:1.5}
+  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;resize:vertical;height:180px;line-height:1.5}
   textarea:focus{border-color:#00e676}
-  .lvls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
-  .lvl{padding:10px 4px;text-align:center;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;font-size:.7rem;font-weight:700;color:#666;transition:all .2s}
-  .lvl.active{border-color:#00e676;color:#00e676;background:rgba(0,230,118,.1)}
-  .lvl .n{font-size:1.1rem;display:block;margin-bottom:2px}
-  .opts{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-  .opts label{display:flex;align-items:center;gap:4px;padding:5px 9px;background:#0a0a0f;border-radius:6px;cursor:pointer;font-size:.7rem;color:#aaa}
-  .opts input{width:14px;height:14px;accent-color:#00e676}
+  input[type=text]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.85rem;outline:none;margin-top:8px}
+  input[type=text]:focus{border-color:#00e676}
   button{width:100%;padding:12px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:10px;color:#0a0a0f;font-weight:700;font-size:.9rem;cursor:pointer}
   button:disabled{opacity:.4;cursor:not-allowed}
   .row{display:flex;gap:8px}
   .row button{flex:1;margin-top:0}
   .gray{background:linear-gradient(135deg,#333,#555);color:#fff}
+  .purple{background:linear-gradient(135deg,#9c27b0,#e91e63);color:#fff}
   .stat{font-size:.72rem;color:#888;margin-top:8px;line-height:1.5}
   .res{display:none;margin-top:12px}
   .res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.75rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:12px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e}
+  .code{background:#06060a;padding:12px;border-radius:8px;font-family:monospace;font-size:.7rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:400px;overflow:auto;white-space:pre-wrap}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .mode{padding:12px;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;text-align:center;font-size:.75rem;color:#888}
+  .mode.active{border-color:#9c27b0;color:#e91e63;background:rgba(233,30,99,.08)}
+  .mode .ic{font-size:1.3rem;display:block;margin-bottom:4px}
   .hist-item{font-size:.68rem;color:#ccc;background:#0a0a0f;padding:8px;border-radius:6px;border:1px solid #1f1f2e;margin-bottom:4px;word-break:break-all}
   .hist-item .t{color:#555;font-size:.62rem}
   .hist-item .l{color:#29b6f6;margin-top:3px}
+  .hist-item .k{color:#ff9800;font-weight:700}
 </style>
 </head>
 <body>
 <div class="c">
-  <h1>🔒 Lua Obfuscator Pro v2</h1>
-  <p class="s">Fix rename bug • 5 cấp độ • Lịch sử link • Upload file</p>
+  <h1>🔐 Key-Locked Loader</h1>
+  <p class="s">Mã hóa script bằng key • Không có key không đọc được</p>
 
   <div class="card">
-    <div class="ct">📝 Code Lua của bạn</div>
+    <div class="ct">📝 Script cần bảo vệ</div>
     <textarea id="code" placeholder="Paste code Lua gốc vào đây..."></textarea>
     <div class="row" style="margin-top:8px;">
-      <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file .txt</button>
+      <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file</button>
       <input type="file" id="fileInput" accept=".txt,.lua" style="display:none" onchange="loadFile(event)">
     </div>
-    <div class="info" id="sizeInfo">Chưa có code</div>
   </div>
 
   <div class="card">
-    <div class="ct">🎚️ Cấp độ bảo mật</div>
-    <div class="lvls">
-      <div class="lvl active" data-lvl="1" onclick="setLvl(1)"><span class="n">1</span>Basic</div>
-      <div class="lvl" data-lvl="2" onclick="setLvl(2)"><span class="n">2</span>Light</div>
-      <div class="lvl" data-lvl="3" onclick="setLvl(3)"><span class="n">3</span>Std</div>
-      <div class="lvl" data-lvl="4" onclick="setLvl(4)"><span class="n">4</span>Strong</div>
-      <div class="lvl" data-lvl="5" onclick="setLvl(5)"><span class="n">5</span>Max</div>
-    </div>
-    <div class="info" id="lvlInfo">Cấp 1: Xóa comment + nén code.</div>
-  </div>
-
-  <div class="card">
-    <div class="ct">⚙️ Tùy chọn nâng cao</div>
-    <div class="opts">
-      <label><input type="checkbox" id="oXor" checked> XOR string</label>
-      <label><input type="checkbox" id="oRename" checked> Đổi biến (đã fix)</label>
-      <label><input type="checkbox" id="oNum" checked> Mã số</label>
-      <label><input type="checkbox" id="oDead"> Code rác</label>
-      <label><input type="checkbox" id="oAnti"> Anti-tamper</label>
-      <label><input type="checkbox" id="oWrap"> Function wrap</label>
-    </div>
-    <div class="info">Mặc định theo cấp độ. Tick tay để ghi đè.</div>
+    <div class="ct">🔑 Key mã hóa</div>
+    <input type="text" id="key" placeholder="Để trống → tự sinh key random 24 ký tự">
+    <div class="info">💡 Key càng dài càng khó đoán. Nên dùng 16-32 ký tự.</div>
     <div class="row" style="margin-top:10px;">
-      <button id="btn" onclick="gen()">🚀 Tạo link loader</button>
-      <button class="gray" style="flex:0 0 60px;" onclick="clr()">🗑️</button>
+      <button class="gray" onclick="genKey()">🎲 Tạo key ngẫu nhiên</button>
     </div>
-    <div class="stat" id="stat"></div>
-    <div class="res" id="res">
-      <div class="lbl">Link trực tiếp</div>
-      <div class="lnk" id="url"></div>
-      <div class="lbl">Dán vào Delta Executor</div>
-      <div class="code" id="loader"></div>
-      <div class="row" style="margin-top:10px;">
-        <button onclick="cp('loader')">📋 Copy loader</button>
-        <button class="gray" onclick="cp('url')">📋 Copy link</button>
+  </div>
+
+  <div class="card">
+    <div class="ct">🎭 Chế độ loader</div>
+    <div class="modes">
+      <div class="mode active" data-mode="ask" onclick="setMode('ask')">
+        <span class="ic">🔒</span>
+        Hỏi key khi chạy
+        <div style="font-size:.65rem;color:#666;margin-top:4px;">Người dùng phải nhập key</div>
+      </div>
+      <div class="mode" data-mode="embed" onclick="setMode('embed')">
+        <span class="ic">🎁</span>
+        Nhúng key sẵn
+        <div style="font-size:.65rem;color:#666;margin-top:4px;">Chạy là dùng, ai cũng chạy được</div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="ct">📜 Lịch sử link đã tạo</div>
-    <div id="historyList"><div class="info">Chưa có link nào.</div></div>
-    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa lịch sử</button>
+    <div class="row">
+      <button id="btn" class="purple" onclick="gen()">🔐 Tạo loader</button>
+      <button class="gray" style="flex:0 0 60px;" onclick="clr()">🗑️</button>
+    </div>
+    <div class="stat" id="stat"></div>
+    <div class="res" id="res">
+      <div class="lbl">🔗 Link file đã mã hóa</div>
+      <div class="lnk" id="url"></div>
+      <div class="lbl">📋 Loader Lua (dán vào Delta để chạy)</div>
+      <div class="code" id="loader"></div>
+      <div class="row" style="margin-top:10px;">
+        <button onclick="cp('loader')">📋 Copy loader</button>
+        <button class="gray" onclick="cp('keyOut')">📋 Copy key</button>
+      </div>
+      <div class="lbl">🔑 Key (giữ bí mật)</div>
+      <div class="lnk" id="keyOut"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📜 Lịch sử</div>
+    <div id="historyList"><div class="info">Chưa có gì.</div></div>
+    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa</button>
   </div>
 </div>
 
 <script>
-let currentLvl = 1;
-const LVL_INFO = {
-  1:'Cấp 1: Xóa comment + nén code.',
-  2:'Cấp 2: + XOR string.',
-  3:'Cấp 3: + Đổi tên biến + mã hóa số.',
-  4:'Cấp 4: + Code rác + anti-tamper + chia string 4 mảnh.',
-  5:'Cấp 5: + Function wrap + anti-dump + decoder 3 bước.'
-};
-const LVL_DEFAULT = {
-  1:{xor:0,rename:0,num:0,dead:0,anti:0,wrap:0},
-  2:{xor:1,rename:0,num:0,dead:0,anti:0,wrap:0},
-  3:{xor:1,rename:1,num:1,dead:0,anti:0,wrap:0},
-  4:{xor:1,rename:1,num:1,dead:1,anti:1,wrap:0},
-  5:{xor:1,rename:1,num:1,dead:1,anti:1,wrap:1}
-};
-const LUA_KW = new Set(['and','break','do','else','elseif','end','false','for','function','if','in','local','nil','not','or','repeat','return','then','true','until','while','goto','self']);
+/* ========== STATE ========== */
+let currentMode = 'ask';
 
-function setLvl(n){
-  currentLvl = n;
-  document.querySelectorAll('.lvl').forEach(e=>e.classList.toggle('active', +e.dataset.lvl===n));
-  document.getElementById('lvlInfo').textContent = LVL_INFO[n];
-  const d = LVL_DEFAULT[n];
-  document.getElementById('oXor').checked = !!d.xor;
-  document.getElementById('oRename').checked = !!d.rename;
-  document.getElementById('oNum').checked = !!d.num;
-  document.getElementById('oDead').checked = !!d.dead;
-  document.getElementById('oAnti').checked = !!d.anti;
-  document.getElementById('oWrap').checked = !!d.wrap;
-}
-
+/* ========== UTILS ========== */
 function R(len){
-  const c1='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-  const c2='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+  const c1='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const c2='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let s=c1[Math.floor(Math.random()*c1.length)];
   for(let i=1;i<len;i++)s+=c2[Math.floor(Math.random()*c2.length)];
   return s;
 }
 
-/* ============ LUA TOKENIZER (có position) ============ */
-function tokenizeLua(code){
-  const tokens=[];
-  let i=0;const n=code.length;
-  const isD=c=>(c>='0'&&c<='9');
-  const isA=c=>((c>='a'&&c<='z')||(c>='A'&&c<='Z')||c==='_');
-  const isAl=c=>isA(c)||isD(c);
-  while(i<n){
-    const c=code[i];
-    if(/\s/.test(c)){i++;continue;}
-    // Comment
-    if(code.substr(i,2)==='--'){
-      if(code.substr(i,4)==='--[['){
-        const e=code.indexOf(']]',i+4);
-        i=e===-1?n:e+2;continue;
-      }
-      const e=code.indexOf('\n',i);
-      i=e===-1?n:e;continue;
-    }
-    // Long string [[...]] or [=[...]=] (skip level for simplicity)
-    if(code.substr(i,2)==='[['){
-      const start=i;
-      const e=code.indexOf(']]',i+2);
-      const end=e===-1?n:e+2;
-      tokens.push({type:'string',value:code.substring(start,end),start,end});
-      i=end;continue;
-    }
-    // Normal string
-    if(c==='"'||c==="'"){
-      const q=c;const start=i;i++;
-      while(i<n){
-        if(code[i]==='\\'&&i+1<n)i+=2;
-        else if(code[i]===q){i++;break;}
-        else i++;
-      }
-      tokens.push({type:'string',value:code.substring(start,i),start,end:i});
-      continue;
-    }
-    // Number
-    if(isD(c)||(c==='.'&&isD(code[i+1]))){
-      const start=i;
-      if(c==='0'&&(code[i+1]==='x'||code[i+1]==='X')){
-        i+=2;while(i<n&&/[0-9a-fA-F]/.test(code[i]))i++;
-      } else {
-        while(i<n&&isD(code[i]))i++;
-        if(code[i]==='.'){i++;while(i<n&&isD(code[i]))i++;}
-        if(code[i]==='e'||code[i]==='E'){i++;if(code[i]==='+'||code[i]==='-')i++;while(i<n&&isD(code[i]))i++;}
-      }
-      tokens.push({type:'number',value:code.substring(start,i),start,end:i});
-      continue;
-    }
-    // Identifier / keyword
-    if(isA(c)){
-      const start=i;
-      while(i<n&&isAl(code[i]))i++;
-      tokens.push({type:'id',value:code.substring(start,i),start,end:i});
-      continue;
-    }
-    // Multi-char ops
-    const three=code.substr(i,3);
-    if(three==='...'){tokens.push({type:'op',value:'...',start:i,end:i+3});i+=3;continue;}
-    const two=code.substr(i,2);
-    if(['==','~=','<=','>=','..','::'].includes(two)){
-      tokens.push({type:'op',value:two,start:i,end:i+2});i+=2;continue;
-    }
-    tokens.push({type:'op',value:c,start:i,end:i+1});i++;
-  }
-  return tokens;
+function genKey(){
+  document.getElementById('key').value = R(24);
 }
 
-/* ============ RENAME VARS (FIXED) ============ */
-function renameVars(code){
-  const tokens = tokenizeLua(code);
-  const map = {};
-
-  // Pass 1: tìm local declarations
-  for(let i=0;i<tokens.length;i++){
-    const tok = tokens[i];
-    if(tok.type==='id' && tok.value==='local'){
-      let j = i+1;
-      if(tokens[j] && tokens[j].type==='id' && tokens[j].value==='function'){
-        j++;
-        if(tokens[j] && tokens[j].type==='id'){
-          const nm = tokens[j].value;
-          if(!LUA_KW.has(nm) && !map[nm]) map[nm] = R(10);
-        }
-      } else {
-        while(j<tokens.length && tokens[j].type==='id'){
-          const nm = tokens[j].value;
-          if(!LUA_KW.has(nm) && !map[nm]) map[nm] = R(10);
-          j++;
-          if(tokens[j] && tokens[j].value===','){j++;continue;}
-          break;
-        }
-      }
-    }
-  }
-
-  // Pass 2: đánh dấu những token được phép đổi
-  const renameable = new Array(tokens.length).fill(false);
-  let braceDepth = 0;
-  for(let i=0;i<tokens.length;i++){
-    const tok = tokens[i];
-    if(tok.value==='{') braceDepth++;
-    else if(tok.value==='}') braceDepth--;
-    if(tok.type!=='id' || !map[tok.value]) continue;
-
-    const prev = tokens[i-1];
-    const next = tokens[i+1];
-
-    // Bỏ qua member access: abc.xyz hoặc abc:xyz
-    if(prev && prev.type==='op' && (prev.value==='.'||prev.value===':')) continue;
-    // Bỏ qua table key: {key=val}
-    if(braceDepth>0 && next && next.value==='=') continue;
-    // Bỏ qua label: ::name::
-    if(prev && prev.value==='::') continue;
-
-    renameable[i] = true;
-  }
-
-  // Pass 3: apply từ cuối về đầu
-  const reps = [];
-  for(let i=0;i<tokens.length;i++){
-    if(renameable[i]) reps.push({start:tokens[i].start, end:tokens[i].end, value:map[tokens[i].value]});
-  }
-  reps.sort((a,b)=>b.start-a.start);
-  for(const r of reps){
-    code = code.substring(0,r.start) + r.value + code.substring(r.end);
-  }
-  return code;
+function setMode(m){
+  currentMode = m;
+  document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('active', e.dataset.mode===m));
 }
 
-/* ============ STRING ENCRYPTION ============ */
-function parseStr(raw){
-  const bytes=[];let j=0;
-  const escMap={n:10,t:9,r:13,a:7,b:8,f:12,v:11,'\\':92,'"':34,"'":39};
-  while(j<raw.length){
-    if(raw[j]==='\\' && j+1<raw.length){
-      const nxt=raw[j+1];
-      if(escMap[nxt]!==undefined){bytes.push(escMap[nxt]);j+=2;}
-      else if(/\d/.test(nxt)){
-        let k=j+1,num='';
-        while(k<raw.length && num.length<3 && /\d/.test(raw[k])){num+=raw[k];k++;}
-        bytes.push(parseInt(num)&0xFF);j=k;
-      } else {bytes.push(nxt.charCodeAt(0)&0xFF);j+=2;}
+function toast(msg){
+  const e=document.createElement('div');
+  e.className='toast';e.textContent=msg;
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),3000);
+}
+
+/* ========== ENCRYPTION ==========
+   enc[i] = ((plain[i] XOR key[i%len]) + i) & 0xFF
+   dec[i] = ((enc[i] - i) & 0xFF) XOR key[i%len]
+   i = 0-based index
+   Thêm magic header để phát hiện key sai
+*/
+const MAGIC = "LUA_KEYLOCK_v1\n";
+
+function encrypt(plain, key){
+  // Prepend magic
+  const data = MAGIC + plain;
+  const keyBytes = [];
+  for(let i=0;i<key.length;i++) keyBytes.push(key.charCodeAt(i) & 0xFF);
+  
+  // Encode UTF-8
+  const plainBytes = [];
+  for(let i=0;i<data.length;i++){
+    const cc = data.charCodeAt(i);
+    if(cc < 128) plainBytes.push(cc);
+    else if(cc < 2048){
+      plainBytes.push(0xC0 | (cc>>6));
+      plainBytes.push(0x80 | (cc & 0x3F));
     } else {
-      const cc=raw.charCodeAt(j);
-      if(cc<128)bytes.push(cc);
-      else if(cc<2048){bytes.push(0xC0|(cc>>6));bytes.push(0x80|(cc&0x3F));}
-      else {bytes.push(0xE0|(cc>>12));bytes.push(0x80|((cc>>6)&0x3F));bytes.push(0x80|(cc&0x3F));}
-      j++;
+      plainBytes.push(0xE0 | (cc>>12));
+      plainBytes.push(0x80 | ((cc>>6) & 0x3F));
+      plainBytes.push(0x80 | (cc & 0x3F));
     }
   }
-  return bytes;
-}
-
-function encryptStrings(code,key,shift,dName,split){
-  let o='',i=0,n=code.length,count=0;
-  while(i<n){
-    if(code.substr(i,2)==='[['){
-      const e=code.indexOf(']]',i+2);
-      if(e===-1){o+=code.substr(i);break;}
-      o+=code.substring(i,e+2);i=e+2;continue;
-    }
-    const c=code[i];
-    if(c==='"'||c==="'"){
-      const q=c;i++;const start=i;
-      while(i<n){
-        if(code[i]==='\\'&&i+1<n)i+=2;
-        else if(code[i]===q)break;
-        else i++;
-      }
-      const raw=code.substring(start,i);i++;
-      const bytes=parseStr(raw);
-      if(bytes.length===0){o+='""';continue;}
-      if(split && bytes.length>8){
-        const cs=Math.ceil(bytes.length/4);
-        const chunks=[];
-        for(let k=0;k<bytes.length;k+=cs)chunks.push(bytes.slice(k,k+cs));
-        while(chunks.length<4)chunks.push([0]);
-        const parts=chunks.map(ch=>{
-          const enc=ch.map((b,idx)=>((b^key)+shift+idx)&0xFF);
-          return dName+'('+enc.join(',')+')';
-        });
-        o+='('+parts.join('..')+')';
-      } else {
-        const enc=bytes.map((b,idx)=>((b^key)+shift+idx)&0xFF);
-        o+=dName+'('+enc.join(',')+')';
-      }
-      count++;continue;
-    }
-    o+=c;i++;
+  
+  const out = [];
+  for(let i=0;i<plainBytes.length;i++){
+    const b = plainBytes[i];
+    const k = keyBytes[i % keyBytes.length];
+    const e = ((b ^ k) + i) & 0xFF;
+    out.push(e);
   }
-  return {code:o,count};
+  return out;
 }
 
-function buildDecoder(name,key,shift){
-  const a=R(8),b=R(8),c=R(8),d=R(8);
-  return 'local '+name+'=function(...)'
-    +'local '+a+'={...} local '+b+'={} '
-    +'local '+c+'=bit32 and bit32.bxor or function(x,y) local r,p=0,1 while x>0 or y>0 do local u,v=x%2,y%2 if u~=v then r=r+p end x=math.floor(x/2) y=math.floor(y/2) p=p*2 end return r end '
-    +'for '+d+'=1,#'+a+' do '
-    +b+'['+d+']=string.char('+c+'((('+a+'['+d+']-'+shift+'-'+d+'+1)%256),'+key+')) '
-    +'end return table.concat('+b+') end\n';
-}
-
-function encodeNumbers(code){
-  const tokens = tokenizeLua(code);
-  const reps = [];
-  for(const tok of tokens){
-    if(tok.type!=='number') continue;
-    const raw = tok.value;
-    const n = parseInt(raw);
-    if(isNaN(n) || n===0 || n===1) continue;
-    if(raw.startsWith('0x')||raw.startsWith('0X')) continue;
-    if(raw.includes('.')) continue;
-    const choice = Math.floor(Math.random()*3);
-    let val;
-    if(choice===0) val = 'tonumber("'+n.toString(16)+'",16)';
-    else if(choice===1){
-      const a = Math.floor(Math.random()*(n-1))+1;
-      val = '('+a+'+'+(n-a)+')';
-    } else val = '0x'+n.toString(16);
-    reps.push({start:tok.start,end:tok.end,value:val});
+/* ========== LUA LOADER ========== */
+function buildLoader(encUrl, key, mode){
+  const keyLua = mode === 'embed' 
+    ? 'local __k = "' + key + '"\n' 
+    : '';
+  
+  if(mode === 'embed'){
+    return `-- Key-Locked Loader (embedded key)
+local __enc = game:HttpGet("${encUrl}")
+local __k = "${key}"
+local __kb = {}
+for i=1,#__k do __kb[i] = __k:byte(i) end
+local __out = {}
+for i=1,#__enc do
+    local e = __enc:byte(i)
+    local k = __kb[((i-1) % #__kb) + 1]
+    local b = bit32.bxor(bit32.band(e - (i-1), 255), k)
+    __out[i] = string.char(b)
+end
+local __data = table.concat(__out)
+if __data:sub(1, 15) ~= "LUA_KEYLOCK_v1\\n" then
+    warn("Key sai hoặc file hỏng")
+    return
+end
+loadstring(__data:sub(16))()`;
   }
-  reps.sort((a,b)=>b.start-a.start);
-  for(const r of reps) code = code.substring(0,r.start)+r.value+code.substring(r.end);
-  return code;
+  
+  // Mode "ask"
+  return `-- Key-Locked Loader (hỏi key)
+local __enc = game:HttpGet("${encUrl}")
+local __plr = game:GetService("Players").LocalPlayer
+local __pg = __plr:WaitForChild("PlayerGui")
+
+local __sg = Instance.new("ScreenGui")
+__sg.Name = "KeyLoader"
+__sg.ResetOnSpawn = false
+__sg.Parent = __pg
+
+local __f = Instance.new("Frame")
+__f.Size = UDim2.new(0, 320, 0, 170)
+__f.Position = UDim2.new(0.5, -160, 0.5, -85)
+__f.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+__f.BorderSizePixel = 0
+__f.Parent = __sg
+Instance.new("UICorner", __f).CornerRadius = UDim.new(0, 12)
+
+local __stroke = Instance.new("UIStroke", __f)
+__stroke.Color = Color3.fromRGB(156, 39, 176)
+__stroke.Thickness = 2
+
+local __t = Instance.new("TextLabel")
+__t.Size = UDim2.new(1, 0, 0, 34)
+__t.BackgroundTransparency = 1
+__t.Text = "🔒 Nhập key để mở script"
+__t.TextColor3 = Color3.fromRGB(0, 230, 118)
+__t.Font = Enum.Font.GothamBold
+__t.TextSize = 16
+__t.Parent = __f
+
+local __box = Instance.new("TextBox")
+__box.Size = UDim2.new(1, -20, 0, 40)
+__box.Position = UDim2.new(0, 10, 0, 42)
+__box.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+__box.TextColor3 = Color3.fromRGB(255, 255, 255)
+__box.PlaceholderText = "Nhập key..."
+__box.Text = ""
+__box.Font = Enum.Font.Gotham
+__box.TextSize = 14
+__box.ClearTextOnFocus = false
+__box.Parent = __f
+Instance.new("UICorner", __box).CornerRadius = UDim.new(0, 8)
+
+local __btn = Instance.new("TextButton")
+__btn.Size = UDim2.new(1, -20, 0, 44)
+__btn.Position = UDim2.new(0, 10, 0, 96)
+__btn.BackgroundColor3 = Color3.fromRGB(0, 230, 118)
+__btn.Text = "XÁC NHẬN"
+__btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+__btn.Font = Enum.Font.GothamBold
+__btn.TextSize = 16
+__btn.Parent = __f
+Instance.new("UICorner", __btn).CornerRadius = UDim.new(0, 8)
+
+local __status = Instance.new("TextLabel")
+__status.Size = UDim2.new(1, -20, 0, 20)
+__status.Position = UDim2.new(0, 10, 1, -22)
+__status.BackgroundTransparency = 1
+__status.Text = ""
+__status.TextColor3 = Color3.fromRGB(255, 100, 100)
+__status.Font = Enum.Font.Gotham
+__status.TextSize = 12
+__status.Parent = __f
+
+__btn.MouseButton1Click:Connect(function()
+    local __k = __box.Text
+    if #__k == 0 then
+        __status.Text = "⚠ Vui lòng nhập key"
+        return
+    end
+    __status.Text = "⏳ Đang giải mã..."
+    __status.TextColor3 = Color3.fromRGB(255, 200, 100)
+    task.wait(0.1)
+    
+    local __kb = {}
+    for i = 1, #__k do __kb[i] = __k:byte(i) end
+    
+    local __out = {}
+    for i = 1, #__enc do
+        local e = __enc:byte(i)
+        local k = __kb[((i-1) % #__kb) + 1]
+        local b = bit32.bxor(bit32.band(e - (i-1), 255), k)
+        __out[i] = string.char(b)
+    end
+    local __data = table.concat(__out)
+    
+    if __data:sub(1, 15) ~= "LUA_KEYLOCK_v1\\n" then
+        __status.Text = "❌ Key sai!"
+        __status.TextColor3 = Color3.fromRGB(255, 80, 80)
+        __box.Text = ""
+        return
+    end
+    
+    __status.Text = "✅ Key đúng! Đang chạy..."
+    __status.TextColor3 = Color3.fromRGB(0, 230, 118)
+    task.wait(0.3)
+    __sg:Destroy()
+    
+    local __ok, __err = pcall(function()
+        loadstring(__data:sub(16))()
+    end)
+    if not __ok then warn("[Loader] " .. tostring(__err)) end
+end)`;
 }
 
-function injectDeadCode(code){
-  let junk='';
-  const cnt=Math.floor(Math.random()*4)+3;
-  for(let i=0;i<cnt;i++){
-    const nm=R(10),v1=R(8),v2=R(8);
-    const ch=Math.floor(Math.random()*4);
-    if(ch===0)junk+='local '+nm+'=function('+v1+') return '+v1+' end\n';
-    else if(ch===1)junk+='local '+nm+'=function('+v1+') return '+v1+'*2 end\n';
-    else if(ch===2)junk+='local '+nm+'=function('+v1+','+v2+') return '+v1+'+'+v2+' end\n';
-    else junk+='local '+nm+'=('+(Math.floor(Math.random()*900)+100)+'*'+(Math.floor(Math.random()*9)+1)+')\n';
-  }
-  return junk+code;
-}
-
-function addAntiTamper(code){
-  const g=R(10),t=Math.floor(Math.random()*90000)+10000;
-  return "local "+g+"="+t+" if _G['"+g+"_k'] and _G['"+g+"_k']~="+g+" then return end _G['"+g+"_k']="+g+"\n"+code;
-}
-
-function addAntiDump(code){
-  return "if string.dump and rawget(_G,'\\0sd\\0') and string.dump~=rawget(_G,'\\0sd\\0') then return end rawset(_G,'\\0sd\\0',string.dump) "+code;
-}
-
-function wrapFunctions(code,layers){
-  for(let i=0;i<layers;i++){
-    const w=R(12),a=R(6);
-    code='local '+w+'=function('+a+')\n'+code+'\nend\n'+w+'(nil)';
-  }
-  return code;
-}
-
-function minify(code){
-  return code.split('\n').map(l=>l.trim()).filter(l=>l).join('\n');
-}
-
-function stripComments(code){
-  let o='',i=0,n=code.length;
-  while(i<n){
-    const c=code[i];
-    if(c==='"'||c==="'"){
-      const q=c;o+=c;i++;
-      while(i<n){
-        if(code[i]==='\\'&&i+1<n){o+=code[i]+code[i+1];i+=2;}
-        else if(code[i]===q){o+=code[i];i++;break;}
-        else{o+=code[i];i++;}
-      }
-      continue;
-    }
-    if(code.substr(i,2)==='[['){
-      const e=code.indexOf(']]',i+2);
-      if(e===-1){o+=code.substr(i);break;}
-      o+=code.substring(i,e+2);i=e+2;continue;
-    }
-    if(code.substr(i,4)==='--[['){
-      const e=code.indexOf(']]',i+4);i=e===-1?n:e+2;continue;
-    }
-    if(code.substr(i,2)==='--'){
-      const e=code.indexOf('\n',i);i=e===-1?n:e;continue;
-    }
-    o+=c;i++;
-  }
-  return o;
-}
-
-function obfuscate(code){
-  const orig=code.length;
-  const useXor=document.getElementById('oXor').checked;
-  const useRename=document.getElementById('oRename').checked;
-  const useNum=document.getElementById('oNum').checked;
-  const useDead=document.getElementById('oDead').checked;
-  const useAnti=document.getElementById('oAnti').checked;
-  const useWrap=document.getElementById('oWrap').checked;
-  const split = currentLvl>=4;
-
-  // QUAN TRỌNG: đổi biến TRƯỚC khi strip comments, vì tokenizer cần comment positions đúng
-  // Nhưng stripComments chỉ xóa comment, không ảnh hưởng tokenizer
-  // Thứ tự: rename TRƯỚC (dùng tokenizer), rồi mới strip comment
-  if(useRename) code = renameVars(code);
-  code = stripComments(code);
-
-  let strCount=0;
-  if(useXor){
-    const key=Math.floor(Math.random()*200)+30;
-    const shift=Math.floor(Math.random()*100)+10;
-    const dName=R(12);
-    const r=encryptStrings(code,key,shift,dName,split);
-    code=buildDecoder(dName,key,shift)+r.code;
-    strCount=r.count;
-  }
-
-  if(useNum) code=encodeNumbers(code);
-  if(useDead) code=injectDeadCode(code);
-  if(useAnti) code=addAntiTamper(code);
-  code=addAntiDump(code);
-  if(useWrap) code=wrapFunctions(code,3);
-  code=minify(code);
-
-  return {code,stats:{orig,final:code.length,strings:strCount}};
-}
-
-/* ============ UPLOAD ============ */
+/* ========== UPLOAD ========== */
 async function upPastefy(content){
   const r=await fetch('https://pastefy.app/api/v2/paste',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({content,type:'PASTE',title:'loader'})
+    body:JSON.stringify({content,type:'PASTE',title:'enc'})
   });
   const d=await r.json();
   if(d.id)return 'https://pastefy.app/'+d.id+'/raw';
@@ -492,7 +330,7 @@ async function upDpaste(content){
 }
 async function up0x0(content){
   const fd=new FormData();
-  fd.append('file',new Blob([content],{type:'text/plain'}),'l.lua');
+  fd.append('file',new Blob([content],{type:'text/plain'}),'e.txt');
   const r=await fetch('https://0x0.st',{method:'POST',body:fd});
   const u=(await r.text()).trim();
   if(u.startsWith('http'))return u;
@@ -507,93 +345,120 @@ async function upload(content){
   throw new Error(err);
 }
 
-function toast(msg){
-  const e=document.createElement('div');
-  e.className='toast';e.textContent=msg;
-  document.body.appendChild(e);
-  setTimeout(()=>e.remove(),3000);
-}
-
-/* ============ HISTORY ============ */
-function saveHistory(url,loader){
-  let h=JSON.parse(localStorage.getItem('obfHistory')||'[]');
-  h.unshift({url,loader,time:new Date().toLocaleString('vi-VN')});
-  if(h.length>20)h=h.slice(0,20);
-  localStorage.setItem('obfHistory',JSON.stringify(h));
+/* ========== HISTORY ========== */
+function saveHistory(url,key,mode){
+  let h=JSON.parse(localStorage.getItem('klHistory')||'[]');
+  h.unshift({url,key,mode,time:new Date().toLocaleString('vi-VN')});
+  if(h.length>15)h=h.slice(0,15);
+  localStorage.setItem('klHistory',JSON.stringify(h));
   renderHistory();
 }
 function renderHistory(){
-  const h=JSON.parse(localStorage.getItem('obfHistory')||'[]');
+  const h=JSON.parse(localStorage.getItem('klHistory')||'[]');
   const el=document.getElementById('historyList');
-  if(h.length===0){el.innerHTML='<div class="info">Chưa có link nào.</div>';return;}
+  if(h.length===0){el.innerHTML='<div class="info">Chưa có gì.</div>';return;}
   el.innerHTML=h.map(item=>
-    '<div class="hist-item"><div class="t">'+item.time+'</div><div class="l">'+item.loader+'</div></div>'
+    '<div class="hist-item">'+
+      '<div class="t">'+item.time+' · '+item.mode+'</div>'+
+      '<div class="k">🔑 '+item.key+'</div>'+
+      '<div class="l">🔗 '+item.url+'</div>'+
+    '</div>'
   ).join('');
 }
 function clearHistory(){
-  if(!confirm('Xóa toàn bộ lịch sử?'))return;
-  localStorage.removeItem('obfHistory');
+  if(!confirm('Xóa lịch sử?'))return;
+  localStorage.removeItem('klHistory');
   renderHistory();
 }
 
-/* ============ FILE LOAD ============ */
+/* ========== FILE ========== */
 function loadFile(e){
   const f=e.target.files[0];
   if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{
-    document.getElementById('code').value=ev.target.result;
-    document.getElementById('sizeInfo').textContent=ev.target.result.length+' ký tự';
-    toast('Đã tải file!');
-  };
+  r.onload=ev=>{document.getElementById('code').value=ev.target.result;toast('Đã tải file');};
   r.readAsText(f);
 }
 
-/* ============ GENERATE ============ */
+/* ========== GENERATE ========== */
 async function gen(){
   const raw=document.getElementById('code').value;
   if(!raw.trim()){toast('Chưa có code');return;}
+  
+  let key=document.getElementById('key').value.trim();
+  if(!key){key=R(24);document.getElementById('key').value=key;}
+  if(key.length<6){toast('Key phải từ 6 ký tự');return;}
+  
   const btn=document.getElementById('btn');
   btn.disabled=true;
   btn.textContent='⏳ Đang mã hóa...';
+  
   try{
-    const r=obfuscate(raw);
+    // Encrypt
+    const encBytes=encrypt(raw,key);
+    // Convert to binary string
+    let binStr='';
+    for(let i=0;i<encBytes.length;i++) binStr+=String.fromCharCode(encBytes[i]);
+    // Base64 encode to make it text-safe
+    const b64=btoa(binStr);
+    
     document.getElementById('stat').innerHTML=
-      '📊 Gốc: <b>'+r.stats.orig+'</b> → Sau: <b style="color:#e91e63">'+r.stats.final+'</b> (x'+
-      (r.stats.final/r.stats.orig).toFixed(2)+') · Cấp '+currentLvl+' · Chuỗi: <b>'+r.stats.strings+'</b>';
+      '📊 Gốc: <b>'+raw.length+'</b> ký tự → Mã hóa: <b style="color:#e91e63">'+b64.length+'</b> ký tự Base64 · Mode: <b>'+currentMode+'</b>';
+    
     btn.textContent='⏳ Đang upload...';
-    const url=await upload(r.code);
-    const loader='loadstring(game:HttpGet("'+url+'"))()';
+    const url=await upload(b64);
+    
+    // Build loader that decodes Base64 first, then decrypts
+    const baseLoader=buildLoader(url,key,currentMode);
+    // Insert Base64 decode step after HttpGet
+    const finalLoader = baseLoader.replace(
+      /local __enc = game:HttpGet\("([^"]+)"\)/,
+      `local __b64 = game:HttpGet("$1")
+local __bin = ""
+local __b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local __b64map = {}
+for i=1,#__b64chars do __b64map[__b64chars:sub(i,i)] = i-1 end
+__b64 = __b64:gsub("[^A-Za-z0-9+/=]", "")
+local __i = 1
+while __i <= #__b64 do
+    local a = __b64map[__b64:sub(__i,__i)] or 0
+    local b = __b64map[__b64:sub(__i+1,__i+1)] or 0
+    local c = __b64map[__b64:sub(__i+2,__i+2)] or 0
+    local d = __b64map[__b64:sub(__i+3,__i+3)] or 0
+    local n = a * 262144 + b * 4096 + c * 64 + d
+    __bin = __bin .. string.char(math.floor(n / 65536) % 256)
+    if __b64:sub(__i+2,__i+2) ~= "=" then __bin = __bin .. string.char(math.floor(n / 256) % 256) end
+    if __b64:sub(__i+3,__i+3) ~= "=" then __bin = __bin .. string.char(n % 256) end
+    __i = __i + 4
+end
+local __enc = __bin`
+    );
+    
     document.getElementById('url').textContent=url;
-    document.getElementById('loader').textContent=loader;
+    document.getElementById('keyOut').textContent=key;
+    document.getElementById('loader').textContent=finalLoader;
     document.getElementById('res').classList.add('show');
-    saveHistory(url,loader);
-    toast('✅ Xong! Cấp '+currentLvl);
+    saveHistory(url,key,currentMode);
+    toast('✅ Đã tạo loader!');
   }catch(e){
     toast('❌ '+e.message);
     document.getElementById('stat').textContent='Lỗi: '+e.message;
   }
   btn.disabled=false;
-  btn.textContent='🚀 Tạo link loader';
+  btn.textContent='🔐 Tạo loader';
 }
+
 function cp(id){
   const t=document.getElementById(id).textContent;
   navigator.clipboard.writeText(t).then(()=>toast('Đã copy!'));
 }
 function clr(){
   document.getElementById('code').value='';
+  document.getElementById('key').value='';
   document.getElementById('stat').textContent='';
-  document.getElementById('sizeInfo').textContent='Chưa có code';
   document.getElementById('res').classList.remove('show');
 }
 
-// Đếm ký tự khi paste (chỉ update text, không xử lý gì nặng)
-document.getElementById('code').addEventListener('input', e=>{
-  const len = e.target.value.length;
-  document.getElementById('sizeInfo').textContent = len>0 ? len+' ký tự' : 'Chưa có code';
-});
-
-setLvl(1);
 renderHistory();
 </script>
 </body>
