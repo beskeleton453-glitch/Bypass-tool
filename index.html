@@ -27,7 +27,7 @@
   .res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.68rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:300px;overflow:auto;white-space:pre-wrap}
+  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
   .modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
@@ -41,7 +41,7 @@
 <body>
 <div class="c">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">XOR chain encryption • Base64 transport • 3 chế độ</p>
+  <p class="s">Trả về loadstring 1 dòng • 3 chế độ</p>
 
   <div class="card">
     <div class="ct">🔑 GitHub Token</div>
@@ -68,7 +68,7 @@
     <div class="modes">
       <div class="mode active" data-mode="ask" onclick="setMode('ask')">
         <span class="ic">🔒</span>Hỏi key
-        <div class="d">Key không có trong loader</div>
+        <div class="d">Key không trong file</div>
       </div>
       <div class="mode" data-mode="embed" onclick="setMode('embed')">
         <span class="ic">🎁</span>Nhúng key
@@ -76,7 +76,7 @@
       </div>
       <div class="mode" data-mode="none" onclick="setMode('none')">
         <span class="ic">📄</span>Không khóa
-        <div class="d">Ai cũng chạy được</div>
+        <div class="d">Ai cũng chạy</div>
       </div>
     </div>
   </div>
@@ -85,25 +85,22 @@
     <div class="ct">🔑 Key mã hóa</div>
     <input type="text" id="key" placeholder="Nhập key (khuyến nghị 16+ ký tự)">
     <div class="row" style="margin-top:10px;">
-      <button class="gray" onclick="genKey()">🎲 Random key 24 ký tự</button>
+      <button class="gray" onclick="genKey()">🎲 Random 24 ký tự</button>
     </div>
-    <div class="info">⚠ Key này KHÔNG xuất hiện trong loader (chế độ Hỏi key). Giữ kín nó.</div>
   </div>
 
   <div class="card">
     <button id="btn" class="purple" onclick="gen()">🚀 Tạo loadstring</button>
     <div class="stat" id="stat"></div>
     <div class="res" id="res">
-      <div class="lbl">📋 Loadstring</div>
-      <div class="code" id="loader"></div>
-      <div class="lbl">🔗 Raw URL</div>
-      <div class="lnk" id="url"></div>
-      <div class="lbl" id="keyOutLbl" style="display:none;">🔑 Key (giữ kín)</div>
-      <div class="lnk" id="keyOut" style="display:none;"></div>
+      <div class="lbl">📋 Copy dòng này vào Delta</div>
+      <div class="code" id="loader" style="color:#00e676;font-size:.78rem;"></div>
       <div class="row" style="margin-top:10px;">
         <button onclick="cp('loader')">📋 Copy loadstring</button>
         <button class="gray" onclick="openGist()">🌐 Gist</button>
       </div>
+      <div class="lbl" id="keyOutLbl" style="display:none;">🔑 Key (giữ kín)</div>
+      <div class="lnk" id="keyOut" style="display:none;"></div>
     </div>
   </div>
 </div>
@@ -176,14 +173,9 @@ function updateSize(){
   document.getElementById('sizeInfo').textContent = len > 0 ? len.toLocaleString('vi-VN') + ' ký tự' : 'Chưa có code';
 }
 
-/* ============ HASH KEY DERIVATION ============
-   Biến master key thành 256-byte subkey table bằng thuật toán FNV-like
-   Mục đích: key ngắn → subkey dài, mỗi byte XOR key khác nhau
-   → không thể brute-force từng byte
-*/
+/* ===== ENCRYPT ===== */
 function deriveKeyTable(masterKey){
   const table = new Uint8Array(256);
-  // FNV-1a hash 256 lần với offset khác nhau
   for(let i=0;i<256;i++){
     let h = 2166136261 ^ (i * 2654435761);
     const mixKey = masterKey + ':' + i;
@@ -197,13 +189,6 @@ function deriveKeyTable(masterKey){
   return table;
 }
 
-/* ============ ENCRYPT ============
-   Multi-layer:
-   1. XOR byte với subkey[i % 256]
-   2. Cộng vị trí i
-   3. XOR với prev byte (chain)
-   4. XOR với byte trước đó nữa (double chain)
-*/
 function strToBytes(str){
   const bytes=[];
   for(let i=0;i<str.length;i++){
@@ -218,7 +203,7 @@ function strToBytes(str){
 }
 
 function encryptBytes(plainBytes, key){
-  const MAGIC = [75,76,80,50,10]; // "KLP2\n"
+  const MAGIC = [75,76,80,50,10];
   const data = MAGIC.concat(plainBytes);
   const table = deriveKeyTable(key);
   const out = new Uint8Array(data.length);
@@ -246,7 +231,7 @@ function bytesToBase64(bytes){
   return btoa(bin);
 }
 
-/* ============ LUA DECODE CODE ============ */
+/* ===== LUA DECODE CODE ===== */
 function luaDecodeCode(){
   return `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -268,7 +253,6 @@ local function __b64decode(s)
   end
   return table.concat(out)
 end
-
 local function __deriveTable(masterKey)
   local t={}
   for i=0,255 do
@@ -282,7 +266,6 @@ local function __deriveTable(masterKey)
   end
   return t
 end
-
 local function __decrypt(enc, masterKey)
   local table=__deriveTable(masterKey)
   local out={}
@@ -304,30 +287,26 @@ local function __decrypt(enc, masterKey)
 end`;
 }
 
-/* ============ LOADER BUILDERS ============ */
-function buildLoader(rawUrl, key, mode){
+/* ===== BUILD FULL LOADER ===== */
+function buildFullLoader(payloadB64, key, mode){
   const decodeCode = luaDecodeCode();
   
-  if(mode === 'none'){
-    return `loadstring(game:HttpGet("${rawUrl}"))()`;
-  }
-  
   if(mode === 'embed'){
-    return `-- Gist Loader Pro
-local __b64=game:HttpGet("${rawUrl}")
+    return `-- Gist Loader Pro (embedded key)
+local __payload=[[${payloadB64}]]
 ${decodeCode}
-local __enc=__b64decode(__b64)
+local __enc=__b64decode(__payload)
 local __data=__decrypt(__enc,"${key}")
-if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Giải mã thất bại") return end
+if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Failed to decrypt") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
   }
   
-  // ask mode — KHÔNG có key trong code
-  return `-- Gist Loader Pro — Key KHÔNG lưu trong file này
-local __b64=game:HttpGet("${rawUrl}")
+  // ask mode
+  return `-- Gist Loader Pro (ask key)
+local __payload=[[${payloadB64}]]
 ${decodeCode}
-local __enc=__b64decode(__b64)
+local __enc=__b64decode(__payload)
 local Players=game:GetService("Players")
 local plr=Players.LocalPlayer
 local pg=plr:WaitForChild("PlayerGui")
@@ -405,7 +384,7 @@ bt.MouseButton1Click:Connect(function()
 end)`;
 }
 
-/* ============ GITHUB GIST UPLOAD ============ */
+/* ===== GITHUB GIST ===== */
 async function createGist(content, filename){
   const token = localStorage.getItem('ghToken');
   if(!token) throw new Error('Chưa có token');
@@ -430,7 +409,7 @@ async function createGist(content, filename){
   return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
 }
 
-/* ============ MAIN ============ */
+/* ===== MAIN ===== */
 async function gen(){
   const raw = document.getElementById('code').value;
   if(!raw.trim()){ toast('Chưa có code'); return; }
@@ -454,23 +433,26 @@ async function gen(){
     let uploadContent, filename;
 
     if(currentMode === 'none'){
+      // Upload script thẳng
       uploadContent = raw;
       filename = 'script_' + rand + '.lua';
     } else {
+      // Mã hóa → Base64 → Nhúng vào code loader → Upload code loader
       const plainBytes = strToBytes(raw);
       const encBytes = encryptBytes(plainBytes, key);
-      uploadContent = bytesToBase64(encBytes);
-      filename = 'enc_' + rand + '.txt';
+      const b64 = bytesToBase64(encBytes);
+      uploadContent = buildFullLoader(b64, key, currentMode);
+      filename = 'loader_' + rand + '.lua';
     }
 
     btn.textContent = '⏳ Đang upload Gist...';
     const gist = await createGist(uploadContent, filename);
     currentGist = gist.gistUrl;
 
-    const loader = buildLoader(gist.rawUrl, key, currentMode);
+    // Trả về LOADSTRING NGẮN — đây là cái user paste vào Delta
+    const loadstringLine = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
     
-    document.getElementById('url').textContent = gist.rawUrl;
-    document.getElementById('loader').textContent = loader;
+    document.getElementById('loader').textContent = loadstringLine;
     document.getElementById('res').classList.add('show');
     
     if(currentMode !== 'none'){
@@ -484,7 +466,7 @@ async function gen(){
     
     const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
-    toast('✅ Đã tạo!');
+    toast('✅ Đã tạo! Copy dòng xanh → paste vào Delta');
   } catch(e){
     toast('❌ ' + e.message);
     document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
@@ -495,7 +477,7 @@ async function gen(){
 
 function cp(id){
   const t = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(() => toast('Đã copy!'));
+  navigator.clipboard.writeText(t).then(() => toast('Đã copy loadstring!'));
 }
 function openGist(){
   if(currentGist) window.open(currentGist, '_blank');
