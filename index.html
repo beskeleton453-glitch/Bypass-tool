@@ -11,17 +11,21 @@
   h1{font-size:1.2rem;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#00e676,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
   .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
-  .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px}
+  .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
   textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:150px;line-height:1.5;spellcheck:false;autocorrect:off;autocapitalize:off}
   textarea:focus{border-color:#00e676}
   input[type=text]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
   input[type=text]:focus{border-color:#00e676}
-  button{width:100%;padding:12px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:10px;color:#0a0a0f;font-weight:700;font-size:.9rem;cursor:pointer}
+  button{padding:10px 14px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:8px;color:#0a0a0f;font-weight:700;font-size:.82rem;cursor:pointer}
   button:disabled{opacity:.4;cursor:not-allowed}
+  button.small{padding:6px 10px;font-size:.68rem;margin:0}
   .row{display:flex;gap:8px}
   .row button{flex:1;margin-top:0}
   .gray{background:linear-gradient(135deg,#333,#555);color:#fff}
   .purple{background:linear-gradient(135deg,#9c27b0,#e91e63);color:#fff}
+  .blue{background:linear-gradient(135deg,#2196f3,#03a9f4);color:#fff}
+  .green{background:linear-gradient(135deg,#00c853,#00e676);color:#0a0a0f}
+  .red{background:linear-gradient(135deg,#d32f2f,#f44336);color:#fff}
   .stat{font-size:.72rem;color:#888;margin-top:8px;line-height:1.5}
   .res{display:none;margin-top:12px}
   .res.show{display:block}
@@ -35,12 +39,23 @@
   .mode.active{border-color:#9c27b0;color:#e91e63;background:rgba(233,30,99,.08)}
   .mode .ic{font-size:1.2rem;display:block;margin-bottom:2px}
   .mode .d{font-size:.58rem;color:#666;margin-top:2px;line-height:1.3}
+  .hist-item{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:10px;padding:10px;margin-bottom:8px}
+  .hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .hist-time{font-size:.65rem;color:#555}
+  .hist-badge{font-size:.6rem;padding:2px 6px;border-radius:4px;font-weight:700}
+  .badge-ask{background:#9c27b0;color:#fff}
+  .badge-embed{background:#e91e63;color:#fff}
+  .badge-none{background:#555;color:#fff}
+  .hist-key{font-size:.68rem;color:#ff9800;font-family:monospace;margin:4px 0;word-break:break-all}
+  .hist-url{font-size:.62rem;color:#29b6f6;font-family:monospace;word-break:break-all;margin:4px 0}
+  .hist-actions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+  .empty{text-align:center;color:#444;padding:20px;font-size:.8rem}
 </style>
 </head>
 <body>
 <div class="c">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">Fix hash bug • Auto-submit • Không treo</p>
+  <p class="s">History • Update • Export/Import</p>
 
   <div class="card">
     <div class="ct">🔑 GitHub Token</div>
@@ -56,8 +71,9 @@
     <div class="ct">📝 Script Lua</div>
     <textarea id="code" placeholder="Paste code Lua vào đây..." spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
     <div class="row" style="margin-top:8px;">
-      <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file</button>
+      <button class="gray" onclick="document.getElementById('fileInput').click()">📂 File</button>
       <input type="file" id="fileInput" accept=".txt,.lua" style="display:none" onchange="loadFile(event)">
+      <button class="gray" onclick="clearCode()">🗑️ Xóa</button>
     </div>
     <div class="info" id="sizeInfo">Chưa có code</div>
   </div>
@@ -83,24 +99,33 @@
   <div class="card" id="keyCard">
     <div class="ct">🔑 Key</div>
     <input type="text" id="key" placeholder="Key (16+ ký tự)">
-    <div class="row" style="margin-top:10px;">
-      <button class="gray" onclick="genKey()">🎲 Random 24 ký tự</button>
-    </div>
+    <button class="gray" style="width:100%;margin-top:8px;" onclick="genKey()">🎲 Random 24 ký tự</button>
   </div>
 
   <div class="card">
-    <button id="btn" class="purple" onclick="gen()">🚀 Tạo loadstring</button>
+    <button id="btn" class="purple" style="width:100%;" onclick="gen()">🚀 Tạo loadstring</button>
     <div class="stat" id="stat"></div>
     <div class="res" id="res">
       <div class="lbl">📋 Paste dòng này vào Delta</div>
       <div class="code" id="loader"></div>
       <div class="row" style="margin-top:10px;">
-        <button onclick="cp('loader')">📋 Copy loadstring</button>
+        <button class="green" onclick="cp('loader')">📋 Copy loadstring</button>
         <button class="gray" onclick="openGist()">🌐 Gist</button>
       </div>
       <div class="lbl" id="keyOutLbl" style="display:none;">🔑 Key (giữ kín)</div>
       <div class="lnk" id="keyOut" style="display:none;"></div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📜 Lịch sử <span id="histCount" style="color:#666;font-weight:400;font-size:.65rem;"></span></div>
+    <div id="historyList"><div class="empty">Chưa có gì.</div></div>
+    <div class="row" style="margin-top:10px;">
+      <button class="gray" onclick="exportHistory()">📤 Export</button>
+      <button class="gray" onclick="importHistory()">📥 Import</button>
+      <button class="red" onclick="clearHistory()">🗑️ Xóa hết</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
 </div>
 
@@ -161,12 +186,16 @@ function loadFile(e){
   };
   r.readAsText(f);
 }
+function clearCode(){
+  document.getElementById('code').value = '';
+  updateSize();
+}
 function updateSize(){
   const len = document.getElementById('code').value.length;
   document.getElementById('sizeInfo').textContent = len > 0 ? len.toLocaleString('vi-VN') + ' ký tự' : 'Chưa có code';
 }
 
-/* ===== KEY DERIVATION (SIMPLE, DETERMINISTIC) ===== */
+/* ===== CRYPTO ===== */
 function deriveKeyTable(masterKey){
   const table = new Uint8Array(256);
   for(let i = 0; i < 256; i++){
@@ -178,7 +207,6 @@ function deriveKeyTable(masterKey){
   }
   return table;
 }
-
 function strToBytes(str){
   const bytes=[];
   for(let i=0;i<str.length;i++){
@@ -191,9 +219,8 @@ function strToBytes(str){
   }
   return bytes;
 }
-
 function encryptBytes(plainBytes, key){
-  const MAGIC = [75,76,80,51,10]; // "KLP3\n"
+  const MAGIC = [75,76,80,51,10];
   const data = MAGIC.concat(plainBytes);
   const table = deriveKeyTable(key);
   const out = new Uint8Array(data.length);
@@ -211,7 +238,6 @@ function encryptBytes(plainBytes, key){
   }
   return out;
 }
-
 function bytesToBase64(bytes){
   let bin='';
   const CHUNK=8192;
@@ -221,7 +247,7 @@ function bytesToBase64(bytes){
   return btoa(bin);
 }
 
-/* ===== LUA DECODE (khớp 100% với JS) ===== */
+/* ===== LUA DECODE ===== */
 function luaDecodeCode(){
   return `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -277,7 +303,6 @@ end`;
 
 function buildFullLoader(payloadB64, key, mode){
   const decodeCode = luaDecodeCode();
-  
   if(mode === 'embed'){
     return `-- Gist Loader Pro
 local __payload=[[${payloadB64}]]
@@ -288,8 +313,6 @@ if __data:sub(1,5)~="KLP3\\n" then warn("[Loader] Failed") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
   }
-  
-  // ask mode với auto-submit
   return `-- Gist Loader Pro
 local __payload=[[${payloadB64}]]
 ${decodeCode}
@@ -329,7 +352,6 @@ bx.Text=""
 bx.Font=Enum.Font.Gotham
 bx.TextSize=14
 bx.ClearTextOnFocus=false
-bx.TextEditable=true
 bx.Parent=f
 Instance.new("UICorner",bx).CornerRadius=UDim.new(0,8)
 local bt=Instance.new("TextButton")
@@ -351,14 +373,12 @@ st.TextColor3=Color3.fromRGB(255,100,100)
 st.Font=Enum.Font.Gotham
 st.TextSize=12
 st.Parent=f
-
 local __busy=false
 local __lastTried=""
-
 local function __try(k)
   if __busy then return end
-  if #k < 4 then return end
-  if k == __lastTried then return end
+  if #k<4 then return end
+  if k==__lastTried then return end
   __lastTried=k
   __busy=true
   st.Text="⏳ Đang giải mã..."
@@ -368,15 +388,13 @@ local function __try(k)
   if not ok2 or not data then
     st.Text="❌ Lỗi giải mã"
     st.TextColor3=Color3.fromRGB(255,80,80)
-    __busy=false
-    __lastTried=""
+    __busy=false; __lastTried=""
     return
   end
   if data:sub(1,5)~="KLP3\\n" then
     st.Text="❌ Key sai!"
     st.TextColor3=Color3.fromRGB(255,80,80)
-    __busy=false
-    __lastTried=""
+    __busy=false; __lastTried=""
     return
   end
   st.Text="✅ Đang chạy..."
@@ -387,32 +405,21 @@ local function __try(k)
   if not ok then warn("[Loader] "..tostring(err)) end
   __busy=false
 end
-
-local __debounceTick=0
+local __dt=0
 bx:GetPropertyChangedSignal("Text"):Connect(function()
-  __debounceTick=__debounceTick+1
-  local myTick=__debounceTick
+  __dt=__dt+1
+  local my=__dt
   task.delay(0.7,function()
-    if myTick==__debounceTick and not __busy then
-      __try(bx.Text)
-    end
+    if my==__dt and not __busy then __try(bx.Text) end
   end)
 end)
-
-bx.FocusLost:Connect(function(enterPressed)
-  if enterPressed then __try(bx.Text) end
-end)
-
-bt.MouseButton1Click:Connect(function()
-  __try(bx.Text)
-end)
-
+bx.FocusLost:Connect(function(e) if e then __try(bx.Text) end end)
+bt.MouseButton1Click:Connect(function() __try(bx.Text) end)
 task.wait(0.1)
-if bx and bx.Parent then
-  pcall(function() bx:CaptureFocus() end)
-end`;
+if bx and bx.Parent then pcall(function() bx:CaptureFocus() end) end`;
 }
 
+/* ===== GITHUB API ===== */
 async function createGist(content, filename){
   const token = localStorage.getItem('ghToken');
   if(!token) throw new Error('Chưa có token');
@@ -431,12 +438,220 @@ async function createGist(content, filename){
     if(r.status === 401) throw new Error('Token sai/hết hạn');
     if(r.status === 403) throw new Error('Token thiếu quyền gist');
     const t = await r.text();
-    throw new Error('GitHub ' + r.status + ': ' + t.substring(0, 80));
+    throw new Error('GitHub ' + r.status);
   }
   const data = await r.json();
-  return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
+  return {
+    id: data.id,
+    rawUrl: data.files[filename].raw_url,
+    gistUrl: data.html_url,
+    filename: filename
+  };
 }
 
+async function updateGist(gistId, filename, content){
+  const token = localStorage.getItem('ghToken');
+  if(!token) throw new Error('Chưa có token');
+  const body = { files: {} };
+  body.files[filename] = { content: content };
+  const r = await fetch('https://api.github.com/gists/' + gistId, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){
+    if(r.status === 404) throw new Error('Gist không tồn tại (đã xóa?)');
+    if(r.status === 401) throw new Error('Token sai');
+    throw new Error('GitHub ' + r.status);
+  }
+  const data = await r.json();
+  return {
+    rawUrl: data.files[filename].raw_url,
+    gistUrl: data.html_url
+  };
+}
+
+/* ===== HISTORY ===== */
+function getHistory(){
+  try { return JSON.parse(localStorage.getItem('glpHistory') || '[]'); }
+  catch { return []; }
+}
+function setHistory(h){
+  localStorage.setItem('glpHistory', JSON.stringify(h));
+  renderHistory();
+}
+function saveHistory(item){
+  const h = getHistory();
+  // Nếu cùng gist id thì replace
+  const idx = h.findIndex(x => x.id === item.id);
+  if(idx >= 0) h[idx] = item;
+  else h.unshift(item);
+  if(h.length > 30) h.length = 30;
+  setHistory(h);
+}
+function renderHistory(){
+  const h = getHistory();
+  const el = document.getElementById('historyList');
+  document.getElementById('histCount').textContent = h.length > 0 ? '(' + h.length + ')' : '';
+  if(h.length === 0){
+    el.innerHTML = '<div class="empty">Chưa có gì.</div>';
+    return;
+  }
+  el.innerHTML = h.map((item, idx) => {
+    const badgeClass = item.mode === 'ask' ? 'badge-ask' : (item.mode === 'embed' ? 'badge-embed' : 'badge-none');
+    const badgeText = item.mode === 'ask' ? 'HỎI KEY' : (item.mode === 'embed' ? 'NHÚNG KEY' : 'KHÔNG KHÓA');
+    const keyLine = item.key ? '<div class="hist-key">🔑 ' + item.key + '</div>' : '';
+    return '<div class="hist-item">' +
+      '<div class="hist-head">' +
+        '<span class="hist-time">' + item.time + '</span>' +
+        '<span class="hist-badge ' + badgeClass + '">' + badgeText + '</span>' +
+      '</div>' +
+      '<div style="font-size:.68rem;color:#888;">📦 ' + (item.scriptSize || 0).toLocaleString('vi-VN') + ' ký tự</div>' +
+      keyLine +
+      '<div class="hist-url">🔗 ' + (item.rawUrl || '').substring(0, 60) + '...</div>' +
+      '<div class="hist-actions">' +
+        '<button class="small green" onclick="loadHistItem(' + idx + ')">📥 Load</button>' +
+        '<button class="small blue" onclick="updateHistItem(' + idx + ')">♻️ Update</button>' +
+        '<button class="small gray" onclick="copyHistLoader(' + idx + ')">📋 Copy</button>' +
+        '<button class="small red" onclick="deleteHistItem(' + idx + ')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+function loadHistItem(idx){
+  const h = getHistory();
+  const item = h[idx];
+  if(!item) return;
+  document.getElementById('code').value = item.script || '';
+  document.getElementById('key').value = item.key || '';
+  setMode(item.mode || 'ask');
+  updateSize();
+  toast('Đã load script + key + mode');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+async function updateHistItem(idx){
+  const h = getHistory();
+  const item = h[idx];
+  if(!item) return;
+  if(!item.id) { toast('Gist cũ không có ID - không thể update'); return; }
+  
+  const currentCode = document.getElementById('code').value.trim();
+  if(!currentCode){ toast('Chưa có code để update'); return; }
+  
+  if(!confirm('Update gist ' + item.id.substring(0,8) + '... với code hiện tại?\n\n(Sẽ giữ nguyên URL loadstring)')) return;
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳';
+  
+  try {
+    let uploadContent;
+    let key = '';
+    
+    // Build lại với config hiện tại
+    if(currentMode === 'none'){
+      uploadContent = currentCode;
+    } else {
+      key = document.getElementById('key').value.trim();
+      if(!key) { toast('Cần nhập key để update'); btn.disabled = false; btn.textContent = '♻️ Update'; return; }
+      if(key.length < 6) { toast('Key từ 6 ký tự'); btn.disabled = false; btn.textContent = '♻️ Update'; return; }
+      const plainBytes = strToBytes(currentCode);
+      const encBytes = encryptBytes(plainBytes, key);
+      const b64 = bytesToBase64(encBytes);
+      uploadContent = buildFullLoader(b64, key, currentMode);
+    }
+    
+    const result = await updateGist(item.id, item.filename, uploadContent);
+    
+    // Cập nhật history
+    const h2 = getHistory();
+    h2[idx].script = currentCode;
+    h2[idx].key = key;
+    h2[idx].mode = currentMode;
+    h2[idx].scriptSize = currentCode.length;
+    h2[idx].time = new Date().toLocaleString('vi-VN');
+    h2[idx].rawUrl = result.rawUrl;
+    setHistory(h2);
+    
+    toast('✅ Đã update gist!');
+  } catch(e){
+    toast('❌ ' + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = '♻️ Update';
+}
+function copyHistLoader(idx){
+  const h = getHistory();
+  const item = h[idx];
+  if(!item) return;
+  const loader = 'loadstring(game:HttpGet("' + item.rawUrl + '"))()';
+  navigator.clipboard.writeText(loader).then(() => toast('Đã copy loadstring!'));
+}
+function deleteHistItem(idx){
+  const h = getHistory();
+  if(!h[idx]) return;
+  if(!confirm('Xóa mục này khỏi lịch sử?\n(Gist trên GitHub vẫn còn)')) return;
+  h.splice(idx, 1);
+  setHistory(h);
+  toast('Đã xóa');
+}
+function clearHistory(){
+  if(!confirm('Xóa TOÀN BỘ lịch sử?\n(Gist trên GitHub vẫn còn)')) return;
+  localStorage.removeItem('glpHistory');
+  renderHistory();
+  toast('Đã xóa hết');
+}
+function exportHistory(){
+  const h = getHistory();
+  if(h.length === 0){ toast('Lịch sử trống'); return; }
+  const blob = new Blob([JSON.stringify(h, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'gist_loader_history_' + Date.now() + '.json';
+  a.click();
+  toast('Đã export ' + h.length + ' items');
+}
+function importHistory(){
+  document.getElementById('importFile').click();
+}
+function handleImport(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if(!Array.isArray(imported)) throw new Error('Sai format');
+      const existing = getHistory();
+      // Merge: ưu tiên theo gist id
+      const merged = [...existing];
+      for(const item of imported){
+        if(!item.id) continue;
+        const idx = merged.findIndex(x => x.id === item.id);
+        if(idx >= 0){
+          // Merge nếu newer
+          if(item.time > merged[idx].time) merged[idx] = item;
+        } else {
+          merged.push(item);
+        }
+      }
+      merged.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+      if(merged.length > 30) merged.length = 30;
+      setHistory(merged);
+      toast('✅ Import ' + imported.length + ' items');
+    } catch(err){
+      toast('❌ File JSON sai');
+    }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+}
+
+/* ===== MAIN ===== */
 async function gen(){
   const raw = document.getElementById('code').value;
   if(!raw.trim()){ toast('Chưa có code'); return; }
@@ -488,6 +703,19 @@ async function gen(){
       document.getElementById('keyOut').style.display = 'none';
     }
     
+    // Save history
+    saveHistory({
+      id: gist.id,
+      filename: gist.filename,
+      rawUrl: gist.rawUrl,
+      gistUrl: gist.gistUrl,
+      key: key,
+      mode: currentMode,
+      script: raw,
+      scriptSize: raw.length,
+      time: new Date().toLocaleString('vi-VN')
+    });
+    
     const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
     toast('✅ Xong! Copy dòng xanh');
@@ -509,6 +737,7 @@ function openGist(){
 
 document.getElementById('code').addEventListener('input', updateSize);
 updateTokenInfo();
+renderHistory();
 </script>
 </body>
 </html>
