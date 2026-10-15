@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gist Loader Generator</title>
+<title>Gist Loader Pro</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px}
@@ -12,7 +12,7 @@
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
   .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
   .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px}
-  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:140px;line-height:1.5;spellcheck:false;autocorrect:off;autocapitalize:off}
+  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:150px;line-height:1.5;spellcheck:false;autocorrect:off;autocapitalize:off}
   textarea:focus{border-color:#00e676}
   input[type=text]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
   input[type=text]:focus{border-color:#00e676}
@@ -27,39 +27,30 @@
   .res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.7rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:200px;overflow:auto;white-space:pre-wrap}
+  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.68rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:300px;overflow:auto;white-space:pre-wrap}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
+  .modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+  .mode{padding:10px 6px;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;text-align:center;font-size:.7rem;color:#888}
+  .mode.active{border-color:#9c27b0;color:#e91e63;background:rgba(233,30,99,.08)}
+  .mode .ic{font-size:1.2rem;display:block;margin-bottom:2px}
+  .mode .d{font-size:.58rem;color:#666;margin-top:2px;line-height:1.3}
   .warn{background:rgba(255,152,0,.1);border-left:3px solid #ff9800;padding:10px;border-radius:6px;font-size:.7rem;color:#ffcc80;margin-top:8px;line-height:1.5}
-  .success{background:rgba(0,230,118,.1);border-left:3px solid #00e676;padding:10px;border-radius:6px;font-size:.7rem;color:#a5f5c8;margin-top:8px;line-height:1.5}
-  .hist-item{font-size:.65rem;color:#ccc;background:#0a0a0f;padding:8px;border-radius:6px;border:1px solid #1f1f2e;margin-bottom:4px;word-break:break-all}
-  .hist-item .t{color:#555;font-size:.6rem}
-  .hist-item .k{color:#ff9800;font-weight:700;margin-top:2px}
-  .hist-item .l{color:#29b6f6;font-size:.62rem;margin-top:3px}
 </style>
 </head>
 <body>
 <div class="c">
-  <h1>🚀 Gist Loader Generator</h1>
-  <p class="s">Mã hóa code → Upload Gist → Trả về loadstring URL</p>
+  <h1>🚀 Gist Loader Pro</h1>
+  <p class="s">XOR chain encryption • Base64 transport • 3 chế độ</p>
 
-  <div class="card" id="tokenCard">
-    <div class="ct">🔑 GitHub Token (chỉ nhập 1 lần)</div>
+  <div class="card">
+    <div class="ct">🔑 GitHub Token</div>
     <input type="text" id="token" placeholder="ghp_...">
     <div class="row" style="margin-top:10px;">
-      <button class="gray" onclick="saveToken()">💾 Lưu token</button>
+      <button class="gray" onclick="saveToken()">💾 Lưu</button>
       <button class="gray" onclick="clearToken()">🗑️ Xóa</button>
     </div>
-    <div class="info" id="tokenInfo">Chưa có token. Xem hướng dẫn tạo ở dưới.</div>
-    <div class="warn">
-      🔑 <b>Hướng dẫn tạo token:</b><br>
-      1. Vào <b>github.com/settings/tokens</b><br>
-      2. Generate new token (classic)<br>
-      3. Note: <i>Bypass Tool</i><br>
-      4. Expiration: <b>No expiration</b><br>
-      5. Tick vào scope <b>gist</b><br>
-      6. Generate → Copy token (ghp_...)
-    </div>
+    <div class="info" id="tokenInfo">Chưa có token.</div>
   </div>
 
   <div class="card">
@@ -73,52 +64,54 @@
   </div>
 
   <div class="card">
-    <div class="ct">🔒 Mã hóa (tùy chọn)</div>
-    <input type="text" id="key" placeholder="Key mã hóa (để trống = không mã hóa)">
-    <div class="row" style="margin-top:10px;">
-      <button class="gray" onclick="genKey()">🎲 Random key</button>
+    <div class="ct">🎭 Chế độ bảo vệ</div>
+    <div class="modes">
+      <div class="mode active" data-mode="ask" onclick="setMode('ask')">
+        <span class="ic">🔒</span>Hỏi key
+        <div class="d">Key không có trong loader</div>
+      </div>
+      <div class="mode" data-mode="embed" onclick="setMode('embed')">
+        <span class="ic">🎁</span>Nhúng key
+        <div class="d">Chạy là dùng</div>
+      </div>
+      <div class="mode" data-mode="none" onclick="setMode('none')">
+        <span class="ic">📄</span>Không khóa
+        <div class="d">Ai cũng chạy được</div>
+      </div>
     </div>
-    <div class="info">Nếu nhập key: loader sẽ hỏi key khi chạy. Để trống: chạy luôn.</div>
+  </div>
+
+  <div class="card" id="keyCard">
+    <div class="ct">🔑 Key mã hóa</div>
+    <input type="text" id="key" placeholder="Nhập key (khuyến nghị 16+ ký tự)">
+    <div class="row" style="margin-top:10px;">
+      <button class="gray" onclick="genKey()">🎲 Random key 24 ký tự</button>
+    </div>
+    <div class="info">⚠ Key này KHÔNG xuất hiện trong loader (chế độ Hỏi key). Giữ kín nó.</div>
   </div>
 
   <div class="card">
-    <div class="row">
-      <button id="btn" class="purple" onclick="gen()">🚀 Tạo loadstring</button>
-      <button class="gray" style="flex:0 0 60px;" onclick="clr()">🗑️</button>
-    </div>
+    <button id="btn" class="purple" onclick="gen()">🚀 Tạo loadstring</button>
     <div class="stat" id="stat"></div>
     <div class="res" id="res">
-      <div class="lbl">📋 Loadstring (paste vào Delta)</div>
+      <div class="lbl">📋 Loadstring</div>
       <div class="code" id="loader"></div>
       <div class="lbl">🔗 Raw URL</div>
       <div class="lnk" id="url"></div>
+      <div class="lbl" id="keyOutLbl" style="display:none;">🔑 Key (giữ kín)</div>
+      <div class="lnk" id="keyOut" style="display:none;"></div>
       <div class="row" style="margin-top:10px;">
         <button onclick="cp('loader')">📋 Copy loadstring</button>
-        <button class="gray" onclick="cp('url')">📋 Copy URL</button>
-      </div>
-      <div class="row" style="margin-top:8px;">
-        <button class="gray" onclick="openGist()">🌐 Mở Gist</button>
+        <button class="gray" onclick="openGist()">🌐 Gist</button>
       </div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="ct">📜 Lịch sử</div>
-    <div id="historyList"><div class="info">Chưa có gì.</div></div>
-    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa</button>
   </div>
 </div>
 
 <script>
+let currentMode = 'ask';
 let currentGist = null;
 
-function R(len){
-  const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let s='';
-  for(let i=0;i<len;i++)s+=c[Math.floor(Math.random()*c.length)];
-  return s;
-}
-function genKey(){ document.getElementById('key').value = R(20); }
 function toast(msg){
   const e=document.createElement('div');
   e.className='toast'; e.textContent=msg;
@@ -126,250 +119,47 @@ function toast(msg){
   setTimeout(()=>e.remove(),3000);
 }
 
-/* ============ TOKEN ============ */
+function setMode(m){
+  currentMode = m;
+  document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('active', e.dataset.mode===m));
+  document.getElementById('keyCard').style.display = (m === 'none') ? 'none' : 'block';
+}
+
+function genKey(){
+  const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let s='';
+  for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];
+  document.getElementById('key').value = s;
+}
+
+/* ===== TOKEN ===== */
 function saveToken(){
   const t = document.getElementById('token').value.trim();
-  if(!t){ toast('Chưa nhập token'); return; }
-  if(!t.startsWith('ghp_') && !t.startsWith('github_pat_')){ 
-    toast('Token phải bắt đầu bằng ghp_ hoặc github_pat_'); return; 
-  }
+  if(!t){ toast('Chưa nhập'); return; }
+  if(!t.startsWith('ghp_') && !t.startsWith('github_pat_')){ toast('Token sai'); return; }
   localStorage.setItem('ghToken', t);
-  toast('Đã lưu token');
+  toast('Đã lưu');
   updateTokenInfo();
 }
 function clearToken(){
   localStorage.removeItem('ghToken');
   document.getElementById('token').value = '';
   updateTokenInfo();
-  toast('Đã xóa token');
 }
 function updateTokenInfo(){
   const t = localStorage.getItem('ghToken');
   const el = document.getElementById('tokenInfo');
   if(t){
-    el.innerHTML = '✅ Đã lưu token: <b>' + t.substring(0,10) + '...</b>';
+    el.innerHTML = '✅ Đã lưu: <b>' + t.substring(0,12) + '...</b>';
     el.style.color = '#00e676';
     document.getElementById('token').value = t;
   } else {
-    el.textContent = 'Chưa có token. Xem hướng dẫn ở dưới.';
+    el.textContent = 'Chưa có token.';
     el.style.color = '#666';
   }
 }
 
-/* ============ CRYPTO ============ */
-function strToBytes(str){
-  const bytes=[];
-  for(let i=0;i<str.length;i++){
-    const cc=str.charCodeAt(i);
-    if(cc<0x80)bytes.push(cc);
-    else if(cc<0x800){bytes.push(0xC0|(cc>>6));bytes.push(0x80|(cc&0x3F));}
-    else if(cc<0xD800||cc>=0xE000){bytes.push(0xE0|(cc>>12));bytes.push(0x80|((cc>>6)&0x3F));bytes.push(0x80|(cc&0x3F));}
-    else{i++;const c2=str.charCodeAt(i);const cp=0x10000+((cc-0xD800)<<10)+(c2-0xDC00);
-      bytes.push(0xF0|(cp>>18));bytes.push(0x80|((cp>>12)&0x3F));bytes.push(0x80|((cp>>6)&0x3F));bytes.push(0x80|(cp&0x3F));}
-  }
-  return bytes;
-}
-function encryptBytes(plainBytes, key){
-  const MAGIC = [75,76,80,49,10]; // "KLP1\n"
-  const data = MAGIC.concat(plainBytes);
-  const kb=[];for(let i=0;i<key.length;i++)kb.push(key.charCodeAt(i)&0xFF);
-  const K=kb.length;
-  const out=[];let prev=0;
-  for(let i=0;i<data.length;i++){
-    const b=data[i];const k=kb[i%K];
-    let e=b^k;
-    e=(e+(i&0xFF))&0xFF;
-    e=e^((prev*31+17)&0xFF);
-    out.push(e);prev=e;
-  }
-  return out;
-}
-function bytesToLuaString(bytes){
-  let s='"';
-  for(let i=0;i<bytes.length;i++){
-    const b=bytes[i];
-    if(b>=32&&b<=126&&b!==34&&b!==92)s+=String.fromCharCode(b);
-    else if(b===34)s+='\\"';
-    else if(b===92)s+='\\\\';
-    else s+='\\'+b;
-  }
-  return s+'"';
-}
-function bytesToBase64(bytes){
-  let bin='';
-  const CHUNK=8192;
-  for(let i=0;i<bytes.length;i+=CHUNK){
-    bin+=String.fromCharCode.apply(null,bytes.slice(i,i+CHUNK));
-  }
-  return btoa(bin);
-}
-
-/* ============ GITHUB API ============ */
-async function createGist(content, filename){
-  const token = localStorage.getItem('ghToken');
-  if(!token) throw new Error('Chưa có GitHub token');
-  
-  const body = {
-    description: 'Loader ' + new Date().toISOString(),
-    public: false,
-    files: {}
-  };
-  body.files[filename] = { content };
-
-  const r = await fetch('https://api.github.com/gists', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  
-  if(!r.ok){
-    const err = await r.text();
-    if(r.status === 401) throw new Error('Token sai hoặc hết hạn');
-    if(r.status === 403) throw new Error('Token thiếu quyền gist');
-    throw new Error('GitHub API lỗi: ' + r.status + ' — ' + err.substring(0, 100));
-  }
-  
-  const data = await r.json();
-  const file = data.files[filename];
-  return {
-    gistUrl: data.html_url,
-    rawUrl: file.raw_url,
-    id: data.id
-  };
-}
-
-/* ============ LOADER ============ */
-function luaDecodeCode(){
-  return `local function __dec(__s,__k)
-  local __kb={}
-  for i=1,#__k do __kb[i]=__k:byte(i) end
-  local __K=#__kb
-  local __out={}
-  local __prev=0
-  for i=1,#__s do
-    local e=__s:byte(i)
-    local k=__kb[((i-1)%__K)+1]
-    local p=bit32.band(__prev*31+17,255)
-    local x=bit32.bxor(e,p)
-    local b=bit32.band(x-(i-1),255)
-    local v=bit32.bxor(b,k)
-    __out[i]=string.char(v)
-    __prev=e
-  end
-  return table.concat(__out)
-end`;
-}
-
-function buildKeyPromptLoader(rawUrl){
-  return `local __p=game:HttpGet("${rawUrl}")
-${luaDecodeCode()}
-local __plr=game:GetService("Players").LocalPlayer
-local __pg=__plr:WaitForChild("PlayerGui")
-local __sg=Instance.new("ScreenGui")
-__sg.Name="KeyLock"
-__sg.ResetOnSpawn=false
-__sg.Parent=__pg
-local __f=Instance.new("Frame")
-__f.Size=UDim2.new(0,320,0,180)
-__f.Position=UDim2.new(0.5,-160,0.5,-90)
-__f.BackgroundColor3=Color3.fromRGB(15,15,22)
-__f.BorderSizePixel=0
-__f.Parent=__sg
-Instance.new("UICorner",__f).CornerRadius=UDim.new(0,12)
-local __stk=Instance.new("UIStroke",__f)
-__stk.Color=Color3.fromRGB(156,39,176)
-__stk.Thickness=2
-local __title=Instance.new("TextLabel")
-__title.Size=UDim2.new(1,0,0,36)
-__title.BackgroundTransparency=1
-__title.Text="🔒 Nhập key"
-__title.TextColor3=Color3.fromRGB(0,230,118)
-__title.Font=Enum.Font.GothamBold
-__title.TextSize=17
-__title.Parent=__f
-local __box=Instance.new("TextBox")
-__box.Size=UDim2.new(1,-20,0,40)
-__box.Position=UDim2.new(0,10,0,42)
-__box.BackgroundColor3=Color3.fromRGB(8,8,12)
-__box.TextColor3=Color3.fromRGB(255,255,255)
-__box.PlaceholderText="Nhập key..."
-__box.Text=""
-__box.Font=Enum.Font.Gotham
-__box.TextSize=14
-__box.ClearTextOnFocus=false
-__box.Parent=__f
-Instance.new("UICorner",__box).CornerRadius=UDim.new(0,8)
-local __btn=Instance.new("TextButton")
-__btn.Size=UDim2.new(1,-20,0,44)
-__btn.Position=UDim2.new(0,10,0,96)
-__btn.BackgroundColor3=Color3.fromRGB(0,230,118)
-__btn.Text="XÁC NHẬN"
-__btn.TextColor3=Color3.fromRGB(0,0,0)
-__btn.Font=Enum.Font.GothamBold
-__btn.TextSize=16
-__btn.Parent=__f
-Instance.new("UICorner",__btn).CornerRadius=UDim.new(0,8)
-local __st=Instance.new("TextLabel")
-__st.Size=UDim2.new(1,-20,0,20)
-__st.Position=UDim2.new(0,10,1,-24)
-__st.BackgroundTransparency=1
-__st.Text=""
-__st.TextColor3=Color3.fromRGB(255,100,100)
-__st.Font=Enum.Font.Gotham
-__st.TextSize=12
-__st.Parent=__f
-__btn.MouseButton1Click:Connect(function()
-  local __k=__box.Text
-  if #__k==0 then __st.Text="⚠ Nhập key" return end
-  __st.Text="⏳ Đang giải mã..."
-  __st.TextColor3=Color3.fromRGB(255,200,100)
-  task.wait(0.05)
-  local __data=__dec(__p,__k)
-  if __data:sub(1,5)~="KLP1\\n" then
-    __st.Text="❌ Key sai!"
-    __st.TextColor3=Color3.fromRGB(255,80,80)
-    return
-  end
-  __st.Text="✅ Đang chạy..."
-  __st.TextColor3=Color3.fromRGB(0,230,118)
-  task.wait(0.2)
-  __sg:Destroy()
-  local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
-  if not __ok then warn("[Loader] "..tostring(__err)) end
-end)`;
-}
-
-/* ============ HISTORY ============ */
-function saveHistory(url, key, gistUrl){
-  let h = JSON.parse(localStorage.getItem('glHistory') || '[]');
-  h.unshift({url, key: key || '(none)', gistUrl, time: new Date().toLocaleString('vi-VN')});
-  if(h.length > 15) h = h.slice(0, 15);
-  localStorage.setItem('glHistory', JSON.stringify(h));
-  renderHistory();
-}
-function renderHistory(){
-  const h = JSON.parse(localStorage.getItem('glHistory') || '[]');
-  const el = document.getElementById('historyList');
-  if(h.length === 0){ el.innerHTML = '<div class="info">Chưa có gì.</div>'; return; }
-  el.innerHTML = h.map(item =>
-    '<div class="hist-item">' +
-      '<div class="t">' + item.time + '</div>' +
-      '<div class="k">🔑 ' + item.key + '</div>' +
-      '<div class="l">🔗 ' + item.url + '</div>' +
-    '</div>'
-  ).join('');
-}
-function clearHistory(){
-  if(!confirm('Xóa lịch sử?')) return;
-  localStorage.removeItem('glHistory');
-  renderHistory();
-}
-
-/* ============ FILE ============ */
+/* ===== FILE ===== */
 function loadFile(e){
   const f = e.target.files[0];
   if(!f) return;
@@ -386,66 +176,315 @@ function updateSize(){
   document.getElementById('sizeInfo').textContent = len > 0 ? len.toLocaleString('vi-VN') + ' ký tự' : 'Chưa có code';
 }
 
-/* ============ GENERATE ============ */
+/* ============ HASH KEY DERIVATION ============
+   Biến master key thành 256-byte subkey table bằng thuật toán FNV-like
+   Mục đích: key ngắn → subkey dài, mỗi byte XOR key khác nhau
+   → không thể brute-force từng byte
+*/
+function deriveKeyTable(masterKey){
+  const table = new Uint8Array(256);
+  // FNV-1a hash 256 lần với offset khác nhau
+  for(let i=0;i<256;i++){
+    let h = 2166136261 ^ (i * 2654435761);
+    const mixKey = masterKey + ':' + i;
+    for(let j=0;j<mixKey.length;j++){
+      h ^= mixKey.charCodeAt(j);
+      h = Math.imul(h, 16777619);
+    }
+    h = h >>> 0;
+    table[i] = h & 0xFF;
+  }
+  return table;
+}
+
+/* ============ ENCRYPT ============
+   Multi-layer:
+   1. XOR byte với subkey[i % 256]
+   2. Cộng vị trí i
+   3. XOR với prev byte (chain)
+   4. XOR với byte trước đó nữa (double chain)
+*/
+function strToBytes(str){
+  const bytes=[];
+  for(let i=0;i<str.length;i++){
+    const cc=str.charCodeAt(i);
+    if(cc<0x80)bytes.push(cc);
+    else if(cc<0x800){bytes.push(0xC0|(cc>>6));bytes.push(0x80|(cc&0x3F));}
+    else if(cc<0xD800||cc>=0xE000){bytes.push(0xE0|(cc>>12));bytes.push(0x80|((cc>>6)&0x3F));bytes.push(0x80|(cc&0x3F));}
+    else{i++;const c2=str.charCodeAt(i);const cp=0x10000+((cc-0xD800)<<10)+(c2-0xDC00);
+      bytes.push(0xF0|(cp>>18));bytes.push(0x80|((cp>>12)&0x3F));bytes.push(0x80|((cp>>6)&0x3F));bytes.push(0x80|(cp&0x3F));}
+  }
+  return bytes;
+}
+
+function encryptBytes(plainBytes, key){
+  const MAGIC = [75,76,80,50,10]; // "KLP2\n"
+  const data = MAGIC.concat(plainBytes);
+  const table = deriveKeyTable(key);
+  const out = new Uint8Array(data.length);
+  let prev = 0, prev2 = 0;
+  for(let i=0;i<data.length;i++){
+    const b = data[i];
+    const k = table[i & 0xFF];
+    let e = b ^ k;
+    e = (e + (i & 0xFF)) & 0xFF;
+    e = e ^ prev;
+    e = e ^ ((prev2 * 7 + 13) & 0xFF);
+    out[i] = e;
+    prev2 = prev;
+    prev = e;
+  }
+  return out;
+}
+
+function bytesToBase64(bytes){
+  let bin='';
+  const CHUNK=8192;
+  for(let i=0;i<bytes.length;i+=CHUNK){
+    bin += String.fromCharCode.apply(null, Array.prototype.slice.call(bytes, i, i+CHUNK));
+  }
+  return btoa(bin);
+}
+
+/* ============ LUA DECODE CODE ============ */
+function luaDecodeCode(){
+  return `local __b64map={}
+local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+for i=1,#__b64chars do __b64map[__b64chars:sub(i,i)]=i-1 end
+local function __b64decode(s)
+  s=s:gsub("[^A-Za-z0-9+/=]","")
+  local out={}
+  local i=1
+  while i<=#s do
+    local a=__b64map[s:sub(i,i)] or 0
+    local b=__b64map[s:sub(i+1,i+1)] or 0
+    local c=__b64map[s:sub(i+2,i+2)] or 0
+    local d=__b64map[s:sub(i+3,i+3)] or 0
+    local n=a*262144+b*4096+c*64+d
+    out[#out+1]=string.char(math.floor(n/65536)%256)
+    if s:sub(i+2,i+2)~="=" then out[#out+1]=string.char(math.floor(n/256)%256) end
+    if s:sub(i+3,i+3)~="=" then out[#out+1]=string.char(n%256) end
+    i=i+4
+  end
+  return table.concat(out)
+end
+
+local function __deriveTable(masterKey)
+  local t={}
+  for i=0,255 do
+    local h=bit32.bxor(2166136261, bit32.band(i*2654435761, 4294967295))
+    local mixKey=masterKey..":"..tostring(i)
+    for j=1,#mixKey do
+      h=bit32.bxor(h, mixKey:byte(j))
+      h=bit32.band(h*16777619, 4294967295)
+    end
+    t[i]=bit32.band(h,255)
+  end
+  return t
+end
+
+local function __decrypt(enc, masterKey)
+  local table=__deriveTable(masterKey)
+  local out={}
+  local prev=0
+  local prev2=0
+  for i=1,#enc do
+    local e=enc:byte(i)
+    local idx=bit32.band(i-1,255)
+    local k=table[idx]
+    local x=bit32.bxor(e, prev)
+    x=bit32.bxor(x, bit32.band(prev2*7+13,255))
+    local b=bit32.band(x-(i-1),255)
+    local v=bit32.bxor(b, k)
+    out[i]=string.char(v)
+    prev2=prev
+    prev=e
+  end
+  return table.concat(out)
+end`;
+}
+
+/* ============ LOADER BUILDERS ============ */
+function buildLoader(rawUrl, key, mode){
+  const decodeCode = luaDecodeCode();
+  
+  if(mode === 'none'){
+    return `loadstring(game:HttpGet("${rawUrl}"))()`;
+  }
+  
+  if(mode === 'embed'){
+    return `-- Gist Loader Pro
+local __b64=game:HttpGet("${rawUrl}")
+${decodeCode}
+local __enc=__b64decode(__b64)
+local __data=__decrypt(__enc,"${key}")
+if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Giải mã thất bại") return end
+local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
+if not __ok then warn("[Loader] "..tostring(__err)) end`;
+  }
+  
+  // ask mode — KHÔNG có key trong code
+  return `-- Gist Loader Pro — Key KHÔNG lưu trong file này
+local __b64=game:HttpGet("${rawUrl}")
+${decodeCode}
+local __enc=__b64decode(__b64)
+local Players=game:GetService("Players")
+local plr=Players.LocalPlayer
+local pg=plr:WaitForChild("PlayerGui")
+local sg=Instance.new("ScreenGui")
+sg.Name="GistLoaderKey"
+sg.ResetOnSpawn=false
+sg.Parent=pg
+local f=Instance.new("Frame")
+f.Size=UDim2.new(0,320,0,180)
+f.Position=UDim2.new(0.5,-160,0.5,-90)
+f.BackgroundColor3=Color3.fromRGB(15,15,22)
+f.BorderSizePixel=0
+f.Parent=sg
+Instance.new("UICorner",f).CornerRadius=UDim.new(0,12)
+local sk=Instance.new("UIStroke",f)
+sk.Color=Color3.fromRGB(156,39,176)
+sk.Thickness=2
+local tt=Instance.new("TextLabel")
+tt.Size=UDim2.new(1,0,0,36)
+tt.BackgroundTransparency=1
+tt.Text="🔒 Nhập key để mở script"
+tt.TextColor3=Color3.fromRGB(0,230,118)
+tt.Font=Enum.Font.GothamBold
+tt.TextSize=16
+tt.Parent=f
+local bx=Instance.new("TextBox")
+bx.Size=UDim2.new(1,-20,0,40)
+bx.Position=UDim2.new(0,10,0,42)
+bx.BackgroundColor3=Color3.fromRGB(8,8,12)
+bx.TextColor3=Color3.fromRGB(255,255,255)
+bx.PlaceholderText="Nhập key..."
+bx.Text=""
+bx.Font=Enum.Font.Gotham
+bx.TextSize=14
+bx.ClearTextOnFocus=false
+bx.Parent=f
+Instance.new("UICorner",bx).CornerRadius=UDim.new(0,8)
+local bt=Instance.new("TextButton")
+bt.Size=UDim2.new(1,-20,0,44)
+bt.Position=UDim2.new(0,10,0,96)
+bt.BackgroundColor3=Color3.fromRGB(0,230,118)
+bt.Text="XÁC NHẬN"
+bt.TextColor3=Color3.fromRGB(0,0,0)
+bt.Font=Enum.Font.GothamBold
+bt.TextSize=16
+bt.Parent=f
+Instance.new("UICorner",bt).CornerRadius=UDim.new(0,8)
+local st=Instance.new("TextLabel")
+st.Size=UDim2.new(1,-20,0,20)
+st.Position=UDim2.new(0,10,1,-24)
+st.BackgroundTransparency=1
+st.Text=""
+st.TextColor3=Color3.fromRGB(255,100,100)
+st.Font=Enum.Font.Gotham
+st.TextSize=12
+st.Parent=f
+bt.MouseButton1Click:Connect(function()
+  local k=bx.Text
+  if #k==0 then st.Text="⚠ Nhập key" return end
+  st.Text="⏳ Đang giải mã..."
+  st.TextColor3=Color3.fromRGB(255,200,100)
+  task.wait(0.05)
+  local data=__decrypt(__enc,k)
+  if data:sub(1,5)~="KLP2\\n" then
+    st.Text="❌ Key sai!"
+    st.TextColor3=Color3.fromRGB(255,80,80)
+    return
+  end
+  st.Text="✅ Đang chạy..."
+  st.TextColor3=Color3.fromRGB(0,230,118)
+  task.wait(0.2)
+  sg:Destroy()
+  local ok,err=pcall(function() loadstring(data:sub(6))() end)
+  if not ok then warn("[Loader] "..tostring(err)) end
+end)`;
+}
+
+/* ============ GITHUB GIST UPLOAD ============ */
+async function createGist(content, filename){
+  const token = localStorage.getItem('ghToken');
+  if(!token) throw new Error('Chưa có token');
+  const body = { description: 'Gist Loader', public: false, files: {} };
+  body.files[filename] = { content: content };
+  const r = await fetch('https://api.github.com/gists', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){
+    if(r.status === 401) throw new Error('Token sai/hết hạn');
+    if(r.status === 403) throw new Error('Token thiếu quyền gist');
+    const t = await r.text();
+    throw new Error('GitHub ' + r.status + ': ' + t.substring(0, 80));
+  }
+  const data = await r.json();
+  return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
+}
+
+/* ============ MAIN ============ */
 async function gen(){
   const raw = document.getElementById('code').value;
   if(!raw.trim()){ toast('Chưa có code'); return; }
-  
   const token = localStorage.getItem('ghToken');
-  if(!token){ toast('Chưa lưu GitHub token'); return; }
-  
-  const key = document.getElementById('key').value.trim();
-  
+  if(!token){ toast('Chưa lưu token'); return; }
+
+  let key = '';
+  if(currentMode !== 'none'){
+    key = document.getElementById('key').value.trim();
+    if(!key){ key = 'KLP' + Math.random().toString(36).substring(2, 20); document.getElementById('key').value = key; }
+    if(key.length < 6){ toast('Key phải từ 6 ký tự'); return; }
+  }
+
   const btn = document.getElementById('btn');
   btn.disabled = true;
   btn.textContent = '⏳ Đang xử lý...';
-  
+
   try {
     await new Promise(r => setTimeout(r, 30));
-    
-    const t0 = performance.now();
+    const rand = Math.random().toString(36).substring(2, 15);
     let uploadContent, filename;
-    let loaderCode;
-    
-    if(key){
-      // Có key → mã hóa
+
+    if(currentMode === 'none'){
+      uploadContent = raw;
+      filename = 'script_' + rand + '.lua';
+    } else {
       const plainBytes = strToBytes(raw);
       const encBytes = encryptBytes(plainBytes, key);
-      const payload = bytesToLuaString(encBytes);
-      uploadContent = payload;
-      filename = 'enc_' + Date.now() + '.lua';
-      
-      btn.textContent = '⏳ Đang upload Gist...';
-      const gist = await createGist(uploadContent, filename);
-      
-      loaderCode = buildKeyPromptLoader(gist.rawUrl);
-      currentGist = gist.gistUrl;
-      
-      document.getElementById('url').textContent = gist.rawUrl;
-      document.getElementById('loader').textContent = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
-      saveHistory(gist.rawUrl, key, gist.gistUrl);
+      uploadContent = bytesToBase64(encBytes);
+      filename = 'enc_' + rand + '.txt';
+    }
+
+    btn.textContent = '⏳ Đang upload Gist...';
+    const gist = await createGist(uploadContent, filename);
+    currentGist = gist.gistUrl;
+
+    const loader = buildLoader(gist.rawUrl, key, currentMode);
+    
+    document.getElementById('url').textContent = gist.rawUrl;
+    document.getElementById('loader').textContent = loader;
+    document.getElementById('res').classList.add('show');
+    
+    if(currentMode !== 'none'){
+      document.getElementById('keyOutLbl').style.display = 'block';
+      document.getElementById('keyOut').style.display = 'block';
+      document.getElementById('keyOut').textContent = key;
     } else {
-      // Không key → upload thẳng script
-      uploadContent = raw;
-      filename = 'script_' + Date.now() + '.lua';
-      
-      btn.textContent = '⏳ Đang upload Gist...';
-      const gist = await createGist(uploadContent, filename);
-      
-      currentGist = gist.gistUrl;
-      document.getElementById('url').textContent = gist.rawUrl;
-      document.getElementById('loader').textContent = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
-      saveHistory(gist.rawUrl, '(none)', gist.gistUrl);
+      document.getElementById('keyOutLbl').style.display = 'none';
+      document.getElementById('keyOut').style.display = 'none';
     }
     
-    const tTotal = (performance.now() - t0).toFixed(0);
-    
-    document.getElementById('stat').innerHTML =
-      '📊 Gốc: <b>' + raw.length.toLocaleString('vi-VN') + '</b> ký tự · ' + 
-      (key ? 'Đã mã hóa' : 'Không mã hóa') + ' · Upload: <b>' + tTotal + 'ms</b>';
-    
-    document.getElementById('res').classList.add('show');
-    toast('✅ Đã tạo loadstring!');
+    const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
+    document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
+    toast('✅ Đã tạo!');
   } catch(e){
     toast('❌ ' + e.message);
     document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
@@ -460,19 +499,10 @@ function cp(id){
 }
 function openGist(){
   if(currentGist) window.open(currentGist, '_blank');
-  else toast('Chưa có gist');
-}
-function clr(){
-  document.getElementById('code').value = '';
-  document.getElementById('key').value = '';
-  document.getElementById('stat').textContent = '';
-  document.getElementById('res').classList.remove('show');
-  updateSize();
 }
 
 document.getElementById('code').addEventListener('input', updateSize);
 updateTokenInfo();
-renderHistory();
 </script>
 </body>
 </html>
