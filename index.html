@@ -6,7 +6,7 @@
 <title>Gist Loader Pro</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px}
+  body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px;padding-top:60px}
   .c{max-width:720px;margin:0 auto}
   h1{font-size:1.2rem;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#00e676,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
@@ -14,8 +14,8 @@
   .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
   textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:150px;line-height:1.5}
   textarea:focus{border-color:#00e676}
-  input[type=text],input[type=password]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
-  input[type=text]:focus,input[type=password]:focus{border-color:#00e676}
+  input[type=text],input[type=password],input[type=number]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
+  input:focus{border-color:#00e676}
   button{padding:10px 14px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:8px;color:#0a0a0f;font-weight:700;font-size:.82rem;cursor:pointer}
   button:disabled{opacity:.4;cursor:not-allowed}
   button.small{padding:6px 10px;font-size:.68rem;margin:0}
@@ -48,7 +48,7 @@
   .hist-actions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
   .empty{text-align:center;color:#444;padding:20px;font-size:.8rem}
 
-  /* LOGIN SCREEN */
+  /* LOGIN */
   .login-screen{position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,rgba(156,39,176,.15),transparent 50%),radial-gradient(circle at 70% 80%,rgba(0,230,118,.1),transparent 50%),#0a0a0f;z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px}
   .login-box{width:100%;max-width:380px;background:#12121a;border-radius:18px;padding:28px 24px;border:1px solid #1f1f2e;box-shadow:0 30px 80px rgba(156,39,176,.2)}
   .login-title{font-size:1.6rem;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,#00e676,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
@@ -57,23 +57,23 @@
   .login-tab{padding:10px;background:transparent;border:none;border-radius:9px;color:#666;font-weight:700;font-size:.82rem;cursor:pointer;margin:0}
   .login-tab.active{background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff}
   .login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;font-size:.9rem;font-weight:700;border-radius:10px;margin-top:16px;border:none;cursor:pointer}
-  .login-btn:disabled{opacity:.5;cursor:not-allowed}
   .login-msg{text-align:center;font-size:.78rem;margin-top:12px;min-height:18px;font-weight:600;color:#ff5252}
 
   /* USER BAR */
   .user-bar{position:fixed;top:12px;right:12px;background:#12121a;border:1px solid #2a2a3a;border-radius:12px;padding:8px 12px;font-size:.72rem;color:#aaa;z-index:800;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
   .user-bar b{color:#00e676}
-  .badge-admin{background:linear-gradient(135deg,#ff9800,#f44336);color:#fff;padding:2px 8px;border-radius:6px;font-size:.6rem;font-weight:700}
-  .badge-user{background:linear-gradient(135deg,#2196f3,#03a9f4);color:#fff;padding:2px 8px;border-radius:6px;font-size:.6rem;font-weight:700}
+  .badge{color:#fff;padding:2px 8px;border-radius:6px;font-size:.6rem;font-weight:700}
+  .badge-admin{background:linear-gradient(135deg,#ff9800,#f44336)}
+  .badge-mod{background:linear-gradient(135deg,#2196f3,#03a9f4)}
+  .badge-vip{background:linear-gradient(135deg,#9c27b0,#e91e63)}
+  .badge-user{background:linear-gradient(135deg,#555,#777)}
   .logout-btn{background:linear-gradient(135deg,#d32f2f,#f44336);color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:.65rem;font-weight:700;cursor:pointer;margin:0}
 
-  /* ADMIN PANEL */
-  .admin-panel{border:2px solid #ff9800 !important;position:relative;overflow:hidden}
-  .admin-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ff9800,#f44336,#ff9800);animation:slide 3s linear infinite}
-  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  /* ADMIN */
+  .admin-panel{border:2px solid #ff9800 !important}
   .admin-panel .ct{color:#ff9800}
-  .admin-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#0a0a0f;padding:4px;border-radius:10px;margin-bottom:12px}
-  .admin-tab{padding:8px;background:transparent;border:none;border-radius:7px;color:#666;font-weight:700;font-size:.7rem;cursor:pointer;margin:0}
+  .admin-tabs{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;background:#0a0a0f;padding:4px;border-radius:10px;margin-bottom:12px}
+  .admin-tab{padding:8px 4px;background:transparent;border:none;border-radius:7px;color:#666;font-weight:700;font-size:.62rem;cursor:pointer;margin:0}
   .admin-tab.active{background:linear-gradient(135deg,#ff9800,#f44336);color:#fff}
   .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
   .stat-box{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:10px;padding:10px;text-align:center}
@@ -85,23 +85,49 @@
   .user-row-name.blocked{color:#f44336;text-decoration:line-through}
   .user-row-meta{font-size:.62rem;color:#666}
   .user-row-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
-  .key-item{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .key-item code{font-size:.72rem;color:#ff9800;font-family:monospace;word-break:break-all;flex:1}
-  .key-item.used code{color:#666;text-decoration:line-through}
+  .key-item{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .key-item code{font-size:.7rem;color:#ff9800;font-family:monospace;word-break:break-all;flex:1;min-width:120px}
+  .key-item.used code{color:#666}
+  .role-select{padding:4px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:5px;color:#fff;font-size:.65rem;font-family:inherit;outline:none}
+  .code-view{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.65rem;color:#aaa;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;margin-top:6px;border:1px solid #1f1f2e}
+
+  /* CHAT */
+  .chat-fab{position:fixed;bottom:16px;right:16px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;font-size:1.5rem;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(156,39,176,.5);z-index:700;display:flex;align-items:center;justify-content:center;padding:0}
+  .chat-fab:hover{transform:scale(1.08)}
+  .chat-badge{position:absolute;top:-4px;right:-4px;background:#f44336;color:#fff;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700;display:none}
+  .chat-panel{position:fixed;bottom:16px;right:16px;width:340px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 100px);background:#12121a;border:1px solid #2a2a3a;border-radius:14px;z-index:750;display:none;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.7);overflow:hidden}
+  .chat-panel.open{display:flex}
+  .chat-head{padding:10px 12px;background:#0a0a0f;border-bottom:1px solid #1f1f2e;display:flex;justify-content:space-between;align-items:center}
+  .chat-head-title{font-size:.8rem;font-weight:700;color:#00e676}
+  .chat-close{background:none;border:none;color:#666;font-size:1.2rem;cursor:pointer;padding:4px 8px;margin:0}
+  .chat-close:hover{color:#f44336}
+  .chat-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:#0a0a0f}
+  .chat-msg{background:#12121a;border-radius:10px;padding:8px 10px;font-size:.75rem;word-break:break-word}
+  .chat-msg-head{display:flex;justify-content:space-between;margin-bottom:3px;font-size:.65rem}
+  .chat-msg-name{font-weight:700}
+  .chat-msg-name.role-admin{color:#ff9800}
+  .chat-msg-name.role-mod{color:#2196f3}
+  .chat-msg-name.role-vip{color:#e91e63}
+  .chat-msg-name.role-user{color:#00e676}
+  .chat-msg-time{color:#555}
+  .chat-msg-text{color:#ddd}
+  .chat-input-row{display:flex;gap:6px;padding:8px;background:#0a0a0f;border-top:1px solid #1f1f2e}
+  .chat-input{flex:1;padding:8px 10px;background:#12121a;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-size:.75rem;outline:none;font-family:inherit;margin-top:0}
+  .chat-send{background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.75rem;margin-top:0}
 </style>
 </head>
 <body>
 
-<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <div class="login-title">🚀 Gist Loader Pro</div>
-    <div class="login-sub">Đăng nhập hoặc tạo tài khoản mới</div>
+    <div class="login-sub">Đăng nhập hoặc tạo tài khoản</div>
     <div class="login-tabs">
       <button class="login-tab active" id="tabLogin" onclick="switchLoginTab('login')">Đăng nhập</button>
       <button class="login-tab" id="tabRegister" onclick="switchLoginTab('register')">Đăng ký</button>
     </div>
-    <input type="text" id="loginUser" placeholder="Tên đăng nhập" autocomplete="off" spellcheck="false">
+    <input type="text" id="loginUser" placeholder="Tên đăng nhập (không phân biệt hoa/thường)" autocomplete="off" spellcheck="false">
     <input type="password" id="loginPass" placeholder="Mật khẩu" autocomplete="off">
     <input type="password" id="loginPass2" placeholder="Nhập lại mật khẩu" autocomplete="off" style="display:none">
     <button class="login-btn" id="loginBtn" onclick="doAuth()">Đăng nhập</button>
@@ -109,14 +135,28 @@
   </div>
 </div>
 
-<!-- ═══════════ USER BAR ═══════════ -->
+<!-- USER BAR -->
 <div class="user-bar" id="userBar" style="display:none">
   <span id="userBarName">...</span>
   <span id="userBarBadge"></span>
   <button class="logout-btn" onclick="logout()">Thoát</button>
 </div>
 
-<!-- ═══════════ MAIN APP ═══════════ -->
+<!-- CHAT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" style="display:none">💬<span class="chat-badge" id="chatBadge">0</span></button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div class="chat-head-title">💬 Chat chung</div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody"><div class="empty">Chưa có tin nhắn.</div></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..." maxlength="200" onkeydown="if(event.key==='Enter')sendChatMsg()">
+    <button class="chat-send" onclick="sendChatMsg()">Gửi</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
 <div class="c" id="appRoot" style="display:none">
   <h1>🚀 Gist Loader Pro</h1>
   <p class="s">History • Update • Export/Import</p>
@@ -145,22 +185,16 @@
   <div class="card">
     <div class="ct">🎭 Chế độ</div>
     <div class="modes">
-      <div class="mode active" data-mode="ask" onclick="setMode('ask')">
-        <span class="ic">🔒</span>Hỏi key<div class="d">Auto chạy</div>
-      </div>
-      <div class="mode" data-mode="embed" onclick="setMode('embed')">
-        <span class="ic">🎁</span>Nhúng key<div class="d">Chạy ngay</div>
-      </div>
-      <div class="mode" data-mode="none" onclick="setMode('none')">
-        <span class="ic">📄</span>Không khóa<div class="d">Không mã hóa</div>
-      </div>
+      <div class="mode active" data-mode="ask" onclick="setMode('ask')"><span class="ic">🔒</span>Hỏi key<div class="d">Auto chạy</div></div>
+      <div class="mode" data-mode="embed" onclick="setMode('embed')"><span class="ic">🎁</span>Nhúng key<div class="d">Chạy ngay</div></div>
+      <div class="mode" data-mode="none" onclick="setMode('none')"><span class="ic">📄</span>Không khóa<div class="d">Không mã hóa</div></div>
     </div>
   </div>
 
   <div class="card" id="keyCard">
-    <div class="ct">🔑 Key</div>
-    <input type="text" id="key" placeholder="Key (16+ ký tự)">
-    <button class="gray" style="width:100%;margin-top:8px;" onclick="genKey()">🎲 Random 24 ký tự</button>
+    <div class="ct">🔑 Key (Admin tạo & cấp)</div>
+    <input type="text" id="key" placeholder="Dán key admin cấp cho bạn...">
+    <div class="info">Key phải được tạo bởi admin panel mới có hiệu lực</div>
   </div>
 
   <div class="card">
@@ -189,108 +223,126 @@
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
 
-  <!-- ═══════════ ADMIN PANEL (chỉ admin thấy) ═══════════ -->
+  <!-- ADMIN PANEL -->
   <div class="card admin-panel" id="adminPanel" style="display:none">
     <div class="ct">👑 ADMIN PANEL</div>
-
     <div class="admin-tabs">
-      <button class="admin-tab active" id="atabKey" onclick="switchAdminTab('key')">🔑 Tạo Key</button>
-      <button class="admin-tab" id="atabUser" onclick="switchAdminTab('user')">👥 Người dùng</button>
-      <button class="admin-tab" id="atabTool" onclick="switchAdminTab('tool')">🛠️ Công cụ</button>
+      <button class="admin-tab active" id="atabKey" onclick="switchAdminTab('key')">🔑 Key</button>
+      <button class="admin-tab" id="atabUser" onclick="switchAdminTab('user')">👥 User</button>
+      <button class="admin-tab" id="atabCode" onclick="switchAdminTab('code')">📝 Code</button>
+      <button class="admin-tab" id="atabTool" onclick="switchAdminTab('tool')">🛠️ Tool</button>
     </div>
 
     <!-- TAB KEY -->
     <div id="adminTabKey">
       <div class="stats-row">
-        <div class="stat-box"><div class="n" id="statKeyCount">0</div><div class="l">Tổng key</div></div>
-        <div class="stat-box"><div class="n" id="statKeyUsed">0</div><div class="l">Đã dùng</div></div>
+        <div class="stat-box"><div class="n" id="statKeyCount">0</div><div class="l">Tổng</div></div>
+        <div class="stat-box"><div class="n" id="statKeyUsed">0</div><div class="l">Đã cấp</div></div>
         <div class="stat-box"><div class="n" id="statKeyFree">0</div><div class="l">Còn trống</div></div>
       </div>
       <div class="lbl">Tạo key mới</div>
-      <input type="text" id="keyCount" placeholder="Số lượng key (VD: 5)" value="1">
-      <input type="text" id="keyLen" placeholder="Độ dài (VD: 16)" value="16">
-      <input type="text" id="keyPrefix" placeholder="Tiền tố (VD: SKELETON - tùy chọn)">
+      <input type="number" id="keyCount" placeholder="Số lượng" value="1" min="1" max="50">
+      <input type="number" id="keyMaxUses" placeholder="Số user tối đa dùng key này" value="1" min="1" max="999">
+      <input type="text" id="keyPrefix" placeholder="Tiền tố (tùy chọn, VD: SKELETON)">
       <button class="orange" style="width:100%;margin-top:10px;" onclick="adminGenerateKeys()">🎲 Tạo Key</button>
       <div class="lbl" style="margin-top:14px;">Danh sách key</div>
-      <div id="adminKeyList"><div class="empty">Chưa có key nào.</div></div>
+      <div id="adminKeyList"><div class="empty">Chưa có key.</div></div>
       <div class="row" style="margin-top:10px;">
         <button class="gray" onclick="adminRefreshKeys()">🔄 Refresh</button>
-        <button class="red" onclick="adminDeleteAllKeys()">🗑️ Xóa tất cả</button>
+        <button class="red" onclick="adminDeleteAllKeys()">🗑️ Xóa hết</button>
       </div>
     </div>
 
-    <!-- TAB USERS -->
+    <!-- TAB USER -->
     <div id="adminTabUser" style="display:none">
       <div class="stats-row">
         <div class="stat-box"><div class="n" id="statOnline">0</div><div class="l">Online</div></div>
         <div class="stat-box"><div class="n" id="statBlocked">0</div><div class="l">Đã chặn</div></div>
         <div class="stat-box"><div class="n" id="statTotalAcc">0</div><div class="l">Tài khoản</div></div>
       </div>
-      <div class="row" style="margin-top:0;">
-        <button class="orange" onclick="adminRefreshUsers()">🔄 Refresh Users</button>
-      </div>
-      <div class="lbl" style="margin-top:14px;">Người dùng online</div>
+      <button class="orange" style="width:100%;" onclick="adminRefreshUsers()">🔄 Refresh</button>
+      <div class="lbl" style="margin-top:14px;">Người dùng</div>
       <div id="adminUserList"><div class="empty">Đang tải...</div></div>
-
-      <div class="lbl" style="margin-top:14px;">Tài khoản đã đăng ký (local)</div>
-      <div id="adminAccList"><div class="empty">Chưa có tài khoản.</div></div>
     </div>
 
-    <!-- TAB TOOLS -->
+    <!-- TAB CODE -->
+    <div id="adminTabCode" style="display:none">
+      <div class="lbl">Code đã upload bởi user</div>
+      <div id="adminCodeList"><div class="empty">Đang tải...</div></div>
+      <button class="orange" style="width:100%;margin-top:10px;" onclick="adminRefreshCodes()">🔄 Refresh</button>
+
+      <div class="lbl" style="margin-top:14px;">✏️ Chỉnh sửa menu key (Lua)</div>
+      <div class="info">Các biến có sẵn: <code>{{TITLE}}</code>, <code>{{PLACEHOLDER}}</code>, <code>{{ACCENT}}</code></div>
+      <textarea id="menuEditor" placeholder="Để trống = dùng menu mặc định..." style="height:120px;margin-top:6px;"></textarea>
+      <div class="row" style="margin-top:8px;">
+        <button class="green" onclick="adminSaveMenu()">💾 Lưu menu</button>
+        <button class="gray" onclick="adminResetMenu()">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- TAB TOOL -->
     <div id="adminTabTool" style="display:none">
-      <div class="lbl">Chặn / Kick thủ công</div>
-      <input type="text" id="toolUser" placeholder="Tên đăng nhập user">
+      <div class="lbl">Chặn / Kick / Đổi role</div>
+      <input type="text" id="toolUser" placeholder="Tên user (chữ thường)">
+      <input type="text" id="toolRole" placeholder="Role mới: admin / mod / vip / user">
       <div class="row" style="margin-top:8px;">
         <button class="red" onclick="adminBlockUser()">🚫 Chặn</button>
-        <button class="green" onclick="adminUnblockUser()">✅ Bỏ chặn</button>
+        <button class="green" onclick="adminUnblockUser()">✅ Bỏ</button>
         <button class="orange" onclick="adminKickUser()">👢 Kick</button>
       </div>
+      <button class="blue" style="width:100%;margin-top:8px;" onclick="adminSetRole()">👑 Đổi Role</button>
 
       <div class="lbl" style="margin-top:14px;">Xóa tài khoản</div>
-      <input type="text" id="toolDelUser" placeholder="Tên đăng nhập cần xóa">
+      <input type="text" id="toolDelUser" placeholder="Tên user cần xóa">
       <button class="red" style="width:100%;margin-top:8px;" onclick="adminDeleteAccount()">🗑️ Xóa vĩnh viễn</button>
 
-      <div class="lbl" style="margin-top:14px;">Thông tin hệ thống</div>
-      <div class="info" id="sysInfo" style="font-size:.68rem;"></div>
+      <div class="lbl" style="margin-top:14px;">Bảo trì</div>
+      <button class="gray" style="width:100%;margin-top:4px;" onclick="adminRefreshAll()">🔄 Refresh tất cả</button>
+      <button class="red" style="width:100%;margin-top:4px;" onclick="adminPurgeAll()">⚠️ Xóa toàn bộ data (kvdb)</button>
 
-      <div class="lbl" style="margin-top:14px;">Cấu hình KVDB</div>
-      <div class="info">Bucket: <b id="sysBucket">...</b></div>
-      <button class="gray" style="width:100%;margin-top:8px;" onclick="adminResetLocal()">🧹 Reset dữ liệu Local</button>
+      <div class="lbl" style="margin-top:14px;">Thông tin</div>
+      <div class="info" id="sysInfo" style="font-size:.68rem;"></div>
     </div>
   </div>
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-                    ADMIN CREDENTIALS
+        OBFUSCATED ADMIN CREDENTIALS (XOR 0x5A)
    ═══════════════════════════════════════════════════════════ */
-const ADMIN_USER = 'skeletonbe0';
-const ADMIN_PASS = 'skeleton3549';
+const _xor = a => a.map(c => String.fromCharCode(c ^ 0x5A)).join('');
+const ADMIN_USER = _xor([41,49,63,54,63,46,37,36,24,63,106]);
+const ADMIN_PASS = _xor([41,49,63,54,63,46,37,36,105,111,110,99]);
 
 /* ═══════════════════════════════════════════════════════════
-                    KVDB CONFIG
+        KVDB
    ═══════════════════════════════════════════════════════════ */
-const KV_BUCKET = 'glp_beskeleton_pro_v1';
+const KV_BUCKET = 'glp_beskeleton_pro_v3';
 const KV_BASE = 'https://kvdb.io/' + KV_BUCKET;
 
 async function kvSet(key, val){
   try {
-    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key), { method:'POST', body: val });
-    return r.ok;
-  } catch(e){ return false; }
+    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key), {
+      method: 'POST',
+      body: val,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    return r.ok || r.status === 201;
+  } catch(e){ console.warn('kvSet fail', key, e); return false; }
 }
 async function kvGet(key){
   try {
-    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key));
+    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key) + '?_=' + Date.now());
     if(!r.ok) return null;
     return await r.text();
   } catch(e){ return null; }
 }
 async function kvList(){
   try {
-    const r = await fetch(KV_BASE + '/?list=1');
+    const r = await fetch(KV_BASE + '/?list=1&_=' + Date.now());
     if(!r.ok) return [];
-    return await r.json();
+    const j = await r.json();
+    return Array.isArray(j) ? j : [];
   } catch(e){ return []; }
 }
 async function kvDelete(key){
@@ -299,7 +351,15 @@ async function kvDelete(key){
 }
 
 /* ═══════════════════════════════════════════════════════════
-                    AUTH SYSTEM
+        LOCAL DATA HELPERS
+   ═══════════════════════════════════════════════════════════ */
+const LS = {
+  get(k, def){ try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(def)); } catch { return def; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+/* ═══════════════════════════════════════════════════════════
+        AUTH
    ═══════════════════════════════════════════════════════════ */
 let loginMode = 'login';
 
@@ -308,19 +368,13 @@ function simpleHash(str){
   for(let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
   return 'h_' + (h >>> 0).toString(36);
 }
+function normalizeName(u){ return u.toLowerCase().trim(); }
 
-function getUsers(){
-  try { return JSON.parse(localStorage.getItem('glpUsers') || '{}'); }
-  catch { return {}; }
-}
-function saveUsers(u){ localStorage.setItem('glpUsers', JSON.stringify(u)); }
-
-function getSession(){
-  try { return JSON.parse(localStorage.getItem('glpSession') || 'null'); }
-  catch { return null; }
-}
+function getUsers(){ return LS.get('glpUsers', {}); }
+function saveUsers(u){ LS.set('glpUsers', u); }
+function getSession(){ return LS.get('glpSession', null); }
 function saveSession(s){
-  if(s) localStorage.setItem('glpSession', JSON.stringify(s));
+  if(s) LS.set('glpSession', s);
   else localStorage.removeItem('glpSession');
 }
 
@@ -328,175 +382,306 @@ function switchLoginTab(mode){
   loginMode = mode;
   document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
   document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
-  document.getElementById('loginPass2').style.display = (mode === 'register') ? 'block' : 'none';
-  document.getElementById('loginBtn').textContent = (mode === 'register') ? 'Đăng ký' : 'Đăng nhập';
+  document.getElementById('loginPass2').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('loginBtn').textContent = mode === 'register' ? 'Đăng ký' : 'Đăng nhập';
   document.getElementById('loginMsg').textContent = '';
 }
 
 async function doAuth(){
-  const u = document.getElementById('loginUser').value.trim();
+  const uRaw = document.getElementById('loginUser').value.trim();
+  const u = normalizeName(uRaw);
   const p = document.getElementById('loginPass').value;
   const p2 = document.getElementById('loginPass2').value;
   const msg = document.getElementById('loginMsg');
   const btn = document.getElementById('loginBtn');
 
-  if(!u || !p){ msg.textContent = '⚠ Nhập đầy đủ thông tin'; return; }
+  if(!u || !p){ msg.textContent = '⚠ Nhập đầy đủ'; return; }
   if(u.length < 3){ msg.textContent = '⚠ Tên từ 3 ký tự'; return; }
 
-  btn.disabled = true;
-  btn.textContent = '⏳ Đang xử lý...';
+  btn.disabled = true; btn.textContent = '⏳...';
 
-  try {
-    // ADMIN LOGIN
-    if(u === ADMIN_USER && p === ADMIN_PASS){
-      saveSession({ username: u, role: 'admin', loginAt: Date.now() });
-      msg.textContent = '✅ Đăng nhập admin thành công!';
-      msg.style.color = '#00e676';
-      await new Promise(r => setTimeout(r, 500));
-      enterApp();
-      return;
-    }
-
-    // Check blocked
-    const blocked = await kvGet('block_' + u);
-    if(blocked === '1'){
-      msg.textContent = '🚫 Tài khoản đã bị chặn';
-      msg.style.color = '#ff5252';
-      btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
-    }
-
+  // ADMIN LOGIN
+  if(u === ADMIN_USER && p === ADMIN_PASS){
     const users = getUsers();
-
-    if(loginMode === 'register'){
-      if(u === ADMIN_USER){ msg.textContent = '⚠ Tên này không được dùng'; return; }
-      if(p.length < 4){ msg.textContent = '⚠ Mật khẩu từ 4 ký tự'; return; }
-      if(p !== p2){ msg.textContent = '⚠ Mật khẩu nhập lại không khớp'; return; }
-      if(users[u]){ msg.textContent = '⚠ Tên đã tồn tại'; return; }
-
-      users[u] = { passHash: simpleHash(p), role: 'user', createdAt: Date.now() };
+    if(!users[u]){
+      users[u] = { passHash: simpleHash(p), role: 'admin', createdAt: Date.now() };
       saveUsers(users);
-      msg.textContent = '✅ Đăng ký thành công!';
-      msg.style.color = '#00e676';
-      await new Promise(r => setTimeout(r, 600));
-      saveSession({ username: u, role: 'user', loginAt: Date.now() });
-      enterApp();
     } else {
-      const acc = users[u];
-      if(!acc){ msg.textContent = '⚠ Tài khoản không tồn tại'; return; }
-      if(acc.passHash !== simpleHash(p)){ msg.textContent = '⚠ Mật khẩu sai'; return; }
-      saveSession({ username: u, role: 'user', loginAt: Date.now() });
-      msg.textContent = '✅ Đăng nhập thành công!';
-      msg.style.color = '#00e676';
-      await new Promise(r => setTimeout(r, 500));
-      enterApp();
+      users[u].role = 'admin';
+      saveUsers(users);
     }
-  } catch(e){
-    msg.textContent = '⚠ Lỗi: ' + e.message;
+    saveSession({ username: u, role: 'admin', loginAt: Date.now() });
+    msg.textContent = '✅ Admin!'; msg.style.color = '#00e676';
+    await new Promise(r => setTimeout(r, 400));
+    enterApp();
+    return;
   }
-  btn.disabled = false;
-  btn.textContent = loginMode === 'register' ? 'Đăng ký' : 'Đăng nhập';
+
+  // Block check
+  const blocks = await loadBlocks();
+  if(blocks[u]){
+    msg.textContent = '🚫 Tài khoản đã bị chặn';
+    msg.style.color = '#ff5252';
+    btn.disabled = false; btn.textContent = loginMode === 'register' ? 'Đăng ký' : 'Đăng nhập';
+    return;
+  }
+
+  const users = getUsers();
+
+  if(loginMode === 'register'){
+    if(p.length < 4){ msg.textContent = '⚠ Mật khẩu từ 4 ký tự'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
+    if(p !== p2){ msg.textContent = '⚠ Mật khẩu không khớp'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
+    if(users[u]){ msg.textContent = '⚠ Tên đã tồn tại'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
+
+    users[u] = { passHash: simpleHash(p), role: 'user', createdAt: Date.now() };
+    saveUsers(users);
+    msg.textContent = '✅ Thành công!'; msg.style.color = '#00e676';
+    await new Promise(r => setTimeout(r, 500));
+    saveSession({ username: u, role: 'user', loginAt: Date.now() });
+    enterApp();
+  } else {
+    const acc = users[u];
+    if(!acc){ msg.textContent = '⚠ Tài khoản không tồn tại'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
+    if(acc.passHash !== simpleHash(p)){ msg.textContent = '⚠ Mật khẩu sai'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
+    saveSession({ username: u, role: acc.role || 'user', loginAt: Date.now() });
+    msg.textContent = '✅ Đăng nhập!'; msg.style.color = '#00e676';
+    await new Promise(r => setTimeout(r, 400));
+    enterApp();
+  }
+  btn.disabled = false; btn.textContent = loginMode === 'register' ? 'Đăng ký' : 'Đăng nhập';
 }
 
 function enterApp(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appRoot').style.display = 'block';
   document.getElementById('userBar').style.display = 'flex';
+  document.getElementById('chatFab').style.display = 'flex';
   const s = getSession();
   if(s){
     document.getElementById('userBarName').innerHTML = '👤 <b>' + s.username + '</b>';
     const b = document.getElementById('userBarBadge');
-    if(s.role === 'admin') b.innerHTML = '<span class="badge-admin">👑 ADMIN</span>';
-    else b.innerHTML = '<span class="badge-user">USER</span>';
+    const role = s.role || 'user';
+    b.innerHTML = '<span class="badge badge-' + role + '">' + roleIcon(role) + ' ' + role.toUpperCase() + '</span>';
   }
   if(s && s.role === 'admin'){
     document.getElementById('adminPanel').style.display = 'block';
-    adminRefreshKeys();
-    adminRefreshUsers();
-    updateSysInfo();
+    adminRefreshAll();
   }
   startHeartbeat();
+  startChatPoll();
   renderHistory();
   updateTokenInfo();
 }
 
 function logout(){
-  if(!confirm('Đăng xuất khỏi tài khoản?')) return;
+  if(!confirm('Đăng xuất?')) return;
   stopHeartbeat();
+  stopChatPoll();
   saveSession(null);
   location.reload();
 }
 
-function updateSysInfo(){
-  const el = document.getElementById('sysInfo');
-  const s = getSession();
-  const users = getUsers();
-  const cnt = Object.keys(users).length;
-  el.innerHTML =
-    'Phiên bản: <b>V2</b><br>' +
-    'Người dùng: <b>' + (s ? s.username : '?') + '</b> (' + (s ? s.role : '?') + ')<br>' +
-    'Tài khoản local: <b>' + cnt + '</b><br>' +
-    'Thời gian: <b>' + new Date().toLocaleString('vi-VN') + '</b>';
-  document.getElementById('sysBucket').textContent = KV_BUCKET;
+function roleIcon(role){
+  return { admin: '👑', mod: '🛡️', vip: '⭐', user: '💬' }[role] || '💬';
 }
 
 /* ═══════════════════════════════════════════════════════════
-                    HEARTBEAT (user tracking)
+        BLOCKS / KICKS (single-blob, fast)
    ═══════════════════════════════════════════════════════════ */
-let hbInterval = null;
-let kickCheckInterval = null;
+async function loadBlocks(){
+  const raw = await kvGet('blocks');
+  if(!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+async function saveBlocks(b){ return await kvSet('blocks', JSON.stringify(b)); }
+
+async function loadKicks(){
+  const raw = await kvGet('kicks');
+  if(!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+async function saveKicks(k){ return await kvSet('kicks', JSON.stringify(k)); }
+
+/* ═══════════════════════════════════════════════════════════
+        USER REGISTRY (online tracking)
+   ═══════════════════════════════════════════════════════════ */
+async function loadOnline(){
+  const raw = await kvGet('online');
+  if(!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+async function saveOnline(o){ return await kvSet('online', JSON.stringify(o)); }
+
+/* ═══════════════════════════════════════════════════════════
+        KEYS (single blob)
+   ═══════════════════════════════════════════════════════════ */
+async function loadKeys(){
+  const raw = await kvGet('allkeys');
+  if(!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+async function saveKeys(k){ return await kvSet('allkeys', JSON.stringify(k)); }
+
+/* ═══════════════════════════════════════════════════════════
+        CODES (user uploads)
+   ═══════════════════════════════════════════════════════════ */
+async function loadCodes(){
+  const raw = await kvGet('codes');
+  if(!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+async function saveCodes(c){ return await kvSet('codes', JSON.stringify(c)); }
+
+/* ═══════════════════════════════════════════════════════════
+        CHAT
+   ═══════════════════════════════════════════════════════════ */
+async function loadChat(){
+  const raw = await kvGet('chatlog');
+  if(!raw) return [];
+  try { return JSON.parse(raw); } catch { return []; }
+}
+async function pushChat(msg){
+  let log = await loadChat();
+  log.push(msg);
+  if(log.length > 100) log = log.slice(-100);
+  return await kvSet('chatlog', JSON.stringify(log));
+}
+
+let chatPollTimer = null;
+let lastChatCount = 0;
+
+function toggleChat(){
+  const p = document.getElementById('chatPanel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open')){
+    renderChat();
+    document.getElementById('chatBadge').style.display = 'none';
+    lastChatCount = 0;
+  }
+}
+async function sendChatMsg(){
+  const inp = document.getElementById('chatInput');
+  const txt = inp.value.trim();
+  if(!txt) return;
+  const s = getSession();
+  if(!s) return;
+  inp.value = '';
+  await pushChat({
+    from: s.username, role: s.role || 'user',
+    msg: txt, ts: Date.now()
+  });
+  renderChat();
+}
+async function renderChat(){
+  const log = await loadChat();
+  const body = document.getElementById('chatBody');
+  if(log.length === 0){ body.innerHTML = '<div class="empty">Chưa có tin nhắn.</div>'; return; }
+  body.innerHTML = log.map(m => {
+    const time = new Date(m.ts).toLocaleTimeString('vi-VN');
+    const icon = roleIcon(m.role);
+    return '<div class="chat-msg">' +
+      '<div class="chat-msg-head">' +
+        '<span class="chat-msg-name role-' + m.role + '">' + icon + ' ' + m.from + '</span>' +
+        '<span class="chat-msg-time">' + time + '</span>' +
+      '</div>' +
+      '<div class="chat-msg-text">' + escapeHtml(m.msg) + '</div>' +
+    '</div>';
+  }).join('');
+  body.scrollTop = body.scrollHeight;
+}
+function startChatPoll(){
+  if(chatPollTimer) clearInterval(chatPollTimer);
+  chatPollTimer = setInterval(async () => {
+    const log = await loadChat();
+    const panel = document.getElementById('chatPanel');
+    if(panel.classList.contains('open')){
+      renderChat();
+    } else {
+      const diff = log.length - lastChatCount;
+      if(diff > 0 && lastChatCount > 0){
+        const b = document.getElementById('chatBadge');
+        b.textContent = diff;
+        b.style.display = 'block';
+      }
+      lastChatCount = log.length;
+    }
+  }, 5000);
+}
+function stopChatPoll(){ if(chatPollTimer){ clearInterval(chatPollTimer); chatPollTimer = null; } }
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+/* ═══════════════════════════════════════════════════════════
+        HEARTBEAT
+   ═══════════════════════════════════════════════════════════ */
+let hbTimer = null, checkTimer = null;
 
 function startHeartbeat(){
   const s = getSession();
   if(!s) return;
-  if(hbInterval) clearInterval(hbInterval);
-  if(kickCheckInterval) clearInterval(kickCheckInterval);
+  stopHeartbeat();
 
-  const hb = async () => {
-    const payload = JSON.stringify({
-      username: s.username,
-      role: s.role,
-      ts: Date.now(),
-      game: (window.__currentGame || 'Gist Loader Pro'),
-      ua: navigator.userAgent.substring(0, 60)
-    });
-    await kvSet('u_' + s.username, payload);
+  const doHb = async () => {
+    const online = await loadOnline();
+    online[s.username] = { role: s.role, ts: Date.now() };
+    await saveOnline(online);
   };
-  hb();
-  hbInterval = setInterval(hb, 60000);
+  doHb();
+  hbTimer = setInterval(doHb, 60000);
 
-  // Check kick/block
-  const check = async () => {
-    const b = await kvGet('block_' + s.username);
-    if(b === '1'){ toast('🚫 Bạn đã bị chặn!'); stopHeartbeat(); saveSession(null); setTimeout(() => location.reload(), 2500); return; }
-    const k = await kvGet('kick_' + s.username);
-    if(k){ await kvDelete('kick_' + s.username); toast('👢 Bạn đã bị admin kick!'); stopHeartbeat(); saveSession(null); setTimeout(() => location.reload(), 2000); }
+  const doCheck = async () => {
+    const blocks = await loadBlocks();
+    if(blocks[s.username]){
+      toast('🚫 Bạn đã bị chặn!');
+      stopHeartbeat(); saveSession(null);
+      setTimeout(() => location.reload(), 2500);
+      return;
+    }
+    const kicks = await loadKicks();
+    if(kicks[s.username]){
+      delete kicks[s.username];
+      await saveKicks(kicks);
+      toast('👢 Bạn đã bị admin kick!');
+      stopHeartbeat(); saveSession(null);
+      setTimeout(() => location.reload(), 2000);
+    }
+    // Update role nếu admin đổi
+    const users = getUsers();
+    if(users[s.username] && users[s.username].role !== s.role){
+      s.role = users[s.username].role;
+      saveSession(s);
+      toast('👑 Role của bạn đã đổi thành ' + s.role);
+    }
   };
-  check();
-  kickCheckInterval = setInterval(check, 20000);
+  doCheck();
+  checkTimer = setInterval(doCheck, 20000);
 }
-
 function stopHeartbeat(){
-  if(hbInterval){ clearInterval(hbInterval); hbInterval = null; }
-  if(kickCheckInterval){ clearInterval(kickCheckInterval); kickCheckInterval = null; }
+  if(hbTimer){ clearInterval(hbTimer); hbTimer = null; }
+  if(checkTimer){ clearInterval(checkTimer); checkTimer = null; }
 }
 
 /* ═══════════════════════════════════════════════════════════
-                    ADMIN PANEL
+        ADMIN PANEL
    ═══════════════════════════════════════════════════════════ */
 function switchAdminTab(t){
-  ['key','user','tool'].forEach(k => {
-    document.getElementById('adminTab' + k.charAt(0).toUpperCase() + k.slice(1)).style.display = (k === t) ? 'block' : 'none';
-    document.getElementById('atab' + k.charAt(0).toUpperCase() + k.slice(1)).classList.toggle('active', k === t);
+  ['key','user','code','tool'].forEach(k => {
+    const id = 'adminTab' + k.charAt(0).toUpperCase() + k.slice(1);
+    const el = document.getElementById(id);
+    if(el) el.style.display = (k === t) ? 'block' : 'none';
+    const btn = document.getElementById('atab' + k.charAt(0).toUpperCase() + k.slice(1));
+    if(btn) btn.classList.toggle('active', k === t);
   });
   if(t === 'key') adminRefreshKeys();
   if(t === 'user') adminRefreshUsers();
+  if(t === 'code') adminRefreshCodes();
+  if(t === 'tool') updateSysInfo();
 }
 
 function randomKey(len, prefix){
   const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
   for(let i = 0; i < len; i++) s += c[Math.floor(Math.random() * c.length)];
-  // Chia thành nhóm 4 ký tự cho dễ đọc
   const groups = s.match(/.{1,4}/g) || [s];
   let result = groups.join('-');
   if(prefix) result = prefix.toUpperCase() + '-' + result;
@@ -505,206 +690,314 @@ function randomKey(len, prefix){
 
 async function adminGenerateKeys(){
   const count = Math.max(1, Math.min(50, parseInt(document.getElementById('keyCount').value) || 1));
-  const len = Math.max(8, Math.min(32, parseInt(document.getElementById('keyLen').value) || 16));
+  const maxUses = Math.max(1, Math.min(999, parseInt(document.getElementById('keyMaxUses').value) || 1));
   const prefix = document.getElementById('keyPrefix').value.trim();
   const s = getSession();
   if(!s || s.role !== 'admin'){ toast('Không có quyền'); return; }
 
-  toast('⏳ Đang tạo ' + count + ' key...');
+  toast('⏳ Đang tạo...');
+  const keys = await loadKeys();
   const created = [];
   for(let i = 0; i < count; i++){
-    const k = randomKey(len, prefix);
-    const payload = JSON.stringify({
+    const k = randomKey(16, prefix);
+    keys[k] = {
       key: k,
       createdBy: s.username,
       createdAt: Date.now(),
-      used: false,
-      usedBy: null
-    });
-    const ok = await kvSet('key_' + k, payload);
-    if(ok) created.push(k);
+      maxUses: maxUses,
+      usedBy: []
+    };
+    created.push(k);
   }
-  toast('✅ Đã tạo ' + created.length + ' key');
+  const ok = await saveKeys(keys);
+  if(ok) toast('✅ Đã tạo ' + created.length + ' key (max ' + maxUses + ' user/key)');
+  else toast('⚠ Lỗi kvdb — thử lại');
   adminRefreshKeys();
 }
 
 async function adminRefreshKeys(){
-  const list = await kvList();
-  const keys = [];
-  for(const k of list){
-    if(typeof k === 'string' && k.startsWith('key_')){
-      const data = await kvGet(k);
-      if(data){ try { keys.push(JSON.parse(data)); } catch {} }
-    }
-  }
-  keys.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-  const used = keys.filter(k => k.used).length;
-  document.getElementById('statKeyCount').textContent = keys.length;
-  document.getElementById('statKeyUsed').textContent = used;
-  document.getElementById('statKeyFree').textContent = keys.length - used;
+  const keys = await loadKeys();
+  const list = Object.values(keys).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  let totalUsed = 0, totalSlots = 0;
+  list.forEach(k => {
+    totalUsed += (k.usedBy || []).length;
+    totalSlots += (k.maxUses || 1);
+  });
+  document.getElementById('statKeyCount').textContent = list.length;
+  document.getElementById('statKeyUsed').textContent = totalUsed;
+  document.getElementById('statKeyFree').textContent = Math.max(0, totalSlots - totalUsed);
 
   const el = document.getElementById('adminKeyList');
-  if(keys.length === 0){ el.innerHTML = '<div class="empty">Chưa có key nào.</div>'; return; }
-  el.innerHTML = keys.map((k, i) =>
-    '<div class="key-item' + (k.used ? ' used' : '') + '">' +
-      '<code>' + k.key + '</code>' +
-      '<div style="display:flex;gap:4px;">' +
-        '<button class="small green" onclick="copyKey(\'' + k.key.replace(/'/g, "\\'") + '\')">📋</button>' +
-        '<button class="small red" onclick="adminDeleteKey(\'' + k.key.replace(/'/g, "\\'") + '\')">🗑️</button>' +
+  if(list.length === 0){ el.innerHTML = '<div class="empty">Chưa có key.</div>'; return; }
+  el.innerHTML = list.map(k => {
+    const used = (k.usedBy || []).length;
+    const max = k.maxUses || 1;
+    const full = used >= max;
+    const usedNames = (k.usedBy || []).join(', ') || '—';
+    return '<div class="key-item' + (full ? ' used' : '') + '">' +
+      '<div style="flex:1;min-width:120px;">' +
+        '<code>' + k.key + '</code>' +
+        '<div style="font-size:.62rem;color:#666;margin-top:3px;">' +
+          '👥 ' + used + '/' + max + ' user · ' + usedNames +
+        '</div>' +
       '</div>' +
-    '</div>'
-  ).join('');
+      '<div style="display:flex;gap:4px;">' +
+        '<button class="small green" onclick="copyKey(\'' + k.key + '\')">📋</button>' +
+        '<button class="small red" onclick="adminDeleteKey(\'' + k.key + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
 function copyKey(k){
-  navigator.clipboard.writeText(k).then(() => toast('Đã copy: ' + k.substring(0, 20) + '...'));
+  navigator.clipboard.writeText(k).then(() => toast('Đã copy: ' + k));
 }
-
 async function adminDeleteKey(k){
   if(!confirm('Xóa key ' + k + '?')) return;
-  await kvDelete('key_' + k);
-  toast('Đã xóa key');
+  const keys = await loadKeys();
+  delete keys[k];
+  await saveKeys(keys);
+  toast('Đã xóa');
   adminRefreshKeys();
 }
-
 async function adminDeleteAllKeys(){
-  if(!confirm('XÓA TẤT CẢ KEY? Không thể hoàn tác!')) return;
-  const list = await kvList();
-  let cnt = 0;
-  for(const k of list){
-    if(typeof k === 'string' && k.startsWith('key_')){ await kvDelete(k); cnt++; }
-  }
-  toast('Đã xóa ' + cnt + ' key');
+  if(!confirm('XÓA TẤT CẢ KEY?')) return;
+  await saveKeys({});
+  toast('Đã xóa hết');
   adminRefreshKeys();
 }
 
 async function adminRefreshUsers(){
-  const list = await kvList();
-  const users = [];
-  let blockedCnt = 0;
+  const users = getUsers();
+  const online = await loadOnline();
+  const blocks = await loadBlocks();
   const now = Date.now();
 
-  for(const k of list){
-    if(typeof k === 'string' && k.startsWith('u_')){
-      const data = await kvGet(k);
-      if(data){
-        try {
-          const u = JSON.parse(data);
-          // Chỉ tính là online nếu ts trong 5 phút
-          u.online = (now - u.ts) < 300000;
-          users.push(u);
-          const b = await kvGet('block_' + u.username);
-          if(b === '1'){ u.blocked = true; blockedCnt++; }
-        } catch {}
-      }
-    }
+  // Clean online old
+  let dirty = false;
+  for(const n in online){
+    if((now - online[n].ts) > 300000){ delete online[n]; dirty = true; }
   }
-  users.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  if(dirty) await saveOnline(online);
 
-  const online = users.filter(u => u.online).length;
-  document.getElementById('statOnline').textContent = online;
-  document.getElementById('statBlocked').textContent = blockedCnt;
-  document.getElementById('statTotalAcc').textContent = Object.keys(getUsers()).length;
+  const allNames = new Set([...Object.keys(users), ...Object.keys(online)]);
+  const list = [...allNames].map(n => ({
+    name: n,
+    role: users[n] ? (users[n].role || 'user') : (online[n] ? online[n].role : 'user'),
+    online: !!online[n] && (now - online[n].ts) < 300000,
+    blocked: !!blocks[n],
+    lastSeen: online[n] ? online[n].ts : 0
+  }));
+
+  document.getElementById('statOnline').textContent = list.filter(u => u.online).length;
+  document.getElementById('statBlocked').textContent = list.filter(u => u.blocked).length;
+  document.getElementById('statTotalAcc').textContent = Object.keys(users).length;
 
   const el = document.getElementById('adminUserList');
-  if(users.length === 0){ el.innerHTML = '<div class="empty">Không có ai online.</div>'; }
-  else {
-    el.innerHTML = users.map(u => {
-      const onlineDot = u.online ? '🟢' : '⚫';
-      const adminBadge = u.role === 'admin' ? ' <span style="color:#ff9800;font-size:.6rem;">👑</span>' : '';
-      const nameClass = u.blocked ? 'user-row-name blocked' : 'user-row-name';
-      const lastSeen = new Date(u.ts).toLocaleTimeString('vi-VN');
-      return '<div class="user-row">' +
-        '<div class="user-row-head">' +
-          '<div class="' + nameClass + '">' + onlineDot + ' ' + u.username + adminBadge + '</div>' +
-          '<div class="user-row-meta">' + lastSeen + '</div>' +
-        '</div>' +
-        '<div class="user-row-actions">' +
-          (u.blocked
-            ? '<button class="small green" onclick="adminUnblockName(\'' + u.username + '\')">✅ Bỏ chặn</button>'
-            : '<button class="small red" onclick="adminBlockName(\'' + u.username + '\')">🚫 Chặn</button>') +
-          '<button class="small orange" onclick="adminKickName(\'' + u.username + '\')">👢 Kick</button>' +
-          '<button class="small gray" onclick="adminDeleteAccName(\'' + u.username + '\')">🗑️</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
+  if(list.length === 0){ el.innerHTML = '<div class="empty">Chưa có user.</div>'; return; }
 
-  // Local accounts list
-  const accounts = getUsers();
-  const accNames = Object.keys(accounts);
-  const el2 = document.getElementById('adminAccList');
-  if(accNames.length === 0){ el2.innerHTML = '<div class="empty">Chưa có tài khoản.</div>'; }
-  else {
-    el2.innerHTML = accNames.map(name => {
-      const a = accounts[name];
-      const created = new Date(a.createdAt).toLocaleDateString('vi-VN');
-      return '<div class="key-item">' +
-        '<code style="color:#2196f3;">👤 ' + name + ' <span style="color:#666;font-size:.6rem;">(' + created + ')</span></code>' +
-        '<div style="display:flex;gap:4px;">' +
-          '<button class="small red" onclick="adminDeleteAccName(\'' + name + '\')">🗑️</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
+  // Sort: online first, then role priority
+  const roleRank = { admin: 0, mod: 1, vip: 2, user: 3 };
+  list.sort((a, b) => {
+    if(a.online !== b.online) return a.online ? -1 : 1;
+    return (roleRank[a.role] || 9) - (roleRank[b.role] || 9);
+  });
+
+  el.innerHTML = list.map(u => {
+    const dot = u.online ? '🟢' : '⚫';
+    const icon = roleIcon(u.role);
+    const nameClass = u.blocked ? 'user-row-name blocked' : 'user-row-name';
+    const lastSeen = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString('vi-VN') : '—';
+    return '<div class="user-row">' +
+      '<div class="user-row-head">' +
+        '<div class="' + nameClass + '">' + dot + ' ' + icon + ' ' + u.name + '</div>' +
+        '<div class="user-row-meta">' + lastSeen + '</div>' +
+      '</div>' +
+      '<div class="user-row-actions">' +
+        '<select class="role-select" onchange="adminChangeRole(\'' + u.name + '\', this.value)">' +
+          ['user','vip','mod','admin'].map(r =>
+            '<option value="' + r + '"' + (r === u.role ? ' selected' : '') + '>' + roleIcon(r) + ' ' + r.toUpperCase() + '</option>'
+          ).join('') +
+        '</select>' +
+        (u.blocked
+          ? '<button class="small green" onclick="adminUnblockName(\'' + u.name + '\')">✅ Bỏ</button>'
+          : '<button class="small red" onclick="adminBlockName(\'' + u.name + '\')">🚫 Chặn</button>') +
+        '<button class="small orange" onclick="adminKickName(\'' + u.name + '\')">👢 Kick</button>' +
+        '<button class="small gray" onclick="adminDeleteAccName(\'' + u.name + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function adminChangeRole(name, newRole){
+  const users = getUsers();
+  if(!users[name]) users[name] = { passHash: '', role: newRole, createdAt: Date.now() };
+  users[name].role = newRole;
+  saveUsers(users);
+  toast('👑 ' + name + ' → ' + newRole.toUpperCase());
+  adminRefreshUsers();
 }
 
 async function adminBlockName(name){
-  await kvSet('block_' + name, '1');
+  const blocks = await loadBlocks();
+  blocks[name] = 1;
+  await saveBlocks(blocks);
   toast('🚫 Đã chặn ' + name);
   adminRefreshUsers();
 }
 async function adminUnblockName(name){
-  await kvDelete('block_' + name);
+  const blocks = await loadBlocks();
+  delete blocks[name];
+  await saveBlocks(blocks);
   toast('✅ Đã bỏ chặn ' + name);
   adminRefreshUsers();
 }
 async function adminKickName(name){
-  await kvSet('kick_' + name, Date.now().toString());
-  toast('👢 Đã gửi lệnh kick ' + name);
+  const kicks = await loadKicks();
+  kicks[name] = Date.now();
+  await saveKicks(kicks);
+  toast('👢 Đã gửi kick ' + name);
 }
 async function adminDeleteAccName(name){
-  if(!confirm('Xóa tài khoản "' + name + '"? Không thể hoàn tác!')) return;
+  if(!confirm('Xóa "' + name + '"?')) return;
   const users = getUsers();
   delete users[name];
   saveUsers(users);
-  await kvDelete('u_' + name);
-  await kvDelete('block_' + name);
+  const online = await loadOnline();
+  delete online[name];
+  await saveOnline(online);
   toast('🗑️ Đã xóa ' + name);
   adminRefreshUsers();
 }
 
+async function adminRefreshCodes(){
+  const codes = await loadCodes();
+  const list = Object.values(codes).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const el = document.getElementById('adminCodeList');
+  if(list.length === 0){ el.innerHTML = '<div class="empty">Chưa có code nào.</div>'; return; }
+  el.innerHTML = list.map((c, i) => {
+    const time = new Date(c.ts).toLocaleString('vi-VN');
+    const icon = roleIcon(c.role || 'user');
+    const preview = (c.code || '').substring(0, 300);
+    const full = (c.code || '');
+    return '<div class="hist-item">' +
+      '<div class="hist-head">' +
+        '<span class="hist-time">' + icon + ' ' + c.owner + ' · ' + time + '</span>' +
+        '<span class="hist-badge badge-ask">' + (c.mode || '?').toUpperCase() + '</span>' +
+      '</div>' +
+      '<div style="font-size:.65rem;color:#888;">📦 ' + full.length.toLocaleString('vi-VN') + ' ký tự · 🔗 ' + (c.rawUrl || '').substring(0, 50) + '...</div>' +
+      '<div class="code-view" id="codeView_' + i + '">' + escapeHtml(preview) + (full.length > 300 ? '\n...(còn ' + (full.length - 300) + ' ký tự)' : '') + '</div>' +
+      '<div class="hist-actions">' +
+        '<button class="small blue" onclick="adminToggleCode(' + i + ')" id="codeBtn_' + i + '">👁️ Xem đầy đủ</button>' +
+        '<button class="small green" onclick="adminCopyCode(\'' + c.id + '\')">📋 Copy code</button>' +
+        '<button class="small gray" onclick="window.open(\'' + (c.rawUrl || '') + '\', \'_blank\')">🌐 Gist</button>' +
+        '<button class="small red" onclick="adminDeleteCode(\'' + c.id + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+const _codeStore = {};
+async function adminToggleCode(i){
+  const codes = await loadCodes();
+  const list = Object.values(codes).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const c = list[i];
+  if(!c) return;
+  const el = document.getElementById('codeView_' + i);
+  const btn = document.getElementById('codeBtn_' + i);
+  if(_codeStore[i]){
+    el.textContent = (c.code || '').substring(0, 300) + ((c.code || '').length > 300 ? '\n...(rút gọn)' : '');
+    btn.textContent = '👁️ Xem đầy đủ';
+    _codeStore[i] = false;
+  } else {
+    el.textContent = c.code || '';
+    btn.textContent = '🔽 Thu gọn';
+    _codeStore[i] = true;
+  }
+}
+async function adminCopyCode(id){
+  const codes = await loadCodes();
+  if(codes[id]) navigator.clipboard.writeText(codes[id].code).then(() => toast('Đã copy code'));
+}
+async function adminDeleteCode(id){
+  if(!confirm('Xóa code này?')) return;
+  const codes = await loadCodes();
+  delete codes[id];
+  await saveCodes(codes);
+  toast('Đã xóa');
+  adminRefreshCodes();
+}
+
+async function adminSaveMenu(){
+  const template = document.getElementById('menuEditor').value;
+  await kvSet('menutemplate', template);
+  toast(template ? '✅ Đã lưu menu tùy chỉnh' : '✅ Đã reset menu mặc định');
+}
+async function adminResetMenu(){
+  document.getElementById('menuEditor').value = '';
+  await kvSet('menutemplate', '');
+  toast('🔄 Đã reset');
+}
+
 function adminBlockUser(){
-  const n = document.getElementById('toolUser').value.trim();
-  if(!n){ toast('Nhập tên user'); return; }
+  const n = normalizeName(document.getElementById('toolUser').value);
+  if(!n){ toast('Nhập tên'); return; }
   adminBlockName(n);
 }
 function adminUnblockUser(){
-  const n = document.getElementById('toolUser').value.trim();
-  if(!n){ toast('Nhập tên user'); return; }
+  const n = normalizeName(document.getElementById('toolUser').value);
+  if(!n){ toast('Nhập tên'); return; }
   adminUnblockName(n);
 }
 function adminKickUser(){
-  const n = document.getElementById('toolUser').value.trim();
-  if(!n){ toast('Nhập tên user'); return; }
+  const n = normalizeName(document.getElementById('toolUser').value);
+  if(!n){ toast('Nhập tên'); return; }
   adminKickName(n);
 }
+function adminSetRole(){
+  const n = normalizeName(document.getElementById('toolUser').value);
+  const r = document.getElementById('toolRole').value.trim().toLowerCase();
+  if(!n || !r){ toast('Nhập tên + role'); return; }
+  if(!['admin','mod','vip','user'].includes(r)){ toast('Role không hợp lệ'); return; }
+  adminChangeRole(n, r);
+}
 function adminDeleteAccount(){
-  const n = document.getElementById('toolDelUser').value.trim();
-  if(!n){ toast('Nhập tên user'); return; }
+  const n = normalizeName(document.getElementById('toolDelUser').value);
+  if(!n){ toast('Nhập tên'); return; }
   adminDeleteAccName(n);
 }
-function adminResetLocal(){
-  if(!confirm('Reset toàn bộ dữ liệu LOCAL (lịch sử, tài khoản)?\n(Không ảnh hưởng kvdb)')) return;
-  localStorage.removeItem('glpHistory');
-  localStorage.removeItem('glpUsers');
-  toast('🧹 Đã reset local');
-  location.reload();
+function adminRefreshAll(){
+  adminRefreshKeys();
+  adminRefreshUsers();
+  adminRefreshCodes();
+  updateSysInfo();
+  loadMenuEditor();
+}
+async function loadMenuEditor(){
+  const t = await kvGet('menutemplate');
+  document.getElementById('menuEditor').value = t || '';
+}
+function updateSysInfo(){
+  const s = getSession();
+  const users = getUsers();
+  document.getElementById('sysInfo').innerHTML =
+    'User: <b>' + (s ? s.username : '?') + '</b> (' + (s ? s.role : '?') + ')<br>' +
+    'Tài khoản local: <b>' + Object.keys(users).length + '</b><br>' +
+    'Bucket: <b>' + KV_BUCKET + '</b><br>' +
+    'Thời gian: ' + new Date().toLocaleString('vi-VN');
+}
+async function adminPurgeAll(){
+  if(!confirm('⚠️ XÓA TOÀN BỘ DATA trên kvdb? Không hoàn tác!')) return;
+  if(!confirm('CHẮC CHẮN? Lần cuối!')) return;
+  const keys = await kvList();
+  let n = 0;
+  for(const k of keys){ await kvDelete(k); n++; }
+  toast('Đã xóa ' + n + ' mục');
+  adminRefreshAll();
 }
 
 /* ═══════════════════════════════════════════════════════════
-                    CORE FUNCTIONS (từ bản gốc)
+        CORE (từ bản gốc)
    ═══════════════════════════════════════════════════════════ */
 let currentMode = 'ask';
 let currentGist = null;
@@ -720,19 +1013,12 @@ function setMode(m){
   document.querySelectorAll('.mode').forEach(e => e.classList.toggle('active', e.dataset.mode === m));
   document.getElementById('keyCard').style.display = (m === 'none') ? 'none' : 'block';
 }
-function genKey(){
-  const c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let s = '';
-  for(let i = 0; i < 24; i++) s += c[Math.floor(Math.random() * c.length)];
-  document.getElementById('key').value = s;
-}
 function saveToken(){
   const t = document.getElementById('token').value.trim();
   if(!t){ toast('Chưa nhập'); return; }
   if(!t.startsWith('ghp_') && !t.startsWith('github_pat_')){ toast('Token sai'); return; }
   localStorage.setItem('ghToken', t);
-  toast('Đã lưu');
-  updateTokenInfo();
+  toast('Đã lưu'); updateTokenInfo();
 }
 function clearToken(){
   localStorage.removeItem('ghToken');
@@ -757,28 +1043,22 @@ function loadFile(e){
   const r = new FileReader();
   r.onload = ev => {
     document.getElementById('code').value = ev.target.result;
-    updateSize();
-    toast('Đã tải file');
+    updateSize(); toast('Đã tải file');
   };
   r.readAsText(f);
 }
-function clearCode(){
-  document.getElementById('code').value = '';
-  updateSize();
-}
+function clearCode(){ document.getElementById('code').value = ''; updateSize(); }
 function updateSize(){
   const len = document.getElementById('code').value.length;
   document.getElementById('sizeInfo').textContent = len > 0 ? len.toLocaleString('vi-VN') + ' ký tự' : 'Chưa có code';
 }
 
-/* ===== CRYPTO ===== */
+/* CRYPTO */
 function deriveKeyTable(masterKey){
   const table = new Uint8Array(256);
   for(let i = 0; i < 256; i++){
     let h = i;
-    for(let j = 0; j < masterKey.length; j++){
-      h = (h * 31 + (masterKey.charCodeAt(j) & 0xFF) + j) & 0xFF;
-    }
+    for(let j = 0; j < masterKey.length; j++) h = (h * 31 + (masterKey.charCodeAt(j) & 0xFF) + j) & 0xFF;
     table[i] = h;
   }
   return table;
@@ -802,15 +1082,13 @@ function encryptBytes(plainBytes, key){
   const out = new Uint8Array(data.length);
   let prev = 0, prev2 = 0;
   for(let i = 0; i < data.length; i++){
-    const b = data[i];
-    const k = table[i & 0xFF];
+    const b = data[i]; const k = table[i & 0xFF];
     let e = b ^ k;
     e = (e + (i & 0xFF)) & 0xFF;
     e = e ^ prev;
     e = e ^ ((prev2 * 7 + 13) & 0xFF);
     out[i] = e;
-    prev2 = prev;
-    prev = e;
+    prev2 = prev; prev = e;
   }
   return out;
 }
@@ -823,15 +1101,13 @@ function bytesToBase64(bytes){
   return btoa(bin);
 }
 
-/* ===== LUA DECODE ===== */
 function luaDecodeCode(){
   return `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 for i=1,#__b64chars do __b64map[__b64chars:sub(i,i)]=i-1 end
 local function __b64decode(s)
   s=s:gsub("[^A-Za-z0-9+/=]","")
-  local out={}
-  local i=1
+  local out={}; local i=1
   while i<=#s do
     local a=__b64map[s:sub(i,i)] or 0
     local b=__b64map[s:sub(i+1,i+1)] or 0
@@ -849,18 +1125,14 @@ local function __deriveTable(masterKey)
   local t={}
   for i=0,255 do
     local h=i
-    for j=1,#masterKey do
-      h=(h*31+masterKey:byte(j)+(j-1))%256
-    end
+    for j=1,#masterKey do h=(h*31+masterKey:byte(j)+(j-1))%256 end
     t[i+1]=h
   end
   return t
 end
 local function __decrypt(enc,masterKey)
   local tbl=__deriveTable(masterKey)
-  local out={}
-  local prev=0
-  local prev2=0
+  local out={}; local prev=0; local prev2=0
   for i=1,#enc do
     local e=enc:byte(i)
     local idx=bit32.band(i-1,255)
@@ -870,14 +1142,13 @@ local function __decrypt(enc,masterKey)
     local b=bit32.band(x-(i-1),255)
     local v=bit32.bxor(b,k)
     out[i]=string.char(v)
-    prev2=prev
-    prev=e
+    prev2=prev; prev=e
   end
   return table.concat(out)
 end`;
 }
 
-function buildFullLoader(payloadB64, key, mode){
+function buildFullLoader(payloadB64, key, mode, menuCfg){
   const decodeCode = luaDecodeCode();
   if(mode === 'embed'){
     return `-- Gist Loader Pro
@@ -889,6 +1160,12 @@ if __data:sub(1,5)~="KLP3\\n" then warn("[Loader] Failed") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
   }
+
+  const title = (menuCfg && menuCfg.title) || '🔒 Nhập key để mở script';
+  const ph = (menuCfg && menuCfg.placeholder) || 'Nhập key (auto chạy khi đúng)';
+  const accent = (menuCfg && menuCfg.accent) || '#00e676';
+  const esc = s => String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+
   return `-- Gist Loader Pro
 local __payload=[[${payloadB64}]]
 ${decodeCode}
@@ -913,7 +1190,7 @@ sk.Thickness=2
 local tt=Instance.new("TextLabel")
 tt.Size=UDim2.new(1,0,0,36)
 tt.BackgroundTransparency=1
-tt.Text="🔒 Nhập key để mở script"
+tt.Text="${esc(title)}"
 tt.TextColor3=Color3.fromRGB(0,230,118)
 tt.Font=Enum.Font.GothamBold
 tt.TextSize=16
@@ -923,7 +1200,7 @@ bx.Size=UDim2.new(1,-20,0,42)
 bx.Position=UDim2.new(0,10,0,42)
 bx.BackgroundColor3=Color3.fromRGB(8,8,12)
 bx.TextColor3=Color3.fromRGB(255,255,255)
-bx.PlaceholderText="Nhập key (auto chạy khi đúng)"
+bx.PlaceholderText="${esc(ph)}"
 bx.Text=""
 bx.Font=Enum.Font.Gotham
 bx.TextSize=14
@@ -995,7 +1272,6 @@ task.wait(0.1)
 if bx and bx.Parent then pcall(function() bx:CaptureFocus() end) end`;
 }
 
-/* ===== GITHUB API ===== */
 async function createGist(content, filename){
   const token = localStorage.getItem('ghToken');
   if(!token) throw new Error('Chưa có token');
@@ -1003,16 +1279,12 @@ async function createGist(content, filename){
   body.files[filename] = { content: content };
   const r = await fetch('https://api.github.com/gists', {
     method: 'POST',
-    headers: {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if(!r.ok){
-    if(r.status === 401) throw new Error('Token sai/hết hạn');
-    if(r.status === 403) throw new Error('Token thiếu quyền gist');
+    if(r.status === 401) throw new Error('Token sai');
+    if(r.status === 403) throw new Error('Thiếu quyền gist');
     throw new Error('GitHub ' + r.status);
   }
   const data = await r.json();
@@ -1026,36 +1298,21 @@ async function updateGist(gistId, filename, content){
   body.files[filename] = { content: content };
   const r = await fetch('https://api.github.com/gists/' + gistId, {
     method: 'PATCH',
-    headers: {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  if(!r.ok){
-    if(r.status === 404) throw new Error('Gist không tồn tại');
-    if(r.status === 401) throw new Error('Token sai');
-    throw new Error('GitHub ' + r.status);
-  }
+  if(!r.ok) throw new Error('GitHub ' + r.status);
   const data = await r.json();
   return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
 }
 
-/* ===== HISTORY ===== */
-function getHistory(){
-  try { return JSON.parse(localStorage.getItem('glpHistory') || '[]'); }
-  catch { return []; }
-}
-function setHistory(h){
-  localStorage.setItem('glpHistory', JSON.stringify(h));
-  renderHistory();
-}
+/* HISTORY */
+function getHistory(){ return LS.get('glpHistory', []); }
+function setHistory(h){ LS.set('glpHistory', h); renderHistory(); }
 function saveHistory(item){
   const h = getHistory();
   const idx = h.findIndex(x => x.id === item.id);
-  if(idx >= 0) h[idx] = item;
-  else h.unshift(item);
+  if(idx >= 0) h[idx] = item; else h.unshift(item);
   if(h.length > 30) h.length = 30;
   setHistory(h);
 }
@@ -1083,37 +1340,30 @@ function renderHistory(){
   }).join('');
 }
 function loadHistItem(idx){
-  const h = getHistory(); const item = h[idx];
-  if(!item) return;
+  const h = getHistory(); const item = h[idx]; if(!item) return;
   document.getElementById('code').value = item.script || '';
   document.getElementById('key').value = item.key || '';
-  setMode(item.mode || 'ask');
-  updateSize();
-  toast('Đã load script + key + mode');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setMode(item.mode || 'ask'); updateSize();
+  toast('Đã load'); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 async function updateHistItem(idx){
-  const h = getHistory(); const item = h[idx];
-  if(!item) return;
-  if(!item.id){ toast('Gist cũ không có ID'); return; }
+  const h = getHistory(); const item = h[idx]; if(!item) return;
+  if(!item.id){ toast('Gist cũ'); return; }
   const currentCode = document.getElementById('code').value.trim();
-  if(!currentCode){ toast('Chưa có code để update'); return; }
-  if(!confirm('Update gist ' + item.id.substring(0,8) + '...?')) return;
-
-  const btn = event.target;
-  btn.disabled = true; btn.textContent = '⏳';
+  if(!currentCode){ toast('Chưa có code'); return; }
+  if(!confirm('Update gist?')) return;
+  const btn = event.target; btn.disabled = true; btn.textContent = '⏳';
   try {
     let uploadContent, key = '';
-    if(currentMode === 'none'){
-      uploadContent = currentCode;
-    } else {
+    if(currentMode === 'none'){ uploadContent = currentCode; }
+    else {
       key = document.getElementById('key').value.trim();
-      if(!key){ toast('Cần key'); return; }
-      if(key.length < 6){ toast('Key từ 6 ký tự'); return; }
+      if(!key || key.length < 6){ toast('Key từ 6 ký tự'); btn.disabled = false; btn.textContent = '♻️ Update'; return; }
       const plainBytes = strToBytes(currentCode);
       const encBytes = encryptBytes(plainBytes, key);
       const b64 = bytesToBase64(encBytes);
-      uploadContent = buildFullLoader(b64, key, currentMode);
+      const menuCfg = await getMenuCfg();
+      uploadContent = buildFullLoader(b64, key, currentMode, menuCfg);
     }
     const result = await updateGist(item.id, item.filename, uploadContent);
     const h2 = getHistory();
@@ -1122,44 +1372,35 @@ async function updateHistItem(idx){
     h2[idx].time = new Date().toLocaleString('vi-VN');
     h2[idx].rawUrl = result.rawUrl;
     setHistory(h2);
-    toast('✅ Đã update gist!');
+    toast('✅ Đã update!');
   } catch(e){ toast('❌ ' + e.message); }
   btn.disabled = false; btn.textContent = '♻️ Update';
 }
 function copyHistLoader(idx){
-  const h = getHistory(); const item = h[idx];
-  if(!item) return;
-  const loader = 'loadstring(game:HttpGet("' + item.rawUrl + '"))()';
-  navigator.clipboard.writeText(loader).then(() => toast('Đã copy!'));
+  const h = getHistory(); const item = h[idx]; if(!item) return;
+  navigator.clipboard.writeText('loadstring(game:HttpGet("' + item.rawUrl + '"))()').then(() => toast('Đã copy!'));
 }
 function deleteHistItem(idx){
-  const h = getHistory();
-  if(!h[idx]) return;
-  if(!confirm('Xóa mục này khỏi lịch sử?')) return;
-  h.splice(idx, 1);
-  setHistory(h);
-  toast('Đã xóa');
+  const h = getHistory(); if(!h[idx]) return;
+  if(!confirm('Xóa?')) return;
+  h.splice(idx, 1); setHistory(h); toast('Đã xóa');
 }
 function clearHistory(){
   if(!confirm('Xóa TOÀN BỘ lịch sử?')) return;
-  localStorage.removeItem('glpHistory');
-  renderHistory();
-  toast('Đã xóa hết');
+  localStorage.removeItem('glpHistory'); renderHistory(); toast('Đã xóa');
 }
 function exportHistory(){
   const h = getHistory();
-  if(h.length === 0){ toast('Lịch sử trống'); return; }
+  if(h.length === 0){ toast('Trống'); return; }
   const blob = new Blob([JSON.stringify(h, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'gist_loader_history_' + Date.now() + '.json';
+  a.download = 'glp_history_' + Date.now() + '.json';
   a.click();
-  toast('Đã export ' + h.length + ' items');
 }
 function importHistory(){ document.getElementById('importFile').click(); }
 function handleImport(e){
-  const f = e.target.files[0];
-  if(!f) return;
+  const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = ev => {
     try {
@@ -1176,14 +1417,18 @@ function handleImport(e){
       merged.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
       if(merged.length > 30) merged.length = 30;
       setHistory(merged);
-      toast('✅ Import ' + imported.length + ' items');
-    } catch(err){ toast('❌ File JSON sai'); }
+      toast('✅ Import ' + imported.length);
+    } catch(err){ toast('❌ JSON sai'); }
   };
-  r.readAsText(f);
-  e.target.value = '';
+  r.readAsText(f); e.target.value = '';
 }
 
-/* ===== MAIN GEN ===== */
+async function getMenuCfg(){
+  const raw = await kvGet('menutemplate');
+  if(!raw || raw.trim() === '') return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+
 async function gen(){
   const s = getSession();
   if(!s){ toast('Chưa đăng nhập'); return; }
@@ -1195,8 +1440,24 @@ async function gen(){
   let key = '';
   if(currentMode !== 'none'){
     key = document.getElementById('key').value.trim();
-    if(!key){ key = 'KLP' + Math.random().toString(36).substring(2, 20); document.getElementById('key').value = key; }
-    if(key.length < 6){ toast('Key từ 6 ký tự'); return; }
+    if(!key || key.length < 6){ toast('Cần key admin cấp (≥6 ký tự)'); return; }
+
+    // Validate key với kvdb
+    const keys = await loadKeys();
+    const kData = keys[key];
+    if(!kData){ toast('❌ Key không tồn tại hoặc chưa được admin cấp'); return; }
+    const usedBy = kData.usedBy || [];
+    const max = kData.maxUses || 1;
+    if(!usedBy.includes(s.username)){
+      if(usedBy.length >= max){
+        toast('❌ Key đã hết lượt (' + usedBy.length + '/' + max + ')');
+        return;
+      }
+      usedBy.push(s.username);
+      kData.usedBy = usedBy;
+      keys[key] = kData;
+      await saveKeys(keys);
+    }
   }
 
   const btn = document.getElementById('btn');
@@ -1213,11 +1474,12 @@ async function gen(){
       const plainBytes = strToBytes(raw);
       const encBytes = encryptBytes(plainBytes, key);
       const b64 = bytesToBase64(encBytes);
-      uploadContent = buildFullLoader(b64, key, currentMode);
+      const menuCfg = await getMenuCfg();
+      uploadContent = buildFullLoader(b64, key, currentMode, menuCfg);
       filename = 'loader_' + rand + '.lua';
     }
 
-    btn.textContent = '⏳ Đang upload Gist...';
+    btn.textContent = '⏳ Uploading...';
     const gist = await createGist(uploadContent, filename);
     currentGist = gist.gistUrl;
 
@@ -1234,16 +1496,25 @@ async function gen(){
       document.getElementById('keyOut').style.display = 'none';
     }
 
+    // Save history
     saveHistory({
       id: gist.id, filename: gist.filename, rawUrl: gist.rawUrl, gistUrl: gist.gistUrl,
       key: key, mode: currentMode, script: raw, scriptSize: raw.length,
-      owner: s.username,
-      time: new Date().toLocaleString('vi-VN')
+      owner: s.username, time: new Date().toLocaleString('vi-VN')
     });
+
+    // Save to codes (for admin visibility)
+    const codes = await loadCodes();
+    codes[gist.id] = {
+      id: gist.id, owner: s.username, role: s.role,
+      code: raw, mode: currentMode, rawUrl: gist.rawUrl,
+      key: key, ts: Date.now()
+    };
+    await saveCodes(codes);
 
     const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
-    toast('✅ Xong! Copy dòng xanh');
+    toast('✅ Xong!');
   } catch(e){
     toast('❌ ' + e.message);
     document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
@@ -1257,32 +1528,26 @@ function cp(id){
 }
 function openGist(){ if(currentGist) window.open(currentGist, '_blank'); }
 
-/* ═══════════════════════════════════════════════════════════
-                    INIT
-   ═══════════════════════════════════════════════════════════ */
+/* INIT */
 document.getElementById('code').addEventListener('input', updateSize);
-
-// Enter to submit login
 ['loginUser','loginPass','loginPass2'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => {
-    if(e.key === 'Enter') doAuth();
-  });
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key === 'Enter') doAuth(); });
 });
 
-// Auto login nếu có session
-(function init(){
+(async function init(){
   const s = getSession();
   if(s){
-    if(s.role === 'admin'){
+    const users = getUsers();
+    // Nếu là admin gốc, luôn cho vào
+    if(s.username === ADMIN_USER){
+      s.role = 'admin'; saveSession(s);
+      enterApp();
+    } else if(users[s.username]){
+      s.role = users[s.username].role || 'user';
+      saveSession(s);
       enterApp();
     } else {
-      // Check user still valid (chưa bị xóa)
-      const users = getUsers();
-      if(!users[s.username]){
-        saveSession(null);
-      } else {
-        enterApp();
-      }
+      saveSession(null);
     }
   }
 })();
