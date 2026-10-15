@@ -40,7 +40,7 @@
 <body>
 <div class="c">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">Auto-submit key • Progress bar • Không treo</p>
+  <p class="s">Fix hash bug • Auto-submit • Không treo</p>
 
   <div class="card">
     <div class="ct">🔑 GitHub Token</div>
@@ -67,7 +67,7 @@
     <div class="modes">
       <div class="mode active" data-mode="ask" onclick="setMode('ask')">
         <span class="ic">🔒</span>Hỏi key
-        <div class="d">Auto-submit</div>
+        <div class="d">Auto chạy</div>
       </div>
       <div class="mode" data-mode="embed" onclick="setMode('embed')">
         <span class="ic">🎁</span>Nhúng key
@@ -166,21 +166,19 @@ function updateSize(){
   document.getElementById('sizeInfo').textContent = len > 0 ? len.toLocaleString('vi-VN') + ' ký tự' : 'Chưa có code';
 }
 
-/* ===== ENCRYPT ===== */
+/* ===== KEY DERIVATION (SIMPLE, DETERMINISTIC) ===== */
 function deriveKeyTable(masterKey){
   const table = new Uint8Array(256);
-  for(let i=0;i<256;i++){
-    let h = 2166136261 ^ (i * 2654435761);
-    const mixKey = masterKey + ':' + i;
-    for(let j=0;j<mixKey.length;j++){
-      h ^= mixKey.charCodeAt(j);
-      h = Math.imul(h, 16777619);
+  for(let i = 0; i < 256; i++){
+    let h = i;
+    for(let j = 0; j < masterKey.length; j++){
+      h = (h * 31 + (masterKey.charCodeAt(j) & 0xFF) + j) & 0xFF;
     }
-    h = h >>> 0;
-    table[i] = h & 0xFF;
+    table[i] = h;
   }
   return table;
 }
+
 function strToBytes(str){
   const bytes=[];
   for(let i=0;i<str.length;i++){
@@ -193,8 +191,9 @@ function strToBytes(str){
   }
   return bytes;
 }
+
 function encryptBytes(plainBytes, key){
-  const MAGIC = [75,76,80,50,10];
+  const MAGIC = [75,76,80,51,10]; // "KLP3\n"
   const data = MAGIC.concat(plainBytes);
   const table = deriveKeyTable(key);
   const out = new Uint8Array(data.length);
@@ -212,6 +211,7 @@ function encryptBytes(plainBytes, key){
   }
   return out;
 }
+
 function bytesToBase64(bytes){
   let bin='';
   const CHUNK=8192;
@@ -221,7 +221,7 @@ function bytesToBase64(bytes){
   return btoa(bin);
 }
 
-/* ===== LUA DECODE (với YIELD để không treo) ===== */
+/* ===== LUA DECODE (khớp 100% với JS) ===== */
 function luaDecodeCode(){
   return `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -246,46 +246,35 @@ end
 local function __deriveTable(masterKey)
   local t={}
   for i=0,255 do
-    local h=bit32.bxor(2166136261, bit32.band(i*2654435761, 4294967295))
-    local mixKey=masterKey..":"..tostring(i)
-    for j=1,#mixKey do
-      h=bit32.bxor(h, mixKey:byte(j))
-      h=bit32.band(h*16777619, 4294967295)
+    local h=i
+    for j=1,#masterKey do
+      h=(h*31+masterKey:byte(j)+(j-1))%256
     end
-    t[i]=bit32.band(h,255)
+    t[i+1]=h
   end
   return t
 end
-local function __decrypt(enc, masterKey, progressCb)
-  local table=__deriveTable(masterKey)
+local function __decrypt(enc,masterKey)
+  local tbl=__deriveTable(masterKey)
   local out={}
   local prev=0
   local prev2=0
-  local total=#enc
-  local batch=0
-  for i=1,total do
+  for i=1,#enc do
     local e=enc:byte(i)
     local idx=bit32.band(i-1,255)
-    local k=table[idx]
-    local x=bit32.bxor(e, prev)
-    x=bit32.bxor(x, bit32.band(prev2*7+13,255))
+    local k=tbl[idx+1]
+    local x=bit32.bxor(e,prev)
+    x=bit32.bxor(x,bit32.band(prev2*7+13,255))
     local b=bit32.band(x-(i-1),255)
-    local v=bit32.bxor(b, k)
+    local v=bit32.bxor(b,k)
     out[i]=string.char(v)
     prev2=prev
     prev=e
-    batch=batch+1
-    if batch>=2048 then
-      batch=0
-      if progressCb then progressCb(i, total) end
-      task.wait()
-    end
   end
   return table.concat(out)
 end`;
 }
 
-/* ===== BUILD FULL LOADER ===== */
 function buildFullLoader(payloadB64, key, mode){
   const decodeCode = luaDecodeCode();
   
@@ -295,7 +284,7 @@ local __payload=[[${payloadB64}]]
 ${decodeCode}
 local __enc=__b64decode(__payload)
 local __data=__decrypt(__enc,"${key}")
-if __data:sub(1,5)~="KLP2\\n" then warn("[Loader] Failed") return end
+if __data:sub(1,5)~="KLP3\\n" then warn("[Loader] Failed") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
   }
@@ -306,7 +295,6 @@ local __payload=[[${payloadB64}]]
 ${decodeCode}
 local __enc=__b64decode(__payload)
 local Players=game:GetService("Players")
-local UIS=game:GetService("UserInputService")
 local plr=Players.LocalPlayer
 local pg=plr:WaitForChild("PlayerGui")
 local sg=Instance.new("ScreenGui")
@@ -336,7 +324,7 @@ bx.Size=UDim2.new(1,-20,0,42)
 bx.Position=UDim2.new(0,10,0,42)
 bx.BackgroundColor3=Color3.fromRGB(8,8,12)
 bx.TextColor3=Color3.fromRGB(255,255,255)
-bx.PlaceholderText="Nhập key (auto chạy khi đúng)..."
+bx.PlaceholderText="Nhập key (auto chạy khi đúng)"
 bx.Text=""
 bx.Font=Enum.Font.Gotham
 bx.TextSize=14
@@ -365,33 +353,30 @@ st.TextSize=12
 st.Parent=f
 
 local __busy=false
-local __tried={}
+local __lastTried=""
 
 local function __try(k)
   if __busy then return end
-  if #k==0 then return end
-  if __tried[k] then return end
+  if #k < 4 then return end
+  if k == __lastTried then return end
+  __lastTried=k
   __busy=true
   st.Text="⏳ Đang giải mã..."
   st.TextColor3=Color3.fromRGB(255,200,100)
   task.wait(0.05)
-  local ok2,data=pcall(function()
-    return __decrypt(__enc,k,function(i,total)
-      local pct=math.floor(i/total*100)
-      st.Text="⏳ Đang giải mã... "..pct.."%"
-    end)
-  end)
+  local ok2,data=pcall(__decrypt,__enc,k)
   if not ok2 or not data then
     st.Text="❌ Lỗi giải mã"
     st.TextColor3=Color3.fromRGB(255,80,80)
     __busy=false
+    __lastTried=""
     return
   end
-  if data:sub(1,5)~="KLP2\\n" then
+  if data:sub(1,5)~="KLP3\\n" then
     st.Text="❌ Key sai!"
     st.TextColor3=Color3.fromRGB(255,80,80)
-    __tried[k]=true
     __busy=false
+    __lastTried=""
     return
   end
   st.Text="✅ Đang chạy..."
@@ -403,16 +388,11 @@ local function __try(k)
   __busy=false
 end
 
-local __lastText=""
 local __debounceTick=0
 bx:GetPropertyChangedSignal("Text"):Connect(function()
-  local t=bx.Text
-  if t==__lastText then return end
-  __lastText=t
-  if #t<4 then return end
   __debounceTick=__debounceTick+1
   local myTick=__debounceTick
-  task.delay(0.8,function()
+  task.delay(0.7,function()
     if myTick==__debounceTick and not __busy then
       __try(bx.Text)
     end
@@ -427,14 +407,12 @@ bt.MouseButton1Click:Connect(function()
   __try(bx.Text)
 end)
 
--- Tự focus vào textbox khi mở
 task.wait(0.1)
 if bx and bx.Parent then
   pcall(function() bx:CaptureFocus() end)
 end`;
 }
 
-/* ===== GITHUB GIST ===== */
 async function createGist(content, filename){
   const token = localStorage.getItem('ghToken');
   if(!token) throw new Error('Chưa có token');
@@ -459,7 +437,6 @@ async function createGist(content, filename){
   return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
 }
 
-/* ===== MAIN ===== */
 async function gen(){
   const raw = document.getElementById('code').value;
   if(!raw.trim()){ toast('Chưa có code'); return; }
