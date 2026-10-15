@@ -30,7 +30,7 @@
   .res{display:none;margin-top:12px}.res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#00e676;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap}
+  .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#00e676;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap;max-height:200px;overflow-y:auto}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:90%;text-align:center}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
   .modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
@@ -80,20 +80,14 @@
   .user-row-meta{font-size:.62rem;color:#666}
   .user-row-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;align-items:center}
   .role-select{padding:4px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:5px;color:#fff;font-size:.65rem;font-family:inherit;outline:none}
-  .role-select:disabled{opacity:.5;cursor:not-allowed}
   .code-view{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.65rem;color:#aaa;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;margin-top:6px;border:1px solid #1f1f2e}
   .hint-box{background:#0a0a0f;border-left:3px solid #ff9800;padding:8px 10px;border-radius:6px;font-size:.68rem;color:#aaa;line-height:1.5;margin-top:8px}
   .hint-box code{background:#12121a;padding:1px 5px;border-radius:3px;color:#ff9800;font-family:monospace}
-  .status-pill{display:inline-block;font-size:.6rem;padding:3px 8px;border-radius:6px;font-weight:700}
-  .pill-ok{background:#00c853;color:#000}
-  .pill-fail{background:#f44336;color:#fff}
-  .pill-local{background:#ff9800;color:#000}
   .rate-info{font-size:.7rem;color:#888;margin-top:6px;padding:6px 10px;background:#0a0a0f;border-radius:6px;text-align:center}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <div class="login-title">🚀 Gist Loader Pro</div>
@@ -110,23 +104,21 @@
   </div>
 </div>
 
-<!-- ═══ USER BAR ═══ -->
 <div class="user-bar" id="userBar" style="display:none">
   <span id="userBarName">...</span>
   <span id="userBarBadge"></span>
   <button class="logout-btn" onclick="logout()">Thoát</button>
 </div>
 
-<!-- ═══ MAIN APP ═══ -->
 <div class="c" id="appRoot" style="display:none">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">Gist storage • Rate limit • Menu Lua editor</p>
+  <p class="s">Dynamic template • Auto-update • Rate limit</p>
 
   <div class="card" id="gistCard">
-    <div class="ct">📦 Config Gist <span style="font-size:.6rem;color:#666;text-transform:none;">(admin share cho bạn)</span></div>
+    <div class="ct">📦 Config Gist</div>
     <input type="text" id="userGistId" placeholder="Dán Gist ID vào đây...">
     <button class="green" style="width:100%;margin-top:8px;" onclick="userConnectGist()">🔗 Kết nối</button>
-    <div class="info" id="userGistInfo">Chưa kết nối — Admin key sẽ dùng mặc định</div>
+    <div class="info" id="userGistInfo">Chưa kết nối</div>
   </div>
 
   <div class="card">
@@ -163,7 +155,7 @@
     <div class="ct">🔑 Key mã hóa code</div>
     <input type="text" id="key" placeholder="Key (16+ ký tự)">
     <button class="gray" style="width:100%;margin-top:8px;" onclick="genKey()">🎲 Random 24 ký tự</button>
-    <div class="info">Key này dùng để mã hóa code của bạn. Ai có key mới mở được script.</div>
+    <div class="info">Key này mã hóa code của bạn. Ai có key mới mở được script.</div>
   </div>
 
   <div class="card">
@@ -175,7 +167,7 @@
       <div class="code" id="loader"></div>
       <div class="row" style="margin-top:10px;">
         <button class="green" onclick="cp('loader')">📋 Copy loadstring</button>
-        <button class="gray" onclick="openGist()">🌐 Gist</button>
+        <button class="gray" onclick="openGist()">🌐 Payload Gist</button>
       </div>
       <div class="lbl" id="keyOutLbl" style="display:none;">🔑 Key (gửi cho user)</div>
       <div class="lnk" id="keyOut" style="display:none;"></div>
@@ -193,16 +185,12 @@
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
 
-  <!-- ═══ MOD PANEL ═══ -->
   <div class="card" id="modPanel" style="display:none;border:2px solid #2196f3">
     <div class="ct" style="color:#2196f3">🛡️ MOD TOOLS</div>
-    <div class="info">Mod có thể kick user thường (không kick được Mod/VIP/Admin)</div>
     <button class="blue" style="width:100%;" onclick="modRefreshUsers()">🔄 Refresh</button>
-    <div class="lbl" style="margin-top:10px;">Người dùng</div>
-    <div id="modUserList"><div class="empty">Đang tải...</div></div>
+    <div id="modUserList" style="margin-top:10px;"><div class="empty">Đang tải...</div></div>
   </div>
 
-  <!-- ═══ ADMIN PANEL ═══ -->
   <div class="card admin-panel" id="adminPanel" style="display:none">
     <div class="ct">👑 ADMIN PANEL</div>
     <div class="admin-tabs">
@@ -212,7 +200,6 @@
       <button class="admin-tab" id="atabTool" onclick="switchAdminTab('tool')">🛠️ Tool</button>
     </div>
 
-    <!-- TAB USER -->
     <div id="adminTabUser">
       <div class="stats-row">
         <div class="stat-box"><div class="n" id="statOnline">-</div><div class="l">Online</div></div>
@@ -224,15 +211,14 @@
       <div id="adminUserList"><div class="empty">Đang tải...</div></div>
     </div>
 
-    <!-- TAB MENU LUA -->
     <div id="adminTabMenu" style="display:none">
       <div class="hint-box">
         📜 <b>Menu Lua</b> — code chạy khi user chạy loadstring.<br>
-        Biến có sẵn: <code>{{PAYLOAD}}</code>, <code>{{KEY}}</code>, <code>{{ADMINKEY}}</code>.<br>
-        <b>ADMIN KEY</b> = key mở admin panel trong game Roblox.
+        <b>Loadstring là shell</b> — khi user chạy sẽ fetch template mới nhất từ Config Gist, nên sửa ở đây là tất cả user (cũ & mới) đều dùng template mới.<br>
+        Biến: <code>{{PAYLOAD}}</code>, <code>{{KEY}}</code>, <code>{{ADMINKEY}}</code>, <code>{{WEBUSER}}</code>
       </div>
 
-      <div class="lbl" style="margin-top:14px;">🔑 ADMIN KEY (mở admin trong game)</div>
+      <div class="lbl" style="margin-top:14px;">🔑 ADMIN KEY</div>
       <input type="text" id="luaAdminKey" placeholder="key-admin12309833">
 
       <div class="lbl" style="margin-top:14px;">📜 Template "Hỏi key"</div>
@@ -253,17 +239,15 @@
       <div id="luaSaveStatus" style="text-align:center;font-size:.72rem;margin-top:10px;min-height:16px;font-weight:600;"></div>
     </div>
 
-    <!-- TAB CODE -->
     <div id="adminTabCode" style="display:none">
       <div class="lbl">Code đã upload bởi user</div>
       <div id="adminCodeList"><div class="empty">Đang tải...</div></div>
       <button class="orange" style="width:100%;margin-top:10px;" onclick="adminRefreshCodes()">🔄 Refresh</button>
     </div>
 
-    <!-- TAB TOOL -->
     <div id="adminTabTool" style="display:none">
       <div class="hint-box">
-        💡 <b>Config Gist</b> — nơi lưu admin key + menu Lua + rate limit + blocks.<br>
+        💡 <b>Config Gist</b> — nơi lưu admin key + menu Lua + rate limit.<br>
         Admin tạo 1 lần → share ID cho user.
       </div>
       <div class="lbl" style="margin-top:14px;">📦 Config Gist ID</div>
@@ -278,8 +262,8 @@
       <div class="lbl" style="margin-top:14px;">⚖️ Rate limit / ngày (0 = vô hạn)</div>
       <input type="number" id="rlUser" placeholder="User" value="3" min="0">
       <input type="number" id="rlVip" placeholder="VIP" value="10" min="0">
-      <input type="number" id="rlMod" placeholder="Mod (0=∞)" value="0" min="0">
-      <input type="number" id="rlAdmin" placeholder="Admin (0=∞)" value="0" min="0">
+      <input type="number" id="rlMod" placeholder="Mod" value="0" min="0">
+      <input type="number" id="rlAdmin" placeholder="Admin" value="0" min="0">
       <button class="orange" style="width:100%;margin-top:8px;" onclick="toolSaveRateLimits()">💾 Lưu rate limit</button>
 
       <div class="lbl" style="margin-top:14px;">🛠️ Chặn / Kick / Đổi role</div>
@@ -300,17 +284,14 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════
-   OBFUSCATED ADMIN CREDS (XOR 0x5A)
+   CONSTANTS + OBFUSCATED ADMIN CREDS
    ═══════════════════════════════════════════════════════ */
 const _xor = a => a.map(c => String.fromCharCode(c ^ 0x5A)).join('');
 const ADMIN_USER = _xor([41,49,63,54,63,46,53,52,56,63,106]).toLowerCase();
 const ADMIN_PASS = _xor([41,49,63,54,63,46,53,52,105,111,110,99]);
 
-/* ═══════════════════════════════════════════════════════
-   GIST STORAGE
-   ═══════════════════════════════════════════════════════ */
 const CONFIG_GIST_KEY = 'glpConfigGistId';
-const CONFIG_CACHE_TTL = 5000;
+const CONFIG_CACHE_TTL = 3000;
 let _configCache = null;
 let _configCacheAt = 0;
 
@@ -318,6 +299,14 @@ const getConfigGistId = () => localStorage.getItem(CONFIG_GIST_KEY) || '';
 const setConfigGistId = id => { if(id) localStorage.setItem(CONFIG_GIST_KEY, id); else localStorage.removeItem(CONFIG_GIST_KEY); };
 const getGhToken = () => localStorage.getItem('ghToken') || '';
 
+const LS = {
+  get(k, def){ try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(def)); } catch { return def; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+/* ═══════════════════════════════════════════════════════
+   GIST STORAGE
+   ═══════════════════════════════════════════════════════ */
 async function fetchWithTimeout(url, opts = {}, timeoutMs = 6000){
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -359,12 +348,8 @@ async function saveRemoteConfig(cfg){
     headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }, 10000);
-  if(!r.ok){
-    const txt = await r.text();
-    throw new Error('GitHub ' + r.status + ': ' + txt.substring(0, 100));
-  }
-  _configCache = null;
-  _configCacheAt = 0;
+  if(!r.ok) throw new Error('GitHub ' + r.status);
+  _configCache = null; _configCacheAt = 0;
   return true;
 }
 
@@ -376,9 +361,7 @@ async function createConfigGist(){
     menuAsk: '',
     menuEmbed: '',
     rateLimits: { user: 3, vip: 10, mod: 0, admin: 0 },
-    blocks: {},
-    kicks: {},
-    roles: {},
+    blocks: {}, kicks: {}, roles: {},
     updatedAt: Date.now()
   };
   const body = {
@@ -394,8 +377,7 @@ async function createConfigGist(){
   if(!r.ok) throw new Error('GitHub ' + r.status);
   const data = await r.json();
   setConfigGistId(data.id);
-  _configCache = initial;
-  _configCacheAt = Date.now();
+  _configCache = initial; _configCacheAt = Date.now();
   return data.id;
 }
 
@@ -407,38 +389,18 @@ async function patchConfig(patch){
   };
   const merged = { ...cfg, ...patch, updatedAt: Date.now() };
   await saveRemoteConfig(merged);
-  _configCache = merged;
-  _configCacheAt = Date.now();
+  _configCache = merged; _configCacheAt = Date.now();
   return merged;
 }
 
-/* Getters */
 async function getBlocks(){ const c = await loadRemoteConfig(); return (c && c.blocks) || {}; }
 async function getKicks(){ const c = await loadRemoteConfig(); return (c && c.kicks) || {}; }
 async function getRoles(){ const c = await loadRemoteConfig(); return (c && c.roles) || {}; }
 async function getAdminKey(){ const c = await loadRemoteConfig(); return (c && c.adminKey) || 'key-admin12309833'; }
-async function getMenuTemplates(){
-  const c = await loadRemoteConfig();
-  return {
-    ask: (c && c.menuAsk) || DEFAULT_ASK,
-    embed: (c && c.menuEmbed) || DEFAULT_EMBED
-  };
-}
-async function getRateLimits(){
-  const c = await loadRemoteConfig();
-  return (c && c.rateLimits) || { user: 3, vip: 10, mod: 0, admin: 0 };
-}
+async function getRateLimits(){ const c = await loadRemoteConfig(); return (c && c.rateLimits) || { user: 3, vip: 10, mod: 0, admin: 0 }; }
 async function updateBlocks(b){ return patchConfig({ blocks: b }); }
 async function updateKicks(k){ return patchConfig({ kicks: k }); }
 async function updateRoles(r){ return patchConfig({ roles: r }); }
-
-/* ═══════════════════════════════════════════════════════
-   LOCAL STORAGE
-   ═══════════════════════════════════════════════════════ */
-const LS = {
-  get(k, def){ try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(def)); } catch { return def; } },
-  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
-};
 
 /* ═══════════════════════════════════════════════════════
    AUTH
@@ -450,7 +412,6 @@ const simpleHash = str => {
   return 'h_' + (h >>> 0).toString(36);
 };
 const normalizeName = u => u.toLowerCase().trim();
-
 const getUsers = () => LS.get('glpUsers', {});
 const saveUsers = u => LS.set('glpUsers', u);
 const getSession = () => LS.get('glpSession', null);
@@ -471,13 +432,10 @@ async function doAuth(){
   const p2 = document.getElementById('loginPass2').value;
   const msg = document.getElementById('loginMsg');
   const btn = document.getElementById('loginBtn');
-
   if(!u || !p){ msg.textContent = '⚠ Nhập đầy đủ'; return; }
   if(u.length < 3){ msg.textContent = '⚠ Tên từ 3 ký tự'; return; }
-
   btn.disabled = true; btn.textContent = '⏳...';
 
-  // ADMIN LOGIN
   if(u === ADMIN_USER && p === ADMIN_PASS){
     const users = getUsers();
     users[u] = users[u] || { passHash: simpleHash(p), createdAt: Date.now() };
@@ -489,11 +447,9 @@ async function doAuth(){
     enterApp();
     return;
   }
-
   if(loginMode === 'register' && u === ADMIN_USER){
-    msg.textContent = '⚠ Tên này không được dùng';
-    btn.disabled = false; btn.textContent = 'Đăng ký';
-    return;
+    msg.textContent = '⚠ Tên không được dùng';
+    btn.disabled = false; btn.textContent = 'Đăng ký'; return;
   }
 
   const users = getUsers();
@@ -501,12 +457,10 @@ async function doAuth(){
   const blocks = await getBlocks();
 
   if(loginMode === 'register'){
-    if(users[u]){ msg.textContent = '⚠ Tên đã tồn tại'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
-    if(roles[u] && roles[u] !== 'user'){ msg.textContent = '⚠ Tên đã được đăng ký'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
-    if(blocks[u]){ msg.textContent = '⚠ Tên này đã bị chặn'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
+    if(users[u] || roles[u]){ msg.textContent = '⚠ Tên đã tồn tại'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
+    if(blocks[u]){ msg.textContent = '⚠ Đã bị chặn'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
     if(p.length < 4){ msg.textContent = '⚠ Mật khẩu từ 4 ký tự'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
     if(p !== p2){ msg.textContent = '⚠ Mật khẩu không khớp'; btn.disabled = false; btn.textContent = 'Đăng ký'; return; }
-
     users[u] = { passHash: simpleHash(p), role: 'user', createdAt: Date.now() };
     saveUsers(users);
     saveSession({ username: u, role: 'user', loginAt: Date.now() });
@@ -516,12 +470,10 @@ async function doAuth(){
     return;
   }
 
-  // LOGIN
-  if(blocks[u]){ msg.textContent = '🚫 Tài khoản đã bị chặn'; msg.style.color = '#ff5252'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
+  if(blocks[u]){ msg.textContent = '🚫 Đã bị chặn'; msg.style.color = '#ff5252'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
   const acc = users[u];
-  if(!acc){ msg.textContent = '⚠ Tài khoản không tồn tại'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
+  if(!acc){ msg.textContent = '⚠ Không tồn tại'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
   if(acc.passHash !== simpleHash(p)){ msg.textContent = '⚠ Mật khẩu sai'; btn.disabled = false; btn.textContent = 'Đăng nhập'; return; }
-
   const role = roles[u] || acc.role || 'user';
   acc.role = role;
   saveUsers(users);
@@ -563,7 +515,6 @@ function logout(){
   saveSession(null);
   location.reload();
 }
-
 const roleIcon = role => ({ admin: '👑', mod: '🛡️', vip: '⭐', user: '💬' }[role] || '💬');
 
 /* ═══════════════════════════════════════════════════════
@@ -577,25 +528,22 @@ async function getMyIP(){
     try {
       const r = await fetchWithTimeout(url, {}, 4000);
       if(!r.ok) continue;
-      const data = await r.json();
-      if(data.ip){ _myIP = data.ip; return data.ip; }
-    } catch(e){ /* next */ }
+      const d = await r.json();
+      if(d.ip){ _myIP = d.ip; return d.ip; }
+    } catch(e){ }
   }
   _myIP = 'fp_' + (navigator.userAgent || '').length + '_' + (screen.width || 0) + '_' + (screen.height || 0);
   return _myIP;
 }
-function todayKey(){
-  const d = new Date();
-  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-}
+function todayKey(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+
 async function checkRateLimit(role){
   const limits = await getRateLimits();
   const max = limits[role] !== undefined ? limits[role] : 3;
   if(max === 0) return { allowed: true, used: 0, max: 0, unlimited: true };
   const ip = await getMyIP();
   const ipHash = simpleHash(ip).substring(0, 16);
-  const dateKey = todayKey();
-  const storageKey = 'glpRL_' + ipHash + '_' + dateKey;
+  const storageKey = 'glpRL_' + ipHash + '_' + todayKey();
   let data;
   try { data = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch { data = {}; }
   const used = data.count || 0;
@@ -603,8 +551,7 @@ async function checkRateLimit(role){
   return { allowed: true, used, max, ip, unlimited: false, _storageKey: storageKey, _data: data };
 }
 function recordUsage(info){
-  if(info.unlimited) return;
-  if(!info._storageKey) return;
+  if(info.unlimited || !info._storageKey) return;
   const data = info._data || {};
   data.count = (data.count || 0) + 1;
   data.lastAt = Date.now();
@@ -671,32 +618,54 @@ local function __decrypt(enc,k)
   return table.concat(out)
 end`;
 
+/* Admin Panel Lua trong game — đọc user từ kvdb */
 const LUA_ADMIN_PANEL = `local function __openAdminPanel()
-  local Players=game:GetService("Players")
-  local lp=Players.LocalPlayer
-  local pg=lp:WaitForChild("PlayerGui")
+  local HttpService=game:GetService("HttpService")
+  local KV_BUCKET="glp_webusers_v7"
+  local KV_BASE="https://kvdb.io/"..KV_BUCKET
+  local WEBUSER="{{WEBUSER}}"
   local sg=Instance.new("ScreenGui")
   sg.Name="GistLoaderAdmin"
   sg.ResetOnSpawn=false
-  sg.Parent=pg
+  sg.Parent=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
   local f=Instance.new("Frame")
-  f.Size=UDim2.new(0,380,0,440)
-  f.Position=UDim2.new(0.5,-190,0.5,-220)
+  f.Size=UDim2.new(0,400,0,480)
+  f.Position=UDim2.new(0.5,-200,0.5,-240)
   f.BackgroundColor3=Color3.fromRGB(15,15,22)
   f.BorderSizePixel=0
   f.Parent=sg
-  Instance.new("UICorner",f).CornerRadius=UDim.new(0,12)
+  Instance.new("UICorner",f).CornerRadius=UDim.new(0,14)
   local sk=Instance.new("UIStroke",f)
   sk.Color=Color3.fromRGB(255,152,0)
   sk.Thickness=2
   local tt=Instance.new("TextLabel")
-  tt.Size=UDim2.new(1,0,0,40)
+  tt.Size=UDim2.new(1,0,0,44)
   tt.BackgroundTransparency=1
-  tt.Text="👑 ADMIN PANEL (Lua)"
+  tt.Text="👑 ADMIN — "..WEBUSER
   tt.TextColor3=Color3.fromRGB(255,152,0)
   tt.Font=Enum.Font.GothamBold
-  tt.TextSize=18
+  tt.TextSize=16
   tt.Parent=f
+  local st=Instance.new("TextLabel")
+  st.Size=UDim2.new(1,-20,0,20)
+  st.Position=UDim2.new(0,10,0,48)
+  st.BackgroundTransparency=1
+  st.Text="Đang tải..."
+  st.TextColor3=Color3.fromRGB(140,140,160)
+  st.Font=Enum.Font.Gotham
+  st.TextSize=11
+  st.Parent=f
+  local sf=Instance.new("ScrollingFrame")
+  sf.Size=UDim2.new(1,-20,0,340)
+  sf.Position=UDim2.new(0,10,0,72)
+  sf.BackgroundTransparency=1
+  sf.BorderSizePixel=0
+  sf.ScrollBarThickness=4
+  sf.CanvasSize=UDim2.new(0,0,0,0)
+  sf.AutomaticCanvasSize=Enum.AutomaticSize.Y
+  sf.Parent=f
+  local lyt=Instance.new("UIListLayout",sf)
+  lyt.Padding=UDim.new(0,6)
   local cr=Instance.new("TextButton")
   cr.Size=UDim2.new(1,-20,0,36)
   cr.Position=UDim2.new(0,10,1,-46)
@@ -708,78 +677,137 @@ const LUA_ADMIN_PANEL = `local function __openAdminPanel()
   cr.Parent=f
   Instance.new("UICorner",cr).CornerRadius=UDim.new(0,8)
   cr.MouseButton1Click:Connect(function() sg:Destroy() end)
-  local sf=Instance.new("ScrollingFrame")
-  sf.Size=UDim2.new(1,-20,0,340)
-  sf.Position=UDim2.new(0,10,0,46)
-  sf.BackgroundTransparency=1
-  sf.BorderSizePixel=0
-  sf.ScrollBarThickness=4
-  sf.CanvasSize=UDim2.new(0,0,0,0)
-  sf.AutomaticCanvasSize=Enum.AutomaticSize.Y
-  sf.Parent=f
-  local lyt=Instance.new("UIListLayout",sf)
-  lyt.Padding=UDim.new(0,6)
-  local function refresh()
+  local function clearList()
     for _,c in ipairs(sf:GetChildren()) do
-      if c:IsA("Frame") or c:IsA("TextLabel") then c:Destroy() end
+      if c:IsA("Frame") then c:Destroy() end
     end
-    local hdr=Instance.new("TextLabel")
-    hdr.Size=UDim2.new(1,-8,0,24)
-    hdr.BackgroundTransparency=1
-    hdr.Text="🟢 Server có "..#Players:GetPlayers().." người"
-    hdr.TextColor3=Color3.fromRGB(0,230,118)
-    hdr.Font=Enum.Font.GothamBold
-    hdr.TextSize=13
-    hdr.TextXAlignment=Enum.TextXAlignment.Left
-    hdr.Parent=sf
-    for _,pl in ipairs(Players:GetPlayers()) do
+  end
+  local function httpGet(url)
+    local ok,res=pcall(function() return game:HttpGet(url) end)
+    if ok then return res end
+    return nil
+  end
+  local function httpPost(url,body)
+    local ok=pcall(function()
+      request({Url=url,Method="POST",Body=body,Headers={["Content-Type"]="application/json"}})
+    end)
+    return ok
+  end
+  local function refresh()
+    clearList()
+    st.Text="⏳ Đang tải..."
+    st.TextColor3=Color3.fromRGB(255,200,100)
+    local listRaw=httpGet(KV_BASE.."/?list=1")
+    if not listRaw then
+      st.Text="❌ Không kết nối database"
+      st.TextColor3=Color3.fromRGB(255,80,80)
+      return
+    end
+    local ok2,list=pcall(function() return HttpService:JSONDecode(listRaw) end)
+    if not ok2 or type(list)~="table" then
+      st.Text="❌ Lỗi parse"
+      st.TextColor3=Color3.fromRGB(255,80,80)
+      return
+    end
+    local users={}
+    for _,k in ipairs(list) do
+      if type(k)=="string" and k:sub(1,9)=="webuser_" then
+        local uRaw=httpGet(KV_BASE.."/"..k)
+        if uRaw then
+          local ok3,u=pcall(function() return HttpService:JSONDecode(uRaw) end)
+          if ok3 and type(u)=="table" then
+            table.insert(users,u)
+          end
+        end
+      end
+    end
+    st.Text="🟢 "..#users.." người đang dùng script web"
+    st.TextColor3=Color3.fromRGB(0,230,118)
+    if #users==0 then
+      local em=Instance.new("TextLabel")
+      em.Size=UDim2.new(1,-8,0,60)
+      em.BackgroundTransparency=1
+      em.Text="Chưa có ai đang dùng"
+      em.TextColor3=Color3.fromRGB(100,100,120)
+      em.Font=Enum.Font.Gotham
+      em.TextSize=12
+      em.Parent=sf
+      return
+    end
+    for _,u in ipairs(users) do
       local row=Instance.new("Frame")
-      row.Size=UDim2.new(1,-8,0,52)
+      row.Size=UDim2.new(1,-8,0,66)
       row.BackgroundColor3=Color3.fromRGB(8,8,12)
       row.BorderSizePixel=0
       row.Parent=sf
       Instance.new("UICorner",row).CornerRadius=UDim.new(0,8)
       local nm=Instance.new("TextLabel")
-      nm.Size=UDim2.new(1,-100,0,20)
+      nm.Size=UDim2.new(1,-160,0,18)
       nm.Position=UDim2.new(0,10,0,6)
       nm.BackgroundTransparency=1
-      nm.Text=pl.Name.." ("..pl.DisplayName..")"
+      nm.Text="👤 "..(u.username or "?").." ("..(u.role or "user")..")"
       nm.TextColor3=Color3.fromRGB(255,255,255)
       nm.Font=Enum.Font.GothamBold
       nm.TextSize=12
       nm.TextXAlignment=Enum.TextXAlignment.Left
       nm.Parent=row
-      local uid=Instance.new("TextLabel")
-      uid.Size=UDim2.new(1,-100,0,14)
-      uid.Position=UDim2.new(0,10,0,26)
-      uid.BackgroundTransparency=1
-      uid.Text="UserID: "..pl.UserId
-      uid.TextColor3=Color3.fromRGB(140,140,160)
-      uid.Font=Enum.Font.Gotham
-      uid.TextSize=10
-      uid.TextXAlignment=Enum.TextXAlignment.Left
-      uid.Parent=row
-      local kb=Instance.new("TextButton")
-      kb.Size=UDim2.new(0,80,0,26)
-      kb.Position=UDim2.new(1,-88,0,13)
-      kb.BackgroundColor3=Color3.fromRGB(230,80,80)
-      kb.Text="Kick"
-      kb.TextColor3=Color3.fromRGB(255,255,255)
-      kb.Font=Enum.Font.GothamBold
-      kb.TextSize=11
-      kb.Parent=row
-      Instance.new("UICorner",kb).CornerRadius=UDim.new(0,6)
-      kb.MouseButton1Click:Connect(function()
-        pcall(function() pl:Kick("Admin đã kick bạn") end)
-        task.wait(0.2)
-        refresh()
+      local gp=Instance.new("TextLabel")
+      gp.Size=UDim2.new(1,-160,0,14)
+      gp.Position=UDim2.new(0,10,0,26)
+      gp.BackgroundTransparency=1
+      gp.Text="🎮 "..(u.game or "Unknown")
+      gp.TextColor3=Color3.fromRGB(140,140,160)
+      gp.Font=Enum.Font.Gotham
+      gp.TextSize=10
+      gp.TextXAlignment=Enum.TextXAlignment.Left
+      gp.TextTruncate=Enum.TextTruncate.AtEnd
+      gp.Parent=row
+      local tp=Instance.new("TextLabel")
+      tp.Size=UDim2.new(1,-160,0,12)
+      tp.Position=UDim2.new(0,10,0,42)
+      tp.BackgroundTransparency=1
+      tp.Text="🕐 "..os.date("%H:%M:%S",u.ts or 0)
+      tp.TextColor3=Color3.fromRGB(100,100,125)
+      tp.Font=Enum.Font.Gotham
+      tp.TextSize=9
+      tp.TextXAlignment=Enum.TextXAlignment.Left
+      tp.Parent=row
+      local akb=Instance.new("TextButton")
+      akb.Size=UDim2.new(0,70,0,24)
+      akb.Position=UDim2.new(1,-160,0,20)
+      akb.BackgroundColor3=Color3.fromRGB(255,152,0)
+      akb.Text="Kick"
+      akb.TextColor3=Color3.fromRGB(0,0,0)
+      akb.Font=Enum.Font.GothamBold
+      akb.TextSize=11
+      akb.Parent=row
+      Instance.new("UICorner",akb).CornerRadius=UDim.new(0,6)
+      akb.MouseButton1Click:Connect(function()
+        httpPost(KV_BASE.."/kick_"..(u.username or ""),tostring(os.time()))
+        st.Text="👢 Đã gửi kick "..(u.username or "")
+        st.TextColor3=Color3.fromRGB(255,152,0)
+      end)
+      local abb=Instance.new("TextButton")
+      abb.Size=UDim2.new(0,70,0,24)
+      abb.Position=UDim2.new(1,-84,0,20)
+      abb.BackgroundColor3=Color3.fromRGB(220,60,80)
+      abb.Text="Block"
+      abb.TextColor3=Color3.fromRGB(255,255,255)
+      abb.Font=Enum.Font.GothamBold
+      abb.TextSize=11
+      abb.Parent=row
+      Instance.new("UICorner",abb).CornerRadius=UDim.new(0,6)
+      abb.MouseButton1Click:Connect(function()
+        httpPost(KV_BASE.."/block_"..(u.username or ""),"1")
+        st.Text="🚫 Đã block "..(u.username or "")
+        st.TextColor3=Color3.fromRGB(255,80,80)
       end)
     end
   end
   refresh()
   task.spawn(function()
     while sg.Parent do
-      task.wait(5)
+      task.wait(10)
       if sf.Parent then refresh() end
     end
   end)
@@ -790,7 +818,37 @@ local __payload=[[{{PAYLOAD}}]]
 ${LUA_DECODE}
 local __enc=__b64decode(__payload)
 local ADMIN_KEY="{{ADMINKEY}}"
+local WEBUSER="{{WEBUSER}}"
 ${LUA_ADMIN_PANEL}
+-- Heartbeat gửi kvdb
+task.spawn(function()
+  local HttpService=game:GetService("HttpService")
+  local KV_BUCKET="glp_webusers_v7"
+  local KV_BASE="https://kvdb.io/"..KV_BUCKET
+  local function post()
+    pcall(function()
+      local gameName="Unknown"
+      pcall(function()
+        local info=game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+        if info and info.Name then gameName=info.Name end
+      end)
+      local payload=HttpService:JSONEncode({
+        username=WEBUSER,role="user",game=gameName,place=game.PlaceId,ts=os.time()
+      })
+      request({
+        Url=KV_BASE.."/webuser_"..WEBUSER.."?expires_in=600",
+        Method="POST",
+        Body=payload,
+        Headers={["Content-Type"]="application/json"}
+      })
+    end)
+  end
+  post()
+  while true do
+    task.wait(120)
+    post()
+  end
+end)
 local Players=game:GetService("Players")
 local plr=Players.LocalPlayer
 local pg=plr:WaitForChild("PlayerGui")
@@ -910,11 +968,123 @@ if __data:sub(1,5)~="KLP3\\n" then warn("[Loader] Key invalid") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
 
-function buildLoaderFromTemplate(tmpl, payloadB64, key, adminKey){
-  return tmpl
-    .replace(/\{\{PAYLOAD\}\}/g, payloadB64)
-    .replace(/\{\{KEY\}\}/g, key)
-    .replace(/\{\{ADMINKEY\}\}/g, adminKey || 'key-admin12309833');
+/* ═══════════════════════════════════════════════════════
+   LOADSTRING SHELL — fetch template từ config gist runtime
+   ═══════════════════════════════════════════════════════ */
+function buildShell(configGistId, payloadB64, key, mode, webuser){
+  // Escape strings để nhúng vào Lua
+  const esc = s => String(s || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+  return `-- Gist Loader Pro Shell V7
+-- Loadstring này CHỈ chứa metadata, không chứa template cứng.
+-- Mỗi lần chạy sẽ fetch template mới nhất từ Config Gist.
+local __CFG_ID="${esc(configGistId)}"
+local __PAYLOAD="${esc(payloadB64)}"
+local __KEY="${esc(key)}"
+local __MODE="${esc(mode)}"
+local __WEBUSER="${esc(webuser)}"
+
+local HttpService=game:GetService("HttpService")
+local function __fetchGist(id)
+  local ok,r=pcall(function()
+    return game:HttpGet("https://api.github.com/gists/"..id.."?_="..tostring(os.time()))
+  end)
+  if not ok then return nil end
+  local ok2,d=pcall(function() return HttpService:JSONDecode(r) end)
+  if not ok2 then return nil end
+  return d
+end
+
+-- Đọc config từ gist
+local cfgGist=__fetchGist(__CFG_ID)
+local cfg={}
+if cfgGist and cfgGist.files and cfgGist.files["config.json"] then
+  local ok,c=pcall(function() return HttpService:JSONDecode(cfgGist.files["config.json"].content) end)
+  if ok and type(c)=="table" then cfg=c end
+end
+
+-- Chọn template
+local tmpl = nil
+if __MODE=="embed" then
+  tmpl = cfg.menuEmbed
+elseif __MODE=="ask" then
+  tmpl = cfg.menuAsk
+end
+
+-- Fallback mặc định nếu config trống
+if not tmpl or tmpl=="" then
+  if __MODE=="ask" then
+    warn("[Loader] Không có template trong Config Gist — dùng fallback")
+    tmpl = [[
+local __payload=[[{{PAYLOAD}}]]
+local HttpService=game:GetService("HttpService")
+local __enc=nil
+-- (fallback đơn giản — chỉ decrypt, không UI)
+warn("[Loader] Fallback mode chưa được hỗ trợ đầy đủ. Vui lòng liên hệ admin.")
+]]
+  else
+    tmpl = [[
+local __payload=[[{{PAYLOAD}}]]
+local function b64d(s)
+  local map={}
+  local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+  for i=1,#chars do map[chars:sub(i,i)]=i-1 end
+  s=s:gsub("[^A-Za-z0-9+/=]","")
+  local out={}; local i=1
+  while i<=#s do
+    local a=map[s:sub(i,i)] or 0
+    local b=map[s:sub(i+1,i+1)] or 0
+    local c=map[s:sub(i+2,i+2)] or 0
+    local d=map[s:sub(i+3,i+3)] or 0
+    local n=a*262144+b*4096+c*64+d
+    out[#out+1]=string.char(math.floor(n/65536)%256)
+    if s:sub(i+2,i+2)~="=" then out[#out+1]=string.char(math.floor(n/256)%256) end
+    if s:sub(i+3,i+3)~="=" then out[#out+1]=string.char(n%256) end
+    i=i+4
+  end
+  return table.concat(out)
+end
+local function dt(enc,k)
+  local t={}
+  for i=0,255 do
+    local h=i
+    for j=1,#k do h=(h*31+k:byte(j)+(j-1))%256 end
+    t[i+1]=h
+  end
+  local out={}; local prev=0; local prev2=0
+  for i=1,#enc do
+    local e=enc:byte(i)
+    local kk=t[bit32.band(i-1,255)+1]
+    local x=bit32.bxor(e,prev)
+    x=bit32.bxor(x,bit32.band(prev2*7+13,255))
+    local b=bit32.band(x-(i-1),255)
+    out[i]=string.char(bit32.bxor(b,kk))
+    prev2=prev; prev=e
+  end
+  return table.concat(out)
+end
+local data=dt(b64d(__payload),"{{KEY}}")
+if data:sub(1,5)~="KLP3\\n" then warn("[Loader] Key invalid") return end
+local ok,err=pcall(function() loadstring(data:sub(6))() end)
+if not ok then warn("[Loader] "..tostring(err)) end
+]]
+  end
+end
+
+-- Thay placeholder
+local adminKey = cfg.adminKey or "key-admin12309833"
+tmpl = tmpl:gsub("{{PAYLOAD}}", function() return __PAYLOAD end)
+tmpl = tmpl:gsub("{{KEY}}", function() return __KEY end)
+tmpl = tmpl:gsub("{{ADMINKEY}}", function() return adminKey end)
+tmpl = tmpl:gsub("{{WEBUSER}}", function() return __WEBUSER end)
+
+-- Chạy
+local fn,err = loadstring(tmpl)
+if not fn then
+  warn("[Loader] Compile error: "..tostring(err))
+  return
+end
+local ok2,runErr = pcall(fn)
+if not ok2 then warn("[Loader] Runtime error: "..tostring(runErr)) end`;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -925,7 +1095,6 @@ function startHeartbeat(){
   const s = getSession();
   if(!s) return;
   if(checkTimer) clearInterval(checkTimer);
-
   const doCheck = async () => {
     try {
       const blocks = await getBlocks();
@@ -953,7 +1122,7 @@ function startHeartbeat(){
         toast('👑 Role đổi thành ' + s.role);
         setTimeout(() => location.reload(), 1500);
       }
-    } catch(e){ /* silent */ }
+    } catch(e){ }
   };
   doCheck();
   checkTimer = setInterval(doCheck, 30000);
@@ -1025,13 +1194,11 @@ async function adminRefreshUsers(){
   }));
   document.getElementById('statBlocked').textContent = list.filter(u => u.blocked).length;
   document.getElementById('statTotalAcc').textContent = Object.keys(users).length;
-
   const el = document.getElementById('adminUserList');
   if(list.length === 0){ el.innerHTML = '<div class="empty">Chưa có user.</div>'; return; }
   const me = getSession();
   const roleRank = { admin: 0, mod: 1, vip: 2, user: 3 };
   list.sort((a, b) => (roleRank[a.role] || 9) - (roleRank[b.role] || 9));
-
   el.innerHTML = list.map(u => {
     const icon = roleIcon(u.role);
     const nameClass = u.blocked ? 'user-row-name blocked' : 'user-row-name';
@@ -1045,14 +1212,10 @@ async function adminRefreshUsers(){
           ).join('') +
         '</select>';
     return '<div class="user-row">' +
-      '<div class="user-row-head">' +
-        '<div class="' + nameClass + '">' + icon + ' ' + u.name + (isRootAdmin ? ' <span style="color:#ff9800;font-size:.6rem;">ROOT</span>' : '') + '</div>' +
-      '</div>' +
+      '<div class="user-row-head"><div class="' + nameClass + '">' + icon + ' ' + u.name + (isRootAdmin ? ' <span style="color:#ff9800;font-size:.6rem;">ROOT</span>' : '') + '</div></div>' +
       '<div class="user-row-actions">' +
         roleSelect +
-        (u.blocked
-          ? '<button class="small green" onclick="adminUnblockName(\'' + u.name + '\')">✅ Bỏ</button>'
-          : '<button class="small red" onclick="adminBlockName(\'' + u.name + '\')">🚫 Chặn</button>') +
+        (u.blocked ? '<button class="small green" onclick="adminUnblockName(\'' + u.name + '\')">✅ Bỏ</button>' : '<button class="small red" onclick="adminBlockName(\'' + u.name + '\')">🚫 Chặn</button>') +
         '<button class="small orange" onclick="adminKickName(\'' + u.name + '\')">👢</button>' +
         (isRootAdmin ? '' : '<button class="small gray" onclick="adminDeleteAccName(\'' + u.name + '\')">🗑️</button>') +
       '</div>' +
@@ -1074,32 +1237,17 @@ async function adminChangeRole(name, newRole){
     adminRefreshUsers();
   } catch(e){ toast('❌ ' + e.message); }
 }
-
 async function adminBlockName(name){
-  try {
-    const b = await getBlocks();
-    b[name] = 1;
-    await updateBlocks(b);
-    toast('🚫 Đã chặn ' + name);
-    adminRefreshUsers();
-  } catch(e){ toast('❌ ' + e.message); }
+  try { const b = await getBlocks(); b[name] = 1; await updateBlocks(b); toast('🚫 Đã chặn'); adminRefreshUsers(); }
+  catch(e){ toast('❌ ' + e.message); }
 }
 async function adminUnblockName(name){
-  try {
-    const b = await getBlocks();
-    delete b[name];
-    await updateBlocks(b);
-    toast('✅ Bỏ chặn ' + name);
-    adminRefreshUsers();
-  } catch(e){ toast('❌ ' + e.message); }
+  try { const b = await getBlocks(); delete b[name]; await updateBlocks(b); toast('✅ Bỏ chặn'); adminRefreshUsers(); }
+  catch(e){ toast('❌ ' + e.message); }
 }
 async function adminKickName(name){
-  try {
-    const k = await getKicks();
-    k[name] = Date.now();
-    await updateKicks(k);
-    toast('👢 Kick ' + name);
-  } catch(e){ toast('❌ ' + e.message); }
+  try { const k = await getKicks(); k[name] = Date.now(); await updateKicks(k); toast('👢 Kick ' + name); }
+  catch(e){ toast('❌ ' + e.message); }
 }
 async function adminDeleteAccName(name){
   if(name === ADMIN_USER){ toast('❌ Không xóa admin gốc'); return; }
@@ -1107,8 +1255,7 @@ async function adminDeleteAccName(name){
   try {
     const users = getUsers(); delete users[name]; saveUsers(users);
     const roles = await getRoles(); delete roles[name]; await updateRoles(roles);
-    toast('🗑️ Đã xóa ' + name);
-    adminRefreshUsers();
+    toast('🗑️ Đã xóa'); adminRefreshUsers();
   } catch(e){ toast('❌ ' + e.message); }
 }
 
@@ -1122,10 +1269,7 @@ async function adminRefreshCodes(){
     const icon = roleIcon(c.role || 'user');
     const preview = (c.code || '').substring(0, 200);
     return '<div class="hist-item">' +
-      '<div class="hist-head">' +
-        '<span class="hist-time">' + icon + ' ' + c.owner + ' · ' + time + '</span>' +
-        '<span class="hist-badge badge-ask">' + (c.mode || '?').toUpperCase() + '</span>' +
-      '</div>' +
+      '<div class="hist-head"><span class="hist-time">' + icon + ' ' + c.owner + ' · ' + time + '</span><span class="hist-badge badge-ask">' + (c.mode || '?').toUpperCase() + '</span></div>' +
       '<div style="font-size:.65rem;color:#888;">📦 ' + (c.code || '').length.toLocaleString('vi-VN') + ' ký tự</div>' +
       '<div class="code-view">' + escapeHtml(preview) + '</div>' +
       '<div class="hist-actions">' +
@@ -1156,7 +1300,7 @@ async function adminLoadLuaMenu(){
   document.getElementById('luaAdminKey').value = (cfg && cfg.adminKey) || 'key-admin12309833';
 }
 async function adminSaveLuaMenu(ev){
-  if(!getConfigGistId()){ toast('⚠ Chưa kết nối Config Gist (tab Tool)'); return; }
+  if(!getConfigGistId()){ toast('⚠ Chưa kết nối Config Gist'); return; }
   const btn = document.getElementById('btnSaveMenu');
   const status = document.getElementById('luaSaveStatus');
   const setStatus = (txt, color) => { status.textContent = txt; status.style.color = color; };
@@ -1167,8 +1311,8 @@ async function adminSaveLuaMenu(ev){
     const embed = document.getElementById('luaEmbedTmpl').value;
     const adminKey = document.getElementById('luaAdminKey').value.trim() || 'key-admin12309833';
     await patchConfig({ menuAsk: ask, menuEmbed: embed, adminKey });
-    setStatus('✅ Đã lưu! User khác thấy sau ~10 giây.', '#00e676');
-    toast('✅ Đã update menu + admin key');
+    setStatus('✅ Đã lưu! Mọi loadstring (cũ & mới) sẽ dùng template này.', '#00e676');
+    toast('✅ Đã update — áp dụng cho TẤT CẢ user');
   } catch(e){
     setStatus('❌ ' + e.message, '#f44336');
     toast('❌ ' + e.message);
@@ -1213,7 +1357,7 @@ async function toolConnectGist(){
   } catch(e){ toast('❌ ' + e.message); }
 }
 function toolDisconnectGist(){
-  if(!confirm('Ngắt kết nối Config Gist?')) return;
+  if(!confirm('Ngắt kết nối?')) return;
   setConfigGistId('');
   _configCache = null;
   toast('Đã ngắt');
@@ -1276,10 +1420,10 @@ async function updateGistInfo(){
     if(el) el.value = id;
     const cfg = await loadRemoteConfig();
     if(cfg){
-      info.innerHTML = '✅ Đã kết nối (' + id.substring(0, 10) + '...) · key admin hiện tại: <b>' + (cfg.adminKey || '?') + '</b>';
+      info.innerHTML = '✅ Đã kết nối (' + id.substring(0, 10) + '...) · admin key: <b>' + (cfg.adminKey || '?') + '</b>';
       info.style.color = '#00e676';
     } else {
-      info.textContent = '✅ ID đã lưu (không đọc được config, thử lại sau)';
+      info.textContent = '✅ ID đã lưu';
       info.style.color = '#ff9800';
     }
   }
@@ -1412,7 +1556,7 @@ function bytesToBase64(bytes){
 async function createGist(content, filename){
   const token = getGhToken();
   if(!token) throw new Error('Chưa có token');
-  const body = { description: 'Gist Loader', public: false, files: {} };
+  const body = { description: 'Gist Loader Payload', public: false, files: {} };
   body.files[filename] = { content: content };
   const r = await fetchWithTimeout('https://api.github.com/gists', {
     method: 'POST',
@@ -1449,9 +1593,8 @@ function renderHistory(){
     const keyLine = item.key ? '<div class="hist-key">🔑 ' + item.key + '</div>' : '';
     return '<div class="hist-item">' +
       '<div class="hist-head"><span class="hist-time">' + item.time + '</span><span class="hist-badge ' + badgeClass + '">' + badgeText + '</span></div>' +
-      '<div style="font-size:.68rem;color:#888;">📦 ' + (item.scriptSize || 0).toLocaleString('vi-VN') + ' · 👤 ' + (item.owner || 'unknown') + '</div>' +
+      '<div style="font-size:.68rem;color:#888;">📦 ' + (item.scriptSize || 0).toLocaleString('vi-VN') + ' · 👤 ' + (item.owner || '?') + '</div>' +
       keyLine +
-      '<div class="hist-url">🔗 ' + (item.rawUrl || '').substring(0, 60) + '...</div>' +
       '<div class="hist-actions">' +
         '<button class="small green" onclick="loadHistItem(' + idx + ')">📥 Load</button>' +
         '<button class="small gray" onclick="copyHistLoader(' + idx + ')">📋 Copy</button>' +
@@ -1469,7 +1612,7 @@ function loadHistItem(idx){
 }
 function copyHistLoader(idx){
   const h = getHistory(); const item = h[idx]; if(!item) return;
-  navigator.clipboard.writeText('loadstring(game:HttpGet("' + item.rawUrl + '"))()').then(() => toast('Đã copy!'));
+  navigator.clipboard.writeText(item.loadstring || ('loadstring(game:HttpGet("' + item.rawUrl + '"))()')).then(() => toast('Đã copy!'));
 }
 function deleteHistItem(idx){
   const h = getHistory(); if(!h[idx]) return;
@@ -1517,7 +1660,7 @@ function handleImport(e){
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
 
 /* ═══════════════════════════════════════════════════════
-   MAIN GENERATE
+   MAIN GENERATE — Tạo loadstring shell
    ═══════════════════════════════════════════════════════ */
 async function gen(){
   const s = getSession();
@@ -1526,6 +1669,8 @@ async function gen(){
   if(!raw.trim()){ toast('Chưa có code'); return; }
   const token = getGhToken();
   if(!token){ toast('Chưa lưu token'); return; }
+  const cfgId = getConfigGistId();
+  if(!cfgId){ toast('⚠ Chưa kết nối Config Gist'); return; }
 
   // RATE LIMIT
   const rl = await checkRateLimit(s.role || 'user');
@@ -1545,59 +1690,72 @@ async function gen(){
   btn.disabled = true; btn.textContent = '⏳ Đang xử lý...';
   try {
     await new Promise(r => setTimeout(r, 30));
-    const rand = Math.random().toString(36).substring(2, 15);
-    let uploadContent, filename;
 
+    // Mode none → upload thẳng code lên gist
     if(currentMode === 'none'){
-      uploadContent = raw;
-      filename = 'script_' + rand + '.lua';
-    } else {
-      const enc = encryptBytes(strToBytes(raw), key);
-      const b64 = bytesToBase64(enc);
-      const tmpls = await getMenuTemplates();
-      const adminKey = await getAdminKey();
-      uploadContent = buildLoaderFromTemplate(
-        currentMode === 'embed' ? tmpls.embed : tmpls.ask,
-        b64, key, adminKey
-      );
-      filename = 'loader_' + rand + '.lua';
-    }
-
-    btn.textContent = '⏳ Uploading...';
-    const gist = await createGist(uploadContent, filename);
-    currentGist = gist.gistUrl;
-
-    document.getElementById('loader').textContent = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
-    document.getElementById('res').classList.add('show');
-
-    if(currentMode !== 'none'){
-      document.getElementById('keyOutLbl').style.display = 'block';
-      document.getElementById('keyOut').style.display = 'block';
-      document.getElementById('keyOut').textContent = key;
-    } else {
+      const rand = Math.random().toString(36).substring(2, 15);
+      const filename = 'script_' + rand + '.lua';
+      const gist = await createGist(raw, filename);
+      currentGist = gist.gistUrl;
+      const loadstringLine = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
+      document.getElementById('loader').textContent = loadstringLine;
+      document.getElementById('res').classList.add('show');
       document.getElementById('keyOutLbl').style.display = 'none';
       document.getElementById('keyOut').style.display = 'none';
+
+      saveHistory({
+        id: gist.id, filename, rawUrl: gist.rawUrl, gistUrl: gist.gistUrl,
+        key: '', mode: 'none', script: raw, scriptSize: raw.length,
+        owner: s.username, loadstring: loadstringLine,
+        time: new Date().toLocaleString('vi-VN')
+      });
+
+      const allCodes = LS.get('glpAllCodes', {});
+      allCodes[gist.id] = { id: gist.id, owner: s.username, role: s.role, code: raw, mode: 'none', ts: Date.now() };
+      LS.set('glpAllCodes', allCodes);
+
+      recordUsage(rl);
+      const remainTxt = rl.unlimited ? '∞' : (rl.max - rl.used - 1) + '/' + rl.max;
+      document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>Không khóa</b> · Còn <b>' + remainTxt + '</b>';
+      toast('✅ Xong! Còn ' + remainTxt + ' lượt');
+      updateRateInfo();
+      btn.disabled = false; btn.textContent = '🚀 Tạo loadstring';
+      return;
     }
 
+    // Mode ask/embed → tạo shell loadstring
+    const enc = encryptBytes(strToBytes(raw), key);
+    const b64 = bytesToBase64(enc);
+
+    const shell = buildShell(cfgId, b64, key, currentMode, s.username);
+    const rand = Math.random().toString(36).substring(2, 15);
+    const filename = 'shell_' + rand + '.lua';
+    const gist = await createGist(shell, filename);
+    currentGist = gist.gistUrl;
+
+    const loadstringLine = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
+    document.getElementById('loader').textContent = loadstringLine;
+    document.getElementById('res').classList.add('show');
+    document.getElementById('keyOutLbl').style.display = 'block';
+    document.getElementById('keyOut').style.display = 'block';
+    document.getElementById('keyOut').textContent = key;
+
     saveHistory({
-      id: gist.id, filename: gist.filename, rawUrl: gist.rawUrl, gistUrl: gist.gistUrl,
-      key: key, mode: currentMode, script: raw, scriptSize: raw.length,
-      owner: s.username, time: new Date().toLocaleString('vi-VN')
+      id: gist.id, filename, rawUrl: gist.rawUrl, gistUrl: gist.gistUrl,
+      key, mode: currentMode, script: raw, scriptSize: raw.length,
+      owner: s.username, loadstring: loadstringLine,
+      time: new Date().toLocaleString('vi-VN')
     });
 
-    // Save code (local cho admin xem)
     const allCodes = LS.get('glpAllCodes', {});
-    allCodes[gist.id] = {
-      id: gist.id, owner: s.username, role: s.role,
-      code: raw, mode: currentMode, rawUrl: gist.rawUrl, key: key, ts: Date.now()
-    };
+    allCodes[gist.id] = { id: gist.id, owner: s.username, role: s.role, code: raw, mode: currentMode, ts: Date.now() };
     LS.set('glpAllCodes', allCodes);
 
     recordUsage(rl);
     const remainTxt = rl.unlimited ? '∞' : (rl.max - rl.used - 1) + '/' + rl.max;
-    const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
+    const modeName = currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key';
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b> · Còn <b>' + remainTxt + '</b>';
-    toast('✅ Xong! Còn ' + remainTxt + ' lượt');
+    toast('✅ Xong! Shell sẽ tự fetch template mới nhất khi chạy');
     updateRateInfo();
   } catch(e){
     toast('❌ ' + e.message);
@@ -1609,19 +1767,15 @@ async function gen(){
 function cp(id){ navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => toast('Đã copy!')); }
 function openGist(){ if(currentGist) window.open(currentGist, '_blank'); }
 
-/* ═══════════════════════════════════════════════════════
-   INIT
-   ═══════════════════════════════════════════════════════ */
+/* INIT */
 document.getElementById('code').addEventListener('input', updateSize);
 ['loginUser','loginPass','loginPass2'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => { if(e.key === 'Enter') doAuth(); });
 });
 
 (async function init(){
-  // Preload config nếu đã có gist id
   const gid = getConfigGistId();
   if(gid) await loadRemoteConfig(true);
-
   const s = getSession();
   if(!s) return;
   const users = getUsers();
@@ -1642,4 +1796,4 @@ document.getElementById('code').addEventListener('input', updateSize);
 })();
 </script>
 </body>
-</html>
+ </html>
