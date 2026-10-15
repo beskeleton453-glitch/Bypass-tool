@@ -12,27 +12,26 @@
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
   .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
   .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:150px;line-height:1.5;spellcheck:false;autocorrect:off;autocapitalize:off}
+  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.78rem;outline:none;resize:vertical;height:150px;line-height:1.5}
   textarea:focus{border-color:#00e676}
-  input[type=text]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
-  input[type=text]:focus{border-color:#00e676}
+  input[type=text],input[type=password]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;margin-top:8px}
+  input[type=text]:focus,input[type=password]:focus{border-color:#00e676}
   button{padding:10px 14px;margin-top:10px;background:linear-gradient(135deg,#00e676,#29b6f6);border:none;border-radius:8px;color:#0a0a0f;font-weight:700;font-size:.82rem;cursor:pointer}
   button:disabled{opacity:.4;cursor:not-allowed}
   button.small{padding:6px 10px;font-size:.68rem;margin:0}
-  .row{display:flex;gap:8px}
-  .row button{flex:1;margin-top:0}
+  .row{display:flex;gap:8px}.row button{flex:1;margin-top:0}
   .gray{background:linear-gradient(135deg,#333,#555);color:#fff}
   .purple{background:linear-gradient(135deg,#9c27b0,#e91e63);color:#fff}
   .blue{background:linear-gradient(135deg,#2196f3,#03a9f4);color:#fff}
   .green{background:linear-gradient(135deg,#00c853,#00e676);color:#0a0a0f}
   .red{background:linear-gradient(135deg,#d32f2f,#f44336);color:#fff}
+  .orange{background:linear-gradient(135deg,#f57c00,#ff9800);color:#fff}
   .stat{font-size:.72rem;color:#888;margin-top:8px;line-height:1.5}
-  .res{display:none;margin-top:12px}
-  .res.show{display:block}
+  .res{display:none;margin-top:12px}.res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
   .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
   .code{background:#06060a;padding:10px;border-radius:8px;font-family:monospace;font-size:.72rem;color:#00e676;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;white-space:pre-wrap}
-  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:90%;text-align:center}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
   .modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
   .mode{padding:10px 6px;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;text-align:center;font-size:.7rem;color:#888}
@@ -43,17 +42,82 @@
   .hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .hist-time{font-size:.65rem;color:#555}
   .hist-badge{font-size:.6rem;padding:2px 6px;border-radius:4px;font-weight:700}
-  .badge-ask{background:#9c27b0;color:#fff}
-  .badge-embed{background:#e91e63;color:#fff}
-  .badge-none{background:#555;color:#fff}
+  .badge-ask{background:#9c27b0;color:#fff}.badge-embed{background:#e91e63;color:#fff}.badge-none{background:#555;color:#fff}
   .hist-key{font-size:.68rem;color:#ff9800;font-family:monospace;margin:4px 0;word-break:break-all}
   .hist-url{font-size:.62rem;color:#29b6f6;font-family:monospace;word-break:break-all;margin:4px 0}
   .hist-actions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
   .empty{text-align:center;color:#444;padding:20px;font-size:.8rem}
+
+  /* LOGIN SCREEN */
+  .login-screen{position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,rgba(156,39,176,.15),transparent 50%),radial-gradient(circle at 70% 80%,rgba(0,230,118,.1),transparent 50%),#0a0a0f;z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px}
+  .login-box{width:100%;max-width:380px;background:#12121a;border-radius:18px;padding:28px 24px;border:1px solid #1f1f2e;box-shadow:0 30px 80px rgba(156,39,176,.2)}
+  .login-title{font-size:1.6rem;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,#00e676,#9c27b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+  .login-sub{text-align:center;font-size:.78rem;color:#666;margin-bottom:22px}
+  .login-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#0a0a0f;padding:4px;border-radius:12px;margin-bottom:16px}
+  .login-tab{padding:10px;background:transparent;border:none;border-radius:9px;color:#666;font-weight:700;font-size:.82rem;cursor:pointer;margin:0}
+  .login-tab.active{background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff}
+  .login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;font-size:.9rem;font-weight:700;border-radius:10px;margin-top:16px;border:none;cursor:pointer}
+  .login-btn:disabled{opacity:.5;cursor:not-allowed}
+  .login-msg{text-align:center;font-size:.78rem;margin-top:12px;min-height:18px;font-weight:600;color:#ff5252}
+
+  /* USER BAR */
+  .user-bar{position:fixed;top:12px;right:12px;background:#12121a;border:1px solid #2a2a3a;border-radius:12px;padding:8px 12px;font-size:.72rem;color:#aaa;z-index:800;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+  .user-bar b{color:#00e676}
+  .badge-admin{background:linear-gradient(135deg,#ff9800,#f44336);color:#fff;padding:2px 8px;border-radius:6px;font-size:.6rem;font-weight:700}
+  .badge-user{background:linear-gradient(135deg,#2196f3,#03a9f4);color:#fff;padding:2px 8px;border-radius:6px;font-size:.6rem;font-weight:700}
+  .logout-btn{background:linear-gradient(135deg,#d32f2f,#f44336);color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:.65rem;font-weight:700;cursor:pointer;margin:0}
+
+  /* ADMIN PANEL */
+  .admin-panel{border:2px solid #ff9800 !important;position:relative;overflow:hidden}
+  .admin-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ff9800,#f44336,#ff9800);animation:slide 3s linear infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  .admin-panel .ct{color:#ff9800}
+  .admin-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#0a0a0f;padding:4px;border-radius:10px;margin-bottom:12px}
+  .admin-tab{padding:8px;background:transparent;border:none;border-radius:7px;color:#666;font-weight:700;font-size:.7rem;cursor:pointer;margin:0}
+  .admin-tab.active{background:linear-gradient(135deg,#ff9800,#f44336);color:#fff}
+  .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+  .stat-box{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:10px;padding:10px;text-align:center}
+  .stat-box .n{font-size:1.2rem;font-weight:800;color:#00e676}
+  .stat-box .l{font-size:.58rem;color:#666;text-transform:uppercase;margin-top:2px}
+  .user-row{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:10px;padding:10px;margin-bottom:6px}
+  .user-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .user-row-name{font-size:.8rem;color:#00e676;font-weight:700}
+  .user-row-name.blocked{color:#f44336;text-decoration:line-through}
+  .user-row-meta{font-size:.62rem;color:#666}
+  .user-row-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+  .key-item{background:#0a0a0f;border:1px solid #1f1f2e;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .key-item code{font-size:.72rem;color:#ff9800;font-family:monospace;word-break:break-all;flex:1}
+  .key-item.used code{color:#666;text-decoration:line-through}
 </style>
 </head>
 <body>
-<div class="c">
+
+<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <div class="login-title">🚀 Gist Loader Pro</div>
+    <div class="login-sub">Đăng nhập hoặc tạo tài khoản mới</div>
+    <div class="login-tabs">
+      <button class="login-tab active" id="tabLogin" onclick="switchLoginTab('login')">Đăng nhập</button>
+      <button class="login-tab" id="tabRegister" onclick="switchLoginTab('register')">Đăng ký</button>
+    </div>
+    <input type="text" id="loginUser" placeholder="Tên đăng nhập" autocomplete="off" spellcheck="false">
+    <input type="password" id="loginPass" placeholder="Mật khẩu" autocomplete="off">
+    <input type="password" id="loginPass2" placeholder="Nhập lại mật khẩu" autocomplete="off" style="display:none">
+    <button class="login-btn" id="loginBtn" onclick="doAuth()">Đăng nhập</button>
+    <div id="loginMsg" class="login-msg"></div>
+  </div>
+</div>
+
+<!-- ═══════════ USER BAR ═══════════ -->
+<div class="user-bar" id="userBar" style="display:none">
+  <span id="userBarName">...</span>
+  <span id="userBarBadge"></span>
+  <button class="logout-btn" onclick="logout()">Thoát</button>
+</div>
+
+<!-- ═══════════ MAIN APP ═══════════ -->
+<div class="c" id="appRoot" style="display:none">
   <h1>🚀 Gist Loader Pro</h1>
   <p class="s">History • Update • Export/Import</p>
 
@@ -82,16 +146,13 @@
     <div class="ct">🎭 Chế độ</div>
     <div class="modes">
       <div class="mode active" data-mode="ask" onclick="setMode('ask')">
-        <span class="ic">🔒</span>Hỏi key
-        <div class="d">Auto chạy</div>
+        <span class="ic">🔒</span>Hỏi key<div class="d">Auto chạy</div>
       </div>
       <div class="mode" data-mode="embed" onclick="setMode('embed')">
-        <span class="ic">🎁</span>Nhúng key
-        <div class="d">Chạy ngay</div>
+        <span class="ic">🎁</span>Nhúng key<div class="d">Chạy ngay</div>
       </div>
       <div class="mode" data-mode="none" onclick="setMode('none')">
-        <span class="ic">📄</span>Không khóa
-        <div class="d">Không mã hóa</div>
+        <span class="ic">📄</span>Không khóa<div class="d">Không mã hóa</div>
       </div>
     </div>
   </div>
@@ -127,27 +188,542 @@
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
   </div>
+
+  <!-- ═══════════ ADMIN PANEL (chỉ admin thấy) ═══════════ -->
+  <div class="card admin-panel" id="adminPanel" style="display:none">
+    <div class="ct">👑 ADMIN PANEL</div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" id="atabKey" onclick="switchAdminTab('key')">🔑 Tạo Key</button>
+      <button class="admin-tab" id="atabUser" onclick="switchAdminTab('user')">👥 Người dùng</button>
+      <button class="admin-tab" id="atabTool" onclick="switchAdminTab('tool')">🛠️ Công cụ</button>
+    </div>
+
+    <!-- TAB KEY -->
+    <div id="adminTabKey">
+      <div class="stats-row">
+        <div class="stat-box"><div class="n" id="statKeyCount">0</div><div class="l">Tổng key</div></div>
+        <div class="stat-box"><div class="n" id="statKeyUsed">0</div><div class="l">Đã dùng</div></div>
+        <div class="stat-box"><div class="n" id="statKeyFree">0</div><div class="l">Còn trống</div></div>
+      </div>
+      <div class="lbl">Tạo key mới</div>
+      <input type="text" id="keyCount" placeholder="Số lượng key (VD: 5)" value="1">
+      <input type="text" id="keyLen" placeholder="Độ dài (VD: 16)" value="16">
+      <input type="text" id="keyPrefix" placeholder="Tiền tố (VD: SKELETON - tùy chọn)">
+      <button class="orange" style="width:100%;margin-top:10px;" onclick="adminGenerateKeys()">🎲 Tạo Key</button>
+      <div class="lbl" style="margin-top:14px;">Danh sách key</div>
+      <div id="adminKeyList"><div class="empty">Chưa có key nào.</div></div>
+      <div class="row" style="margin-top:10px;">
+        <button class="gray" onclick="adminRefreshKeys()">🔄 Refresh</button>
+        <button class="red" onclick="adminDeleteAllKeys()">🗑️ Xóa tất cả</button>
+      </div>
+    </div>
+
+    <!-- TAB USERS -->
+    <div id="adminTabUser" style="display:none">
+      <div class="stats-row">
+        <div class="stat-box"><div class="n" id="statOnline">0</div><div class="l">Online</div></div>
+        <div class="stat-box"><div class="n" id="statBlocked">0</div><div class="l">Đã chặn</div></div>
+        <div class="stat-box"><div class="n" id="statTotalAcc">0</div><div class="l">Tài khoản</div></div>
+      </div>
+      <div class="row" style="margin-top:0;">
+        <button class="orange" onclick="adminRefreshUsers()">🔄 Refresh Users</button>
+      </div>
+      <div class="lbl" style="margin-top:14px;">Người dùng online</div>
+      <div id="adminUserList"><div class="empty">Đang tải...</div></div>
+
+      <div class="lbl" style="margin-top:14px;">Tài khoản đã đăng ký (local)</div>
+      <div id="adminAccList"><div class="empty">Chưa có tài khoản.</div></div>
+    </div>
+
+    <!-- TAB TOOLS -->
+    <div id="adminTabTool" style="display:none">
+      <div class="lbl">Chặn / Kick thủ công</div>
+      <input type="text" id="toolUser" placeholder="Tên đăng nhập user">
+      <div class="row" style="margin-top:8px;">
+        <button class="red" onclick="adminBlockUser()">🚫 Chặn</button>
+        <button class="green" onclick="adminUnblockUser()">✅ Bỏ chặn</button>
+        <button class="orange" onclick="adminKickUser()">👢 Kick</button>
+      </div>
+
+      <div class="lbl" style="margin-top:14px;">Xóa tài khoản</div>
+      <input type="text" id="toolDelUser" placeholder="Tên đăng nhập cần xóa">
+      <button class="red" style="width:100%;margin-top:8px;" onclick="adminDeleteAccount()">🗑️ Xóa vĩnh viễn</button>
+
+      <div class="lbl" style="margin-top:14px;">Thông tin hệ thống</div>
+      <div class="info" id="sysInfo" style="font-size:.68rem;"></div>
+
+      <div class="lbl" style="margin-top:14px;">Cấu hình KVDB</div>
+      <div class="info">Bucket: <b id="sysBucket">...</b></div>
+      <button class="gray" style="width:100%;margin-top:8px;" onclick="adminResetLocal()">🧹 Reset dữ liệu Local</button>
+    </div>
+  </div>
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════
+                    ADMIN CREDENTIALS
+   ═══════════════════════════════════════════════════════════ */
+const ADMIN_USER = 'skeletonbe0';
+const ADMIN_PASS = 'skeleton3549';
+
+/* ═══════════════════════════════════════════════════════════
+                    KVDB CONFIG
+   ═══════════════════════════════════════════════════════════ */
+const KV_BUCKET = 'glp_beskeleton_pro_v1';
+const KV_BASE = 'https://kvdb.io/' + KV_BUCKET;
+
+async function kvSet(key, val){
+  try {
+    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key), { method:'POST', body: val });
+    return r.ok;
+  } catch(e){ return false; }
+}
+async function kvGet(key){
+  try {
+    const r = await fetch(KV_BASE + '/' + encodeURIComponent(key));
+    if(!r.ok) return null;
+    return await r.text();
+  } catch(e){ return null; }
+}
+async function kvList(){
+  try {
+    const r = await fetch(KV_BASE + '/?list=1');
+    if(!r.ok) return [];
+    return await r.json();
+  } catch(e){ return []; }
+}
+async function kvDelete(key){
+  try { await fetch(KV_BASE + '/' + encodeURIComponent(key), { method:'DELETE' }); return true; }
+  catch(e){ return false; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+                    AUTH SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+let loginMode = 'login';
+
+function simpleHash(str){
+  let h = 5381;
+  for(let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return 'h_' + (h >>> 0).toString(36);
+}
+
+function getUsers(){
+  try { return JSON.parse(localStorage.getItem('glpUsers') || '{}'); }
+  catch { return {}; }
+}
+function saveUsers(u){ localStorage.setItem('glpUsers', JSON.stringify(u)); }
+
+function getSession(){
+  try { return JSON.parse(localStorage.getItem('glpSession') || 'null'); }
+  catch { return null; }
+}
+function saveSession(s){
+  if(s) localStorage.setItem('glpSession', JSON.stringify(s));
+  else localStorage.removeItem('glpSession');
+}
+
+function switchLoginTab(mode){
+  loginMode = mode;
+  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+  document.getElementById('loginPass2').style.display = (mode === 'register') ? 'block' : 'none';
+  document.getElementById('loginBtn').textContent = (mode === 'register') ? 'Đăng ký' : 'Đăng nhập';
+  document.getElementById('loginMsg').textContent = '';
+}
+
+async function doAuth(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const p2 = document.getElementById('loginPass2').value;
+  const msg = document.getElementById('loginMsg');
+  const btn = document.getElementById('loginBtn');
+
+  if(!u || !p){ msg.textContent = '⚠ Nhập đầy đủ thông tin'; return; }
+  if(u.length < 3){ msg.textContent = '⚠ Tên từ 3 ký tự'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang xử lý...';
+
+  try {
+    // ADMIN LOGIN
+    if(u === ADMIN_USER && p === ADMIN_PASS){
+      saveSession({ username: u, role: 'admin', loginAt: Date.now() });
+      msg.textContent = '✅ Đăng nhập admin thành công!';
+      msg.style.color = '#00e676';
+      await new Promise(r => setTimeout(r, 500));
+      enterApp();
+      return;
+    }
+
+    // Check blocked
+    const blocked = await kvGet('block_' + u);
+    if(blocked === '1'){
+      msg.textContent = '🚫 Tài khoản đã bị chặn';
+      msg.style.color = '#ff5252';
+      btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
+    }
+
+    const users = getUsers();
+
+    if(loginMode === 'register'){
+      if(u === ADMIN_USER){ msg.textContent = '⚠ Tên này không được dùng'; return; }
+      if(p.length < 4){ msg.textContent = '⚠ Mật khẩu từ 4 ký tự'; return; }
+      if(p !== p2){ msg.textContent = '⚠ Mật khẩu nhập lại không khớp'; return; }
+      if(users[u]){ msg.textContent = '⚠ Tên đã tồn tại'; return; }
+
+      users[u] = { passHash: simpleHash(p), role: 'user', createdAt: Date.now() };
+      saveUsers(users);
+      msg.textContent = '✅ Đăng ký thành công!';
+      msg.style.color = '#00e676';
+      await new Promise(r => setTimeout(r, 600));
+      saveSession({ username: u, role: 'user', loginAt: Date.now() });
+      enterApp();
+    } else {
+      const acc = users[u];
+      if(!acc){ msg.textContent = '⚠ Tài khoản không tồn tại'; return; }
+      if(acc.passHash !== simpleHash(p)){ msg.textContent = '⚠ Mật khẩu sai'; return; }
+      saveSession({ username: u, role: 'user', loginAt: Date.now() });
+      msg.textContent = '✅ Đăng nhập thành công!';
+      msg.style.color = '#00e676';
+      await new Promise(r => setTimeout(r, 500));
+      enterApp();
+    }
+  } catch(e){
+    msg.textContent = '⚠ Lỗi: ' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = loginMode === 'register' ? 'Đăng ký' : 'Đăng nhập';
+}
+
+function enterApp(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appRoot').style.display = 'block';
+  document.getElementById('userBar').style.display = 'flex';
+  const s = getSession();
+  if(s){
+    document.getElementById('userBarName').innerHTML = '👤 <b>' + s.username + '</b>';
+    const b = document.getElementById('userBarBadge');
+    if(s.role === 'admin') b.innerHTML = '<span class="badge-admin">👑 ADMIN</span>';
+    else b.innerHTML = '<span class="badge-user">USER</span>';
+  }
+  if(s && s.role === 'admin'){
+    document.getElementById('adminPanel').style.display = 'block';
+    adminRefreshKeys();
+    adminRefreshUsers();
+    updateSysInfo();
+  }
+  startHeartbeat();
+  renderHistory();
+  updateTokenInfo();
+}
+
+function logout(){
+  if(!confirm('Đăng xuất khỏi tài khoản?')) return;
+  stopHeartbeat();
+  saveSession(null);
+  location.reload();
+}
+
+function updateSysInfo(){
+  const el = document.getElementById('sysInfo');
+  const s = getSession();
+  const users = getUsers();
+  const cnt = Object.keys(users).length;
+  el.innerHTML =
+    'Phiên bản: <b>V2</b><br>' +
+    'Người dùng: <b>' + (s ? s.username : '?') + '</b> (' + (s ? s.role : '?') + ')<br>' +
+    'Tài khoản local: <b>' + cnt + '</b><br>' +
+    'Thời gian: <b>' + new Date().toLocaleString('vi-VN') + '</b>';
+  document.getElementById('sysBucket').textContent = KV_BUCKET;
+}
+
+/* ═══════════════════════════════════════════════════════════
+                    HEARTBEAT (user tracking)
+   ═══════════════════════════════════════════════════════════ */
+let hbInterval = null;
+let kickCheckInterval = null;
+
+function startHeartbeat(){
+  const s = getSession();
+  if(!s) return;
+  if(hbInterval) clearInterval(hbInterval);
+  if(kickCheckInterval) clearInterval(kickCheckInterval);
+
+  const hb = async () => {
+    const payload = JSON.stringify({
+      username: s.username,
+      role: s.role,
+      ts: Date.now(),
+      game: (window.__currentGame || 'Gist Loader Pro'),
+      ua: navigator.userAgent.substring(0, 60)
+    });
+    await kvSet('u_' + s.username, payload);
+  };
+  hb();
+  hbInterval = setInterval(hb, 60000);
+
+  // Check kick/block
+  const check = async () => {
+    const b = await kvGet('block_' + s.username);
+    if(b === '1'){ toast('🚫 Bạn đã bị chặn!'); stopHeartbeat(); saveSession(null); setTimeout(() => location.reload(), 2500); return; }
+    const k = await kvGet('kick_' + s.username);
+    if(k){ await kvDelete('kick_' + s.username); toast('👢 Bạn đã bị admin kick!'); stopHeartbeat(); saveSession(null); setTimeout(() => location.reload(), 2000); }
+  };
+  check();
+  kickCheckInterval = setInterval(check, 20000);
+}
+
+function stopHeartbeat(){
+  if(hbInterval){ clearInterval(hbInterval); hbInterval = null; }
+  if(kickCheckInterval){ clearInterval(kickCheckInterval); kickCheckInterval = null; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+                    ADMIN PANEL
+   ═══════════════════════════════════════════════════════════ */
+function switchAdminTab(t){
+  ['key','user','tool'].forEach(k => {
+    document.getElementById('adminTab' + k.charAt(0).toUpperCase() + k.slice(1)).style.display = (k === t) ? 'block' : 'none';
+    document.getElementById('atab' + k.charAt(0).toUpperCase() + k.slice(1)).classList.toggle('active', k === t);
+  });
+  if(t === 'key') adminRefreshKeys();
+  if(t === 'user') adminRefreshUsers();
+}
+
+function randomKey(len, prefix){
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for(let i = 0; i < len; i++) s += c[Math.floor(Math.random() * c.length)];
+  // Chia thành nhóm 4 ký tự cho dễ đọc
+  const groups = s.match(/.{1,4}/g) || [s];
+  let result = groups.join('-');
+  if(prefix) result = prefix.toUpperCase() + '-' + result;
+  return result;
+}
+
+async function adminGenerateKeys(){
+  const count = Math.max(1, Math.min(50, parseInt(document.getElementById('keyCount').value) || 1));
+  const len = Math.max(8, Math.min(32, parseInt(document.getElementById('keyLen').value) || 16));
+  const prefix = document.getElementById('keyPrefix').value.trim();
+  const s = getSession();
+  if(!s || s.role !== 'admin'){ toast('Không có quyền'); return; }
+
+  toast('⏳ Đang tạo ' + count + ' key...');
+  const created = [];
+  for(let i = 0; i < count; i++){
+    const k = randomKey(len, prefix);
+    const payload = JSON.stringify({
+      key: k,
+      createdBy: s.username,
+      createdAt: Date.now(),
+      used: false,
+      usedBy: null
+    });
+    const ok = await kvSet('key_' + k, payload);
+    if(ok) created.push(k);
+  }
+  toast('✅ Đã tạo ' + created.length + ' key');
+  adminRefreshKeys();
+}
+
+async function adminRefreshKeys(){
+  const list = await kvList();
+  const keys = [];
+  for(const k of list){
+    if(typeof k === 'string' && k.startsWith('key_')){
+      const data = await kvGet(k);
+      if(data){ try { keys.push(JSON.parse(data)); } catch {} }
+    }
+  }
+  keys.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  const used = keys.filter(k => k.used).length;
+  document.getElementById('statKeyCount').textContent = keys.length;
+  document.getElementById('statKeyUsed').textContent = used;
+  document.getElementById('statKeyFree').textContent = keys.length - used;
+
+  const el = document.getElementById('adminKeyList');
+  if(keys.length === 0){ el.innerHTML = '<div class="empty">Chưa có key nào.</div>'; return; }
+  el.innerHTML = keys.map((k, i) =>
+    '<div class="key-item' + (k.used ? ' used' : '') + '">' +
+      '<code>' + k.key + '</code>' +
+      '<div style="display:flex;gap:4px;">' +
+        '<button class="small green" onclick="copyKey(\'' + k.key.replace(/'/g, "\\'") + '\')">📋</button>' +
+        '<button class="small red" onclick="adminDeleteKey(\'' + k.key.replace(/'/g, "\\'") + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function copyKey(k){
+  navigator.clipboard.writeText(k).then(() => toast('Đã copy: ' + k.substring(0, 20) + '...'));
+}
+
+async function adminDeleteKey(k){
+  if(!confirm('Xóa key ' + k + '?')) return;
+  await kvDelete('key_' + k);
+  toast('Đã xóa key');
+  adminRefreshKeys();
+}
+
+async function adminDeleteAllKeys(){
+  if(!confirm('XÓA TẤT CẢ KEY? Không thể hoàn tác!')) return;
+  const list = await kvList();
+  let cnt = 0;
+  for(const k of list){
+    if(typeof k === 'string' && k.startsWith('key_')){ await kvDelete(k); cnt++; }
+  }
+  toast('Đã xóa ' + cnt + ' key');
+  adminRefreshKeys();
+}
+
+async function adminRefreshUsers(){
+  const list = await kvList();
+  const users = [];
+  let blockedCnt = 0;
+  const now = Date.now();
+
+  for(const k of list){
+    if(typeof k === 'string' && k.startsWith('u_')){
+      const data = await kvGet(k);
+      if(data){
+        try {
+          const u = JSON.parse(data);
+          // Chỉ tính là online nếu ts trong 5 phút
+          u.online = (now - u.ts) < 300000;
+          users.push(u);
+          const b = await kvGet('block_' + u.username);
+          if(b === '1'){ u.blocked = true; blockedCnt++; }
+        } catch {}
+      }
+    }
+  }
+  users.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+
+  const online = users.filter(u => u.online).length;
+  document.getElementById('statOnline').textContent = online;
+  document.getElementById('statBlocked').textContent = blockedCnt;
+  document.getElementById('statTotalAcc').textContent = Object.keys(getUsers()).length;
+
+  const el = document.getElementById('adminUserList');
+  if(users.length === 0){ el.innerHTML = '<div class="empty">Không có ai online.</div>'; }
+  else {
+    el.innerHTML = users.map(u => {
+      const onlineDot = u.online ? '🟢' : '⚫';
+      const adminBadge = u.role === 'admin' ? ' <span style="color:#ff9800;font-size:.6rem;">👑</span>' : '';
+      const nameClass = u.blocked ? 'user-row-name blocked' : 'user-row-name';
+      const lastSeen = new Date(u.ts).toLocaleTimeString('vi-VN');
+      return '<div class="user-row">' +
+        '<div class="user-row-head">' +
+          '<div class="' + nameClass + '">' + onlineDot + ' ' + u.username + adminBadge + '</div>' +
+          '<div class="user-row-meta">' + lastSeen + '</div>' +
+        '</div>' +
+        '<div class="user-row-actions">' +
+          (u.blocked
+            ? '<button class="small green" onclick="adminUnblockName(\'' + u.username + '\')">✅ Bỏ chặn</button>'
+            : '<button class="small red" onclick="adminBlockName(\'' + u.username + '\')">🚫 Chặn</button>') +
+          '<button class="small orange" onclick="adminKickName(\'' + u.username + '\')">👢 Kick</button>' +
+          '<button class="small gray" onclick="adminDeleteAccName(\'' + u.username + '\')">🗑️</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Local accounts list
+  const accounts = getUsers();
+  const accNames = Object.keys(accounts);
+  const el2 = document.getElementById('adminAccList');
+  if(accNames.length === 0){ el2.innerHTML = '<div class="empty">Chưa có tài khoản.</div>'; }
+  else {
+    el2.innerHTML = accNames.map(name => {
+      const a = accounts[name];
+      const created = new Date(a.createdAt).toLocaleDateString('vi-VN');
+      return '<div class="key-item">' +
+        '<code style="color:#2196f3;">👤 ' + name + ' <span style="color:#666;font-size:.6rem;">(' + created + ')</span></code>' +
+        '<div style="display:flex;gap:4px;">' +
+          '<button class="small red" onclick="adminDeleteAccName(\'' + name + '\')">🗑️</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+async function adminBlockName(name){
+  await kvSet('block_' + name, '1');
+  toast('🚫 Đã chặn ' + name);
+  adminRefreshUsers();
+}
+async function adminUnblockName(name){
+  await kvDelete('block_' + name);
+  toast('✅ Đã bỏ chặn ' + name);
+  adminRefreshUsers();
+}
+async function adminKickName(name){
+  await kvSet('kick_' + name, Date.now().toString());
+  toast('👢 Đã gửi lệnh kick ' + name);
+}
+async function adminDeleteAccName(name){
+  if(!confirm('Xóa tài khoản "' + name + '"? Không thể hoàn tác!')) return;
+  const users = getUsers();
+  delete users[name];
+  saveUsers(users);
+  await kvDelete('u_' + name);
+  await kvDelete('block_' + name);
+  toast('🗑️ Đã xóa ' + name);
+  adminRefreshUsers();
+}
+
+function adminBlockUser(){
+  const n = document.getElementById('toolUser').value.trim();
+  if(!n){ toast('Nhập tên user'); return; }
+  adminBlockName(n);
+}
+function adminUnblockUser(){
+  const n = document.getElementById('toolUser').value.trim();
+  if(!n){ toast('Nhập tên user'); return; }
+  adminUnblockName(n);
+}
+function adminKickUser(){
+  const n = document.getElementById('toolUser').value.trim();
+  if(!n){ toast('Nhập tên user'); return; }
+  adminKickName(n);
+}
+function adminDeleteAccount(){
+  const n = document.getElementById('toolDelUser').value.trim();
+  if(!n){ toast('Nhập tên user'); return; }
+  adminDeleteAccName(n);
+}
+function adminResetLocal(){
+  if(!confirm('Reset toàn bộ dữ liệu LOCAL (lịch sử, tài khoản)?\n(Không ảnh hưởng kvdb)')) return;
+  localStorage.removeItem('glpHistory');
+  localStorage.removeItem('glpUsers');
+  toast('🧹 Đã reset local');
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════════════
+                    CORE FUNCTIONS (từ bản gốc)
+   ═══════════════════════════════════════════════════════════ */
 let currentMode = 'ask';
 let currentGist = null;
 
 function toast(msg){
-  const e=document.createElement('div');
-  e.className='toast'; e.textContent=msg;
+  const e = document.createElement('div');
+  e.className = 'toast'; e.textContent = msg;
   document.body.appendChild(e);
-  setTimeout(()=>e.remove(),3000);
+  setTimeout(() => e.remove(), 3000);
 }
 function setMode(m){
   currentMode = m;
-  document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('active', e.dataset.mode===m));
+  document.querySelectorAll('.mode').forEach(e => e.classList.toggle('active', e.dataset.mode === m));
   document.getElementById('keyCard').style.display = (m === 'none') ? 'none' : 'block';
 }
 function genKey(){
-  const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let s='';
-  for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];
+  const c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let s = '';
+  for(let i = 0; i < 24; i++) s += c[Math.floor(Math.random() * c.length)];
   document.getElementById('key').value = s;
 }
 function saveToken(){
@@ -167,7 +743,7 @@ function updateTokenInfo(){
   const t = localStorage.getItem('ghToken');
   const el = document.getElementById('tokenInfo');
   if(t){
-    el.innerHTML = '✅ Đã lưu: <b>' + t.substring(0,12) + '...</b>';
+    el.innerHTML = '✅ Đã lưu: <b>' + t.substring(0, 12) + '...</b>';
     el.style.color = '#00e676';
     document.getElementById('token').value = t;
   } else {
@@ -208,14 +784,14 @@ function deriveKeyTable(masterKey){
   return table;
 }
 function strToBytes(str){
-  const bytes=[];
-  for(let i=0;i<str.length;i++){
-    const cc=str.charCodeAt(i);
-    if(cc<0x80)bytes.push(cc);
-    else if(cc<0x800){bytes.push(0xC0|(cc>>6));bytes.push(0x80|(cc&0x3F));}
-    else if(cc<0xD800||cc>=0xE000){bytes.push(0xE0|(cc>>12));bytes.push(0x80|((cc>>6)&0x3F));bytes.push(0x80|(cc&0x3F));}
-    else{i++;const c2=str.charCodeAt(i);const cp=0x10000+((cc-0xD800)<<10)+(c2-0xDC00);
-      bytes.push(0xF0|(cp>>18));bytes.push(0x80|((cp>>12)&0x3F));bytes.push(0x80|((cp>>6)&0x3F));bytes.push(0x80|(cp&0x3F));}
+  const bytes = [];
+  for(let i = 0; i < str.length; i++){
+    const cc = str.charCodeAt(i);
+    if(cc < 0x80) bytes.push(cc);
+    else if(cc < 0x800){ bytes.push(0xC0|(cc>>6)); bytes.push(0x80|(cc&0x3F)); }
+    else if(cc < 0xD800 || cc >= 0xE000){ bytes.push(0xE0|(cc>>12)); bytes.push(0x80|((cc>>6)&0x3F)); bytes.push(0x80|(cc&0x3F)); }
+    else { i++; const c2 = str.charCodeAt(i); const cp = 0x10000 + ((cc-0xD800)<<10) + (c2-0xDC00);
+      bytes.push(0xF0|(cp>>18)); bytes.push(0x80|((cp>>12)&0x3F)); bytes.push(0x80|((cp>>6)&0x3F)); bytes.push(0x80|(cp&0x3F)); }
   }
   return bytes;
 }
@@ -225,7 +801,7 @@ function encryptBytes(plainBytes, key){
   const table = deriveKeyTable(key);
   const out = new Uint8Array(data.length);
   let prev = 0, prev2 = 0;
-  for(let i=0;i<data.length;i++){
+  for(let i = 0; i < data.length; i++){
     const b = data[i];
     const k = table[i & 0xFF];
     let e = b ^ k;
@@ -239,9 +815,9 @@ function encryptBytes(plainBytes, key){
   return out;
 }
 function bytesToBase64(bytes){
-  let bin='';
-  const CHUNK=8192;
-  for(let i=0;i<bytes.length;i+=CHUNK){
+  let bin = '';
+  const CHUNK = 8192;
+  for(let i = 0; i < bytes.length; i += CHUNK){
     bin += String.fromCharCode.apply(null, Array.prototype.slice.call(bytes, i, i+CHUNK));
   }
   return btoa(bin);
@@ -437,16 +1013,10 @@ async function createGist(content, filename){
   if(!r.ok){
     if(r.status === 401) throw new Error('Token sai/hết hạn');
     if(r.status === 403) throw new Error('Token thiếu quyền gist');
-    const t = await r.text();
     throw new Error('GitHub ' + r.status);
   }
   const data = await r.json();
-  return {
-    id: data.id,
-    rawUrl: data.files[filename].raw_url,
-    gistUrl: data.html_url,
-    filename: filename
-  };
+  return { id: data.id, rawUrl: data.files[filename].raw_url, gistUrl: data.html_url, filename: filename };
 }
 
 async function updateGist(gistId, filename, content){
@@ -464,15 +1034,12 @@ async function updateGist(gistId, filename, content){
     body: JSON.stringify(body)
   });
   if(!r.ok){
-    if(r.status === 404) throw new Error('Gist không tồn tại (đã xóa?)');
+    if(r.status === 404) throw new Error('Gist không tồn tại');
     if(r.status === 401) throw new Error('Token sai');
     throw new Error('GitHub ' + r.status);
   }
   const data = await r.json();
-  return {
-    rawUrl: data.files[filename].raw_url,
-    gistUrl: data.html_url
-  };
+  return { rawUrl: data.files[filename].raw_url, gistUrl: data.html_url };
 }
 
 /* ===== HISTORY ===== */
@@ -486,7 +1053,6 @@ function setHistory(h){
 }
 function saveHistory(item){
   const h = getHistory();
-  // Nếu cùng gist id thì replace
   const idx = h.findIndex(x => x.id === item.id);
   if(idx >= 0) h[idx] = item;
   else h.unshift(item);
@@ -497,20 +1063,14 @@ function renderHistory(){
   const h = getHistory();
   const el = document.getElementById('historyList');
   document.getElementById('histCount').textContent = h.length > 0 ? '(' + h.length + ')' : '';
-  if(h.length === 0){
-    el.innerHTML = '<div class="empty">Chưa có gì.</div>';
-    return;
-  }
+  if(h.length === 0){ el.innerHTML = '<div class="empty">Chưa có gì.</div>'; return; }
   el.innerHTML = h.map((item, idx) => {
     const badgeClass = item.mode === 'ask' ? 'badge-ask' : (item.mode === 'embed' ? 'badge-embed' : 'badge-none');
     const badgeText = item.mode === 'ask' ? 'HỎI KEY' : (item.mode === 'embed' ? 'NHÚNG KEY' : 'KHÔNG KHÓA');
     const keyLine = item.key ? '<div class="hist-key">🔑 ' + item.key + '</div>' : '';
     return '<div class="hist-item">' +
-      '<div class="hist-head">' +
-        '<span class="hist-time">' + item.time + '</span>' +
-        '<span class="hist-badge ' + badgeClass + '">' + badgeText + '</span>' +
-      '</div>' +
-      '<div style="font-size:.68rem;color:#888;">📦 ' + (item.scriptSize || 0).toLocaleString('vi-VN') + ' ký tự</div>' +
+      '<div class="hist-head"><span class="hist-time">' + item.time + '</span><span class="hist-badge ' + badgeClass + '">' + badgeText + '</span></div>' +
+      '<div style="font-size:.68rem;color:#888;">📦 ' + (item.scriptSize || 0).toLocaleString('vi-VN') + ' ký tự · 👤 ' + (item.owner || 'unknown') + '</div>' +
       keyLine +
       '<div class="hist-url">🔗 ' + (item.rawUrl || '').substring(0, 60) + '...</div>' +
       '<div class="hist-actions">' +
@@ -523,84 +1083,65 @@ function renderHistory(){
   }).join('');
 }
 function loadHistItem(idx){
-  const h = getHistory();
-  const item = h[idx];
+  const h = getHistory(); const item = h[idx];
   if(!item) return;
   document.getElementById('code').value = item.script || '';
   document.getElementById('key').value = item.key || '';
   setMode(item.mode || 'ask');
   updateSize();
   toast('Đã load script + key + mode');
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 async function updateHistItem(idx){
-  const h = getHistory();
-  const item = h[idx];
+  const h = getHistory(); const item = h[idx];
   if(!item) return;
-  if(!item.id) { toast('Gist cũ không có ID - không thể update'); return; }
-  
+  if(!item.id){ toast('Gist cũ không có ID'); return; }
   const currentCode = document.getElementById('code').value.trim();
   if(!currentCode){ toast('Chưa có code để update'); return; }
-  
-  if(!confirm('Update gist ' + item.id.substring(0,8) + '... với code hiện tại?\n\n(Sẽ giữ nguyên URL loadstring)')) return;
-  
+  if(!confirm('Update gist ' + item.id.substring(0,8) + '...?')) return;
+
   const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = '⏳';
-  
+  btn.disabled = true; btn.textContent = '⏳';
   try {
-    let uploadContent;
-    let key = '';
-    
-    // Build lại với config hiện tại
+    let uploadContent, key = '';
     if(currentMode === 'none'){
       uploadContent = currentCode;
     } else {
       key = document.getElementById('key').value.trim();
-      if(!key) { toast('Cần nhập key để update'); btn.disabled = false; btn.textContent = '♻️ Update'; return; }
-      if(key.length < 6) { toast('Key từ 6 ký tự'); btn.disabled = false; btn.textContent = '♻️ Update'; return; }
+      if(!key){ toast('Cần key'); return; }
+      if(key.length < 6){ toast('Key từ 6 ký tự'); return; }
       const plainBytes = strToBytes(currentCode);
       const encBytes = encryptBytes(plainBytes, key);
       const b64 = bytesToBase64(encBytes);
       uploadContent = buildFullLoader(b64, key, currentMode);
     }
-    
     const result = await updateGist(item.id, item.filename, uploadContent);
-    
-    // Cập nhật history
     const h2 = getHistory();
-    h2[idx].script = currentCode;
-    h2[idx].key = key;
-    h2[idx].mode = currentMode;
+    h2[idx].script = currentCode; h2[idx].key = key; h2[idx].mode = currentMode;
     h2[idx].scriptSize = currentCode.length;
     h2[idx].time = new Date().toLocaleString('vi-VN');
     h2[idx].rawUrl = result.rawUrl;
     setHistory(h2);
-    
     toast('✅ Đã update gist!');
-  } catch(e){
-    toast('❌ ' + e.message);
-  }
-  btn.disabled = false;
-  btn.textContent = '♻️ Update';
+  } catch(e){ toast('❌ ' + e.message); }
+  btn.disabled = false; btn.textContent = '♻️ Update';
 }
 function copyHistLoader(idx){
-  const h = getHistory();
-  const item = h[idx];
+  const h = getHistory(); const item = h[idx];
   if(!item) return;
   const loader = 'loadstring(game:HttpGet("' + item.rawUrl + '"))()';
-  navigator.clipboard.writeText(loader).then(() => toast('Đã copy loadstring!'));
+  navigator.clipboard.writeText(loader).then(() => toast('Đã copy!'));
 }
 function deleteHistItem(idx){
   const h = getHistory();
   if(!h[idx]) return;
-  if(!confirm('Xóa mục này khỏi lịch sử?\n(Gist trên GitHub vẫn còn)')) return;
+  if(!confirm('Xóa mục này khỏi lịch sử?')) return;
   h.splice(idx, 1);
   setHistory(h);
   toast('Đã xóa');
 }
 function clearHistory(){
-  if(!confirm('Xóa TOÀN BỘ lịch sử?\n(Gist trên GitHub vẫn còn)')) return;
+  if(!confirm('Xóa TOÀN BỘ lịch sử?')) return;
   localStorage.removeItem('glpHistory');
   renderHistory();
   toast('Đã xóa hết');
@@ -608,16 +1149,14 @@ function clearHistory(){
 function exportHistory(){
   const h = getHistory();
   if(h.length === 0){ toast('Lịch sử trống'); return; }
-  const blob = new Blob([JSON.stringify(h, null, 2)], {type: 'application/json'});
+  const blob = new Blob([JSON.stringify(h, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'gist_loader_history_' + Date.now() + '.json';
   a.click();
   toast('Đã export ' + h.length + ' items');
 }
-function importHistory(){
-  document.getElementById('importFile').click();
-}
+function importHistory(){ document.getElementById('importFile').click(); }
 function handleImport(e){
   const f = e.target.files[0];
   if(!f) return;
@@ -627,32 +1166,27 @@ function handleImport(e){
       const imported = JSON.parse(ev.target.result);
       if(!Array.isArray(imported)) throw new Error('Sai format');
       const existing = getHistory();
-      // Merge: ưu tiên theo gist id
       const merged = [...existing];
       for(const item of imported){
         if(!item.id) continue;
         const idx = merged.findIndex(x => x.id === item.id);
-        if(idx >= 0){
-          // Merge nếu newer
-          if(item.time > merged[idx].time) merged[idx] = item;
-        } else {
-          merged.push(item);
-        }
+        if(idx >= 0){ if(item.time > merged[idx].time) merged[idx] = item; }
+        else merged.push(item);
       }
       merged.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
       if(merged.length > 30) merged.length = 30;
       setHistory(merged);
       toast('✅ Import ' + imported.length + ' items');
-    } catch(err){
-      toast('❌ File JSON sai');
-    }
+    } catch(err){ toast('❌ File JSON sai'); }
   };
   r.readAsText(f);
   e.target.value = '';
 }
 
-/* ===== MAIN ===== */
+/* ===== MAIN GEN ===== */
 async function gen(){
+  const s = getSession();
+  if(!s){ toast('Chưa đăng nhập'); return; }
   const raw = document.getElementById('code').value;
   if(!raw.trim()){ toast('Chưa có code'); return; }
   const token = localStorage.getItem('ghToken');
@@ -666,9 +1200,7 @@ async function gen(){
   }
 
   const btn = document.getElementById('btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Đang xử lý...';
-
+  btn.disabled = true; btn.textContent = '⏳ Đang xử lý...';
   try {
     await new Promise(r => setTimeout(r, 30));
     const rand = Math.random().toString(36).substring(2, 15);
@@ -690,10 +1222,9 @@ async function gen(){
     currentGist = gist.gistUrl;
 
     const loadstringLine = 'loadstring(game:HttpGet("' + gist.rawUrl + '"))()';
-    
     document.getElementById('loader').textContent = loadstringLine;
     document.getElementById('res').classList.add('show');
-    
+
     if(currentMode !== 'none'){
       document.getElementById('keyOutLbl').style.display = 'block';
       document.getElementById('keyOut').style.display = 'block';
@@ -702,20 +1233,14 @@ async function gen(){
       document.getElementById('keyOutLbl').style.display = 'none';
       document.getElementById('keyOut').style.display = 'none';
     }
-    
-    // Save history
+
     saveHistory({
-      id: gist.id,
-      filename: gist.filename,
-      rawUrl: gist.rawUrl,
-      gistUrl: gist.gistUrl,
-      key: key,
-      mode: currentMode,
-      script: raw,
-      scriptSize: raw.length,
+      id: gist.id, filename: gist.filename, rawUrl: gist.rawUrl, gistUrl: gist.gistUrl,
+      key: key, mode: currentMode, script: raw, scriptSize: raw.length,
+      owner: s.username,
       time: new Date().toLocaleString('vi-VN')
     });
-    
+
     const modeName = currentMode === 'none' ? 'Không khóa' : (currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key');
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b>';
     toast('✅ Xong! Copy dòng xanh');
@@ -723,21 +1248,44 @@ async function gen(){
     toast('❌ ' + e.message);
     document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
   }
-  btn.disabled = false;
-  btn.textContent = '🚀 Tạo loadstring';
+  btn.disabled = false; btn.textContent = '🚀 Tạo loadstring';
 }
 
 function cp(id){
   const t = document.getElementById(id).textContent;
   navigator.clipboard.writeText(t).then(() => toast('Đã copy!'));
 }
-function openGist(){
-  if(currentGist) window.open(currentGist, '_blank');
-}
+function openGist(){ if(currentGist) window.open(currentGist, '_blank'); }
 
+/* ═══════════════════════════════════════════════════════════
+                    INIT
+   ═══════════════════════════════════════════════════════════ */
 document.getElementById('code').addEventListener('input', updateSize);
-updateTokenInfo();
-renderHistory();
+
+// Enter to submit login
+['loginUser','loginPass','loginPass2'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if(e.key === 'Enter') doAuth();
+  });
+});
+
+// Auto login nếu có session
+(function init(){
+  const s = getSession();
+  if(s){
+    if(s.role === 'admin'){
+      enterApp();
+    } else {
+      // Check user still valid (chưa bị xóa)
+      const users = getUsers();
+      if(!users[s.username]){
+        saveSession(null);
+      } else {
+        enterApp();
+      }
+    }
+  }
+})();
 </script>
 </body>
 </html>
