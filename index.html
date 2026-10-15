@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Key-Locked Loader</title>
+<title>Key-Locked Loader v2</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:16px}
@@ -12,7 +12,7 @@
   .s{text-align:center;font-size:.75rem;color:#666;margin-bottom:16px}
   .card{background:#12121a;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #1f1f2e}
   .ct{font-size:.72rem;color:#29b6f6;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px}
-  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;resize:vertical;height:180px;line-height:1.5}
+  textarea{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.8rem;outline:none;resize:vertical;height:150px;line-height:1.5}
   textarea:focus{border-color:#00e676}
   input[type=text]{width:100%;padding:10px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-family:monospace;font-size:.85rem;outline:none;margin-top:8px}
   input[type=text]:focus{border-color:#00e676}
@@ -26,24 +26,26 @@
   .res{display:none;margin-top:12px}
   .res.show{display:block}
   .lbl{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:10px}
-  .lnk{color:#00e676;font-family:monospace;font-size:.75rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
-  .code{background:#06060a;padding:12px;border-radius:8px;font-family:monospace;font-size:.7rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:400px;overflow:auto;white-space:pre-wrap}
+  .lnk{color:#00e676;font-family:monospace;font-size:.72rem;word-break:break-all;background:#0a0a0f;padding:10px;border-radius:8px;border:1px solid #1f1f2e}
+  .code{background:#06060a;padding:12px;border-radius:8px;font-family:monospace;font-size:.68rem;color:#c0a0d0;word-break:break-all;line-height:1.5;border:1px solid #1f1f2e;max-height:400px;overflow:auto;white-space:pre-wrap}
   .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#9c27b0);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.82rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .info{font-size:.7rem;color:#666;margin-top:6px;font-style:italic}
   .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .mode{padding:12px;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;text-align:center;font-size:.75rem;color:#888}
+  .mode{padding:12px 8px;background:#0a0a0f;border:2px solid #2a2a3a;border-radius:8px;cursor:pointer;text-align:center;font-size:.72rem;color:#888}
   .mode.active{border-color:#9c27b0;color:#e91e63;background:rgba(233,30,99,.08)}
   .mode .ic{font-size:1.3rem;display:block;margin-bottom:4px}
-  .hist-item{font-size:.68rem;color:#ccc;background:#0a0a0f;padding:8px;border-radius:6px;border:1px solid #1f1f2e;margin-bottom:4px;word-break:break-all}
-  .hist-item .t{color:#555;font-size:.62rem}
-  .hist-item .l{color:#29b6f6;margin-top:3px}
+  .mode .d{font-size:.62rem;color:#666;margin-top:3px}
+  .hist-item{font-size:.66rem;color:#ccc;background:#0a0a0f;padding:8px;border-radius:6px;border:1px solid #1f1f2e;margin-bottom:4px;word-break:break-all}
+  .hist-item .t{color:#555;font-size:.6rem}
+  .hist-item .l{color:#29b6f6;margin-top:3px;font-size:.62rem}
   .hist-item .k{color:#ff9800;font-weight:700}
+  .warn{background:rgba(255,152,0,.1);border-left:3px solid #ff9800;padding:10px;border-radius:6px;font-size:.7rem;color:#ffcc80;margin-top:8px;line-height:1.5}
 </style>
 </head>
 <body>
 <div class="c">
-  <h1>🔐 Key-Locked Loader</h1>
-  <p class="s">Mã hóa script bằng key • Không có key không đọc được</p>
+  <h1>🔐 Key-Locked Loader v2</h1>
+  <p class="s">Nhỏ thì nhúng luôn • Lớn thì upload qua proxy</p>
 
   <div class="card">
     <div class="ct">📝 Script cần bảo vệ</div>
@@ -52,12 +54,12 @@
       <button class="gray" onclick="document.getElementById('fileInput').click()">📂 Chọn file</button>
       <input type="file" id="fileInput" accept=".txt,.lua" style="display:none" onchange="loadFile(event)">
     </div>
+    <div class="info" id="sizeInfo">Chưa có code</div>
   </div>
 
   <div class="card">
     <div class="ct">🔑 Key mã hóa</div>
-    <input type="text" id="key" placeholder="Để trống → tự sinh key random 24 ký tự">
-    <div class="info">💡 Key càng dài càng khó đoán. Nên dùng 16-32 ký tự.</div>
+    <input type="text" id="key" placeholder="Để trống → tự sinh 24 ký tự ngẫu nhiên">
     <div class="row" style="margin-top:10px;">
       <button class="gray" onclick="genKey()">🎲 Tạo key ngẫu nhiên</button>
     </div>
@@ -67,14 +69,12 @@
     <div class="ct">🎭 Chế độ loader</div>
     <div class="modes">
       <div class="mode active" data-mode="ask" onclick="setMode('ask')">
-        <span class="ic">🔒</span>
-        Hỏi key khi chạy
-        <div style="font-size:.65rem;color:#666;margin-top:4px;">Người dùng phải nhập key</div>
+        <span class="ic">🔒</span>Hỏi key
+        <div class="d">Người dùng nhập key</div>
       </div>
       <div class="mode" data-mode="embed" onclick="setMode('embed')">
-        <span class="ic">🎁</span>
-        Nhúng key sẵn
-        <div style="font-size:.65rem;color:#666;margin-top:4px;">Chạy là dùng, ai cũng chạy được</div>
+        <span class="ic">🎁</span>Nhúng key
+        <div class="d">Chạy là dùng</div>
       </div>
     </div>
   </div>
@@ -86,31 +86,32 @@
     </div>
     <div class="stat" id="stat"></div>
     <div class="res" id="res">
-      <div class="lbl">🔗 Link file đã mã hóa</div>
-      <div class="lnk" id="url"></div>
-      <div class="lbl">📋 Loader Lua (dán vào Delta để chạy)</div>
+      <div class="lbl">🔑 Key (giữ bí mật)</div>
+      <div class="lnk" id="keyOut"></div>
+      <div class="lbl">🔗 Link file (nếu upload)</div>
+      <div class="lnk" id="url">Không cần - đã nhúng trực tiếp</div>
+      <div class="lbl">📋 Loader (dán vào Delta)</div>
       <div class="code" id="loader"></div>
       <div class="row" style="margin-top:10px;">
         <button onclick="cp('loader')">📋 Copy loader</button>
         <button class="gray" onclick="cp('keyOut')">📋 Copy key</button>
       </div>
-      <div class="lbl">🔑 Key (giữ bí mật)</div>
-      <div class="lnk" id="keyOut"></div>
+      <div class="row" style="margin-top:8px;">
+        <button class="gray" onclick="downloadLoader()">💾 Tải loader .txt</button>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <div class="ct">📜 Lịch sử</div>
     <div id="historyList"><div class="info">Chưa có gì.</div></div>
-    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa</button>
+    <button class="gray" style="margin-top:8px;" onclick="clearHistory()">🗑️ Xóa lịch sử</button>
   </div>
 </div>
 
 <script>
-/* ========== STATE ========== */
 let currentMode = 'ask';
 
-/* ========== UTILS ========== */
 function R(len){
   const c1='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const c2='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -118,347 +119,410 @@ function R(len){
   for(let i=1;i<len;i++)s+=c2[Math.floor(Math.random()*c2.length)];
   return s;
 }
-
-function genKey(){
-  document.getElementById('key').value = R(24);
-}
-
+function genKey(){ document.getElementById('key').value = R(24); }
 function setMode(m){
   currentMode = m;
   document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('active', e.dataset.mode===m));
 }
-
 function toast(msg){
   const e=document.createElement('div');
-  e.className='toast';e.textContent=msg;
+  e.className='toast'; e.textContent=msg;
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),3000);
 }
 
-/* ========== ENCRYPTION ==========
-   enc[i] = ((plain[i] XOR key[i%len]) + i) & 0xFF
-   dec[i] = ((enc[i] - i) & 0xFF) XOR key[i%len]
-   i = 0-based index
-   Thêm magic header để phát hiện key sai
-*/
-const MAGIC = "LUA_KEYLOCK_v1\n";
+/* ====== ENCRYPT ====== */
+const MAGIC = "LUA_KEYLOCK_v1\n"; // 15 chars
 
 function encrypt(plain, key){
-  // Prepend magic
   const data = MAGIC + plain;
-  const keyBytes = [];
-  for(let i=0;i<key.length;i++) keyBytes.push(key.charCodeAt(i) & 0xFF);
-  
-  // Encode UTF-8
-  const plainBytes = [];
+  const kb = [];
+  for(let i=0;i<key.length;i++) kb.push(key.charCodeAt(i) & 0xFF);
+
+  // UTF-8 encode
+  const pb = [];
   for(let i=0;i<data.length;i++){
     const cc = data.charCodeAt(i);
-    if(cc < 128) plainBytes.push(cc);
-    else if(cc < 2048){
-      plainBytes.push(0xC0 | (cc>>6));
-      plainBytes.push(0x80 | (cc & 0x3F));
-    } else {
-      plainBytes.push(0xE0 | (cc>>12));
-      plainBytes.push(0x80 | ((cc>>6) & 0x3F));
-      plainBytes.push(0x80 | (cc & 0x3F));
-    }
+    if(cc < 128) pb.push(cc);
+    else if(cc < 2048){ pb.push(0xC0|(cc>>6)); pb.push(0x80|(cc&0x3F)); }
+    else { pb.push(0xE0|(cc>>12)); pb.push(0x80|((cc>>6)&0x3F)); pb.push(0x80|(cc&0x3F)); }
   }
-  
+
   const out = [];
-  for(let i=0;i<plainBytes.length;i++){
-    const b = plainBytes[i];
-    const k = keyBytes[i % keyBytes.length];
-    const e = ((b ^ k) + i) & 0xFF;
-    out.push(e);
+  for(let i=0;i<pb.length;i++){
+    const b = pb[i];
+    const k = kb[i % kb.length];
+    out.push(((b ^ k) + i) & 0xFF);
   }
   return out;
 }
 
-/* ========== LUA LOADER ========== */
-function buildLoader(encUrl, key, mode){
-  const keyLua = mode === 'embed' 
-    ? 'local __k = "' + key + '"\n' 
-    : '';
-  
+// FAST Base64 from byte array
+function bytesToBase64(bytes){
+  let bin = '';
+  const CHUNK = 8192;
+  for(let i=0;i<bytes.length;i+=CHUNK){
+    const slice = bytes.slice(i, i+CHUNK);
+    bin += String.fromCharCode.apply(null, slice);
+  }
+  return btoa(bin);
+}
+
+/* ====== LOADER BUILDERS ====== */
+const DECODE_LUA = `local __kb={}
+for i=1,#__k do __kb[i]=__k:byte(i) end
+local __out={}
+for i=1,#__b do
+  local e=__b:byte(i)
+  local k=__kb[((i-1)%#__kb)+1]
+  __out[i]=string.char(bit32.bxor(bit32.band(e-(i-1),255),k))
+end
+local __data=table.concat(__out)
+if __data:sub(1,15)~="LUA_KEYLOCK_v1\\n" then warn("Key sai") return end`;
+
+const B64_DECODE_LUA = `local __b64map={}
+local __chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+for i=1,#__chars do __b64map[__chars:sub(i,i)]=i-1 end
+local function __b64dec(s)
+  s=s:gsub("[^A-Za-z0-9+/=]","")
+  local out={}
+  local i=1
+  while i<=#s do
+    local a=__b64map[s:sub(i,i)] or 0
+    local b=__b64map[s:sub(i+1,i+1)] or 0
+    local c=__b64map[s:sub(i+2,i+2)] or 0
+    local d=__b64map[s:sub(i+3,i+3)] or 0
+    local n=a*262144+b*4096+c*64+d
+    out[#out+1]=string.char(math.floor(n/65536)%256)
+    if s:sub(i+2,i+2)~="=" then out[#out+1]=string.char(math.floor(n/256)%256) end
+    if s:sub(i+3,i+3)~="=" then out[#out+1]=string.char(n%256) end
+    i=i+4
+  end
+  return table.concat(out)
+end`;
+
+function buildEmbeddedLoader(b64, key, mode){
   if(mode === 'embed'){
-    return `-- Key-Locked Loader (embedded key)
-local __enc = game:HttpGet("${encUrl}")
-local __k = "${key}"
-local __kb = {}
-for i=1,#__k do __kb[i] = __k:byte(i) end
-local __out = {}
-for i=1,#__enc do
-    local e = __enc:byte(i)
-    local k = __kb[((i-1) % #__kb) + 1]
-    local b = bit32.bxor(bit32.band(e - (i-1), 255), k)
-    __out[i] = string.char(b)
-end
-local __data = table.concat(__out)
-if __data:sub(1, 15) ~= "LUA_KEYLOCK_v1\\n" then
-    warn("Key sai hoặc file hỏng")
-    return
-end
+    return `-- Key-Locked Loader (nhúng key)
+local __k="${key}"
+local __b64=[[${b64}]]
+${B64_DECODE_LUA}
+local __b=__b64dec(__b64)
+${DECODE_LUA}
 loadstring(__data:sub(16))()`;
   }
-  
-  // Mode "ask"
+  // ask mode
   return `-- Key-Locked Loader (hỏi key)
-local __enc = game:HttpGet("${encUrl}")
-local __plr = game:GetService("Players").LocalPlayer
-local __pg = __plr:WaitForChild("PlayerGui")
-
-local __sg = Instance.new("ScreenGui")
-__sg.Name = "KeyLoader"
-__sg.ResetOnSpawn = false
-__sg.Parent = __pg
-
-local __f = Instance.new("Frame")
-__f.Size = UDim2.new(0, 320, 0, 170)
-__f.Position = UDim2.new(0.5, -160, 0.5, -85)
-__f.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-__f.BorderSizePixel = 0
-__f.Parent = __sg
-Instance.new("UICorner", __f).CornerRadius = UDim.new(0, 12)
-
-local __stroke = Instance.new("UIStroke", __f)
-__stroke.Color = Color3.fromRGB(156, 39, 176)
-__stroke.Thickness = 2
-
-local __t = Instance.new("TextLabel")
-__t.Size = UDim2.new(1, 0, 0, 34)
-__t.BackgroundTransparency = 1
-__t.Text = "🔒 Nhập key để mở script"
-__t.TextColor3 = Color3.fromRGB(0, 230, 118)
-__t.Font = Enum.Font.GothamBold
-__t.TextSize = 16
-__t.Parent = __f
-
-local __box = Instance.new("TextBox")
-__box.Size = UDim2.new(1, -20, 0, 40)
-__box.Position = UDim2.new(0, 10, 0, 42)
-__box.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-__box.TextColor3 = Color3.fromRGB(255, 255, 255)
-__box.PlaceholderText = "Nhập key..."
-__box.Text = ""
-__box.Font = Enum.Font.Gotham
-__box.TextSize = 14
-__box.ClearTextOnFocus = false
-__box.Parent = __f
-Instance.new("UICorner", __box).CornerRadius = UDim.new(0, 8)
-
-local __btn = Instance.new("TextButton")
-__btn.Size = UDim2.new(1, -20, 0, 44)
-__btn.Position = UDim2.new(0, 10, 0, 96)
-__btn.BackgroundColor3 = Color3.fromRGB(0, 230, 118)
-__btn.Text = "XÁC NHẬN"
-__btn.TextColor3 = Color3.fromRGB(0, 0, 0)
-__btn.Font = Enum.Font.GothamBold
-__btn.TextSize = 16
-__btn.Parent = __f
-Instance.new("UICorner", __btn).CornerRadius = UDim.new(0, 8)
-
-local __status = Instance.new("TextLabel")
-__status.Size = UDim2.new(1, -20, 0, 20)
-__status.Position = UDim2.new(0, 10, 1, -22)
-__status.BackgroundTransparency = 1
-__status.Text = ""
-__status.TextColor3 = Color3.fromRGB(255, 100, 100)
-__status.Font = Enum.Font.Gotham
-__status.TextSize = 12
-__status.Parent = __f
-
+local __b64=[[${b64}]]
+${B64_DECODE_LUA}
+local __b=__b64dec(__b64)
+local __plr=game:GetService("Players").LocalPlayer
+local __pg=__plr:WaitForChild("PlayerGui")
+local __sg=Instance.new("ScreenGui")
+__sg.Name="KeyLoader"
+__sg.ResetOnSpawn=false
+__sg.Parent=__pg
+local __f=Instance.new("Frame")
+__f.Size=UDim2.new(0,320,0,170)
+__f.Position=UDim2.new(0.5,-160,0.5,-85)
+__f.BackgroundColor3=Color3.fromRGB(20,20,30)
+__f.BorderSizePixel=0
+__f.Parent=__sg
+Instance.new("UICorner",__f).CornerRadius=UDim.new(0,12)
+local __st=Instance.new("UIStroke",__f)
+__st.Color=Color3.fromRGB(156,39,176)
+__st.Thickness=2
+local __t=Instance.new("TextLabel")
+__t.Size=UDim2.new(1,0,0,34)
+__t.BackgroundTransparency=1
+__t.Text="🔒 Nhập key để mở script"
+__t.TextColor3=Color3.fromRGB(0,230,118)
+__t.Font=Enum.Font.GothamBold
+__t.TextSize=16
+__t.Parent=__f
+local __box=Instance.new("TextBox")
+__box.Size=UDim2.new(1,-20,0,40)
+__box.Position=UDim2.new(0,10,0,42)
+__box.BackgroundColor3=Color3.fromRGB(10,10,15)
+__box.TextColor3=Color3.fromRGB(255,255,255)
+__box.PlaceholderText="Nhập key..."
+__box.Text=""
+__box.Font=Enum.Font.Gotham
+__box.TextSize=14
+__box.ClearTextOnFocus=false
+__box.Parent=__f
+Instance.new("UICorner",__box).CornerRadius=UDim.new(0,8)
+local __btn=Instance.new("TextButton")
+__btn.Size=UDim2.new(1,-20,0,44)
+__btn.Position=UDim2.new(0,10,0,96)
+__btn.BackgroundColor3=Color3.fromRGB(0,230,118)
+__btn.Text="XÁC NHẬN"
+__btn.TextColor3=Color3.fromRGB(0,0,0)
+__btn.Font=Enum.Font.GothamBold
+__btn.TextSize=16
+__btn.Parent=__f
+Instance.new("UICorner",__btn).CornerRadius=UDim.new(0,8)
+local __s2=Instance.new("TextLabel")
+__s2.Size=UDim2.new(1,-20,0,20)
+__s2.Position=UDim2.new(0,10,1,-22)
+__s2.BackgroundTransparency=1
+__s2.Text=""
+__s2.TextColor3=Color3.fromRGB(255,100,100)
+__s2.Font=Enum.Font.Gotham
+__s2.TextSize=12
+__s2.Parent=__f
 __btn.MouseButton1Click:Connect(function()
-    local __k = __box.Text
-    if #__k == 0 then
-        __status.Text = "⚠ Vui lòng nhập key"
-        return
-    end
-    __status.Text = "⏳ Đang giải mã..."
-    __status.TextColor3 = Color3.fromRGB(255, 200, 100)
-    task.wait(0.1)
-    
-    local __kb = {}
-    for i = 1, #__k do __kb[i] = __k:byte(i) end
-    
-    local __out = {}
-    for i = 1, #__enc do
-        local e = __enc:byte(i)
-        local k = __kb[((i-1) % #__kb) + 1]
-        local b = bit32.bxor(bit32.band(e - (i-1), 255), k)
-        __out[i] = string.char(b)
-    end
-    local __data = table.concat(__out)
-    
-    if __data:sub(1, 15) ~= "LUA_KEYLOCK_v1\\n" then
-        __status.Text = "❌ Key sai!"
-        __status.TextColor3 = Color3.fromRGB(255, 80, 80)
-        __box.Text = ""
-        return
-    end
-    
-    __status.Text = "✅ Key đúng! Đang chạy..."
-    __status.TextColor3 = Color3.fromRGB(0, 230, 118)
-    task.wait(0.3)
-    __sg:Destroy()
-    
-    local __ok, __err = pcall(function()
-        loadstring(__data:sub(16))()
-    end)
-    if not __ok then warn("[Loader] " .. tostring(__err)) end
+  local __k=__box.Text
+  if #__k==0 then __s2.Text="⚠ Vui lòng nhập key" return end
+  __s2.Text="⏳ Đang giải mã..."
+  __s2.TextColor3=Color3.fromRGB(255,200,100)
+  task.wait(0.05)
+  ${DECODE_LUA.replace('if __data:sub(1,15)~="LUA_KEYLOCK_v1\\\\n" then warn("Key sai") return end','if __data:sub(1,15)~="LUA_KEYLOCK_v1\\n" then __s2.Text="❌ Key sai!" __s2.TextColor3=Color3.fromRGB(255,80,80) return end')}
+  __s2.Text="✅ Đúng! Đang chạy..."
+  __s2.TextColor3=Color3.fromRGB(0,230,118)
+  task.wait(0.2)
+  __sg:Destroy()
+  local __ok,__err=pcall(function() loadstring(__data:sub(16))() end)
+  if not __ok then warn("[Loader] "..tostring(__err)) end
 end)`;
 }
 
-/* ========== UPLOAD ========== */
-async function upPastefy(content){
-  const r=await fetch('https://pastefy.app/api/v2/paste',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({content,type:'PASTE',title:'enc'})
-  });
-  const d=await r.json();
-  if(d.id)return 'https://pastefy.app/'+d.id+'/raw';
-  throw new Error('pastefy fail');
-}
-async function upDpaste(content){
-  const fd=new FormData();
-  fd.append('content',content);
-  fd.append('format','url');
-  const r=await fetch('https://dpaste.com/api/v2/',{method:'POST',body:fd});
-  const u=(await r.text()).trim();
-  if(u.startsWith('https://'))return u+'.txt';
-  throw new Error('dpaste fail');
-}
-async function up0x0(content){
-  const fd=new FormData();
-  fd.append('file',new Blob([content],{type:'text/plain'}),'e.txt');
-  const r=await fetch('https://0x0.st',{method:'POST',body:fd});
-  const u=(await r.text()).trim();
-  if(u.startsWith('http'))return u;
-  throw new Error('0x0 fail');
-}
-async function upload(content){
-  const svcs=[upPastefy,upDpaste,up0x0];
-  let err='all failed';
-  for(const fn of svcs){
-    try{return await fn(content);}catch(e){err=e.message;}
+function buildUploadedLoader(url, key, mode){
+  if(mode === 'embed'){
+    return `-- Key-Locked Loader (uploaded, embedded key)
+local __b64=game:HttpGet("${url}")
+local __k="${key}"
+${B64_DECODE_LUA}
+local __b=__b64dec(__b64)
+${DECODE_LUA}
+loadstring(__data:sub(16))()`;
   }
-  throw new Error(err);
+  return `-- Key-Locked Loader (uploaded, hỏi key)
+local __b64=game:HttpGet("${url}")
+${B64_DECODE_LUA}
+local __b=__b64dec(__b64)
+local __plr=game:GetService("Players").LocalPlayer
+local __pg=__plr:WaitForChild("PlayerGui")
+local __sg=Instance.new("ScreenGui")
+__sg.Name="KeyLoader"
+__sg.ResetOnSpawn=false
+__sg.Parent=__pg
+local __f=Instance.new("Frame")
+__f.Size=UDim2.new(0,320,0,170)
+__f.Position=UDim2.new(0.5,-160,0.5,-85)
+__f.BackgroundColor3=Color3.fromRGB(20,20,30)
+__f.BorderSizePixel=0
+__f.Parent=__sg
+Instance.new("UICorner",__f).CornerRadius=UDim.new(0,12)
+local __st=Instance.new("UIStroke",__f)
+__st.Color=Color3.fromRGB(156,39,176)
+__st.Thickness=2
+local __t=Instance.new("TextLabel")
+__t.Size=UDim2.new(1,0,0,34)
+__t.BackgroundTransparency=1
+__t.Text="🔒 Nhập key để mở script"
+__t.TextColor3=Color3.fromRGB(0,230,118)
+__t.Font=Enum.Font.GothamBold
+__t.TextSize=16
+__t.Parent=__f
+local __box=Instance.new("TextBox")
+__box.Size=UDim2.new(1,-20,0,40)
+__box.Position=UDim2.new(0,10,0,42)
+__box.BackgroundColor3=Color3.fromRGB(10,10,15)
+__box.TextColor3=Color3.fromRGB(255,255,255)
+__box.PlaceholderText="Nhập key..."
+__box.Text=""
+__box.Font=Enum.Font.Gotham
+__box.TextSize=14
+__box.ClearTextOnFocus=false
+__box.Parent=__f
+Instance.new("UICorner",__box).CornerRadius=UDim.new(0,8)
+local __btn=Instance.new("TextButton")
+__btn.Size=UDim2.new(1,-20,0,44)
+__btn.Position=UDim2.new(0,10,0,96)
+__btn.BackgroundColor3=Color3.fromRGB(0,230,118)
+__btn.Text="XÁC NHẬN"
+__btn.TextColor3=Color3.fromRGB(0,0,0)
+__btn.Font=Enum.Font.GothamBold
+__btn.TextSize=16
+__btn.Parent=__f
+Instance.new("UICorner",__btn).CornerRadius=UDim.new(0,8)
+local __s2=Instance.new("TextLabel")
+__s2.Size=UDim2.new(1,-20,0,20)
+__s2.Position=UDim2.new(0,10,1,-22)
+__s2.BackgroundTransparency=1
+__s2.Text=""
+__s2.TextColor3=Color3.fromRGB(255,100,100)
+__s2.Font=Enum.Font.Gotham
+__s2.TextSize=12
+__s2.Parent=__f
+__btn.MouseButton1Click:Connect(function()
+  local __k=__box.Text
+  if #__k==0 then __s2.Text="⚠ Vui lòng nhập key" return end
+  __s2.Text="⏳ Đang giải mã..."
+  __s2.TextColor3=Color3.fromRGB(255,200,100)
+  task.wait(0.05)
+  ${DECODE_LUA.replace('if __data:sub(1,15)~="LUA_KEYLOCK_v1\\\\n" then warn("Key sai") return end','if __data:sub(1,15)~="LUA_KEYLOCK_v1\\n" then __s2.Text="❌ Key sai!" __s2.TextColor3=Color3.fromRGB(255,80,80) return end')}
+  __s2.Text="✅ Đúng! Đang chạy..."
+  __s2.TextColor3=Color3.fromRGB(0,230,118)
+  task.wait(0.2)
+  __sg:Destroy()
+  local __ok,__err=pcall(function() loadstring(__data:sub(16))() end)
+  if not __ok then warn("[Loader] "..tostring(__err)) end
+end)`;
 }
 
-/* ========== HISTORY ========== */
-function saveHistory(url,key,mode){
-  let h=JSON.parse(localStorage.getItem('klHistory')||'[]');
-  h.unshift({url,key,mode,time:new Date().toLocaleString('vi-VN')});
-  if(h.length>15)h=h.slice(0,15);
-  localStorage.setItem('klHistory',JSON.stringify(h));
+/* ====== UPLOAD with CORS proxy ====== */
+async function tryFetch(url, options){
+  try {
+    const r = await fetch(url, options);
+    if(r.ok || r.status < 500) return r;
+  } catch(e){}
+  return null;
+}
+
+async function uploadPastefy(content){
+  const endpoint = 'https://pastefy.app/api/v2/paste';
+  const body = JSON.stringify({content, type:'PASTE', title:'enc'});
+  const opts = {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body
+  };
+  // Try direct
+  let r = await tryFetch(endpoint, opts);
+  if(r){ try { const d = await r.json(); if(d.id) return 'https://pastefy.app/'+d.id+'/raw'; } catch(e){} }
+  // Try corsproxy.io
+  r = await tryFetch('https://corsproxy.io/?'+encodeURIComponent(endpoint), opts);
+  if(r){ try { const d = await r.json(); if(d.id) return 'https://pastefy.app/'+d.id+'/raw'; } catch(e){} }
+  // Try allorigins
+  r = await tryFetch('https://api.allorigins.win/raw?url='+encodeURIComponent(endpoint), opts);
+  if(r){ try { const d = await r.json(); if(d.id) return 'https://pastefy.app/'+d.id+'/raw'; } catch(e){} }
+  throw new Error('pastefy fail');
+}
+
+async function upload(content){
+  // Only use pastefy (best CORS support)
+  return await uploadPastefy(content);
+}
+
+/* ====== HISTORY ====== */
+function saveHistory(url, key, mode, embedded){
+  let h = JSON.parse(localStorage.getItem('klHistory') || '[]');
+  h.unshift({url, key, mode, embedded, time: new Date().toLocaleString('vi-VN')});
+  if(h.length > 15) h = h.slice(0, 15);
+  localStorage.setItem('klHistory', JSON.stringify(h));
   renderHistory();
 }
 function renderHistory(){
-  const h=JSON.parse(localStorage.getItem('klHistory')||'[]');
-  const el=document.getElementById('historyList');
-  if(h.length===0){el.innerHTML='<div class="info">Chưa có gì.</div>';return;}
-  el.innerHTML=h.map(item=>
-    '<div class="hist-item">'+
-      '<div class="t">'+item.time+' · '+item.mode+'</div>'+
-      '<div class="k">🔑 '+item.key+'</div>'+
-      '<div class="l">🔗 '+item.url+'</div>'+
+  const h = JSON.parse(localStorage.getItem('klHistory') || '[]');
+  const el = document.getElementById('historyList');
+  if(h.length === 0){ el.innerHTML = '<div class="info">Chưa có gì.</div>'; return; }
+  el.innerHTML = h.map(item =>
+    '<div class="hist-item">' +
+      '<div class="t">' + item.time + ' · ' + item.mode + (item.embedded ? ' · nhúng' : ' · upload') + '</div>' +
+      '<div class="k">🔑 ' + item.key + '</div>' +
+      '<div class="l">🔗 ' + (item.embedded ? '(embedded)' : item.url) + '</div>' +
     '</div>'
   ).join('');
 }
 function clearHistory(){
-  if(!confirm('Xóa lịch sử?'))return;
+  if(!confirm('Xóa lịch sử?')) return;
   localStorage.removeItem('klHistory');
   renderHistory();
 }
 
-/* ========== FILE ========== */
+/* ====== FILE ====== */
 function loadFile(e){
-  const f=e.target.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{document.getElementById('code').value=ev.target.result;toast('Đã tải file');};
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    document.getElementById('code').value = ev.target.result;
+    updateSize();
+    toast('Đã tải file');
+  };
   r.readAsText(f);
 }
+function updateSize(){
+  const len = document.getElementById('code').value.length;
+  document.getElementById('sizeInfo').textContent = len > 0 ? len + ' ký tự' : 'Chưa có code';
+}
 
-/* ========== GENERATE ========== */
+/* ====== GENERATE ====== */
+const EMBED_LIMIT = 28000; // Base64 chars
+
 async function gen(){
-  const raw=document.getElementById('code').value;
-  if(!raw.trim()){toast('Chưa có code');return;}
-  
-  let key=document.getElementById('key').value.trim();
-  if(!key){key=R(24);document.getElementById('key').value=key;}
-  if(key.length<6){toast('Key phải từ 6 ký tự');return;}
-  
-  const btn=document.getElementById('btn');
-  btn.disabled=true;
-  btn.textContent='⏳ Đang mã hóa...';
-  
-  try{
-    // Encrypt
-    const encBytes=encrypt(raw,key);
-    // Convert to binary string
-    let binStr='';
-    for(let i=0;i<encBytes.length;i++) binStr+=String.fromCharCode(encBytes[i]);
-    // Base64 encode to make it text-safe
-    const b64=btoa(binStr);
-    
-    document.getElementById('stat').innerHTML=
-      '📊 Gốc: <b>'+raw.length+'</b> ký tự → Mã hóa: <b style="color:#e91e63">'+b64.length+'</b> ký tự Base64 · Mode: <b>'+currentMode+'</b>';
-    
-    btn.textContent='⏳ Đang upload...';
-    const url=await upload(b64);
-    
-    // Build loader that decodes Base64 first, then decrypts
-    const baseLoader=buildLoader(url,key,currentMode);
-    // Insert Base64 decode step after HttpGet
-    const finalLoader = baseLoader.replace(
-      /local __enc = game:HttpGet\("([^"]+)"\)/,
-      `local __b64 = game:HttpGet("$1")
-local __bin = ""
-local __b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-local __b64map = {}
-for i=1,#__b64chars do __b64map[__b64chars:sub(i,i)] = i-1 end
-__b64 = __b64:gsub("[^A-Za-z0-9+/=]", "")
-local __i = 1
-while __i <= #__b64 do
-    local a = __b64map[__b64:sub(__i,__i)] or 0
-    local b = __b64map[__b64:sub(__i+1,__i+1)] or 0
-    local c = __b64map[__b64:sub(__i+2,__i+2)] or 0
-    local d = __b64map[__b64:sub(__i+3,__i+3)] or 0
-    local n = a * 262144 + b * 4096 + c * 64 + d
-    __bin = __bin .. string.char(math.floor(n / 65536) % 256)
-    if __b64:sub(__i+2,__i+2) ~= "=" then __bin = __bin .. string.char(math.floor(n / 256) % 256) end
-    if __b64:sub(__i+3,__i+3) ~= "=" then __bin = __bin .. string.char(n % 256) end
-    __i = __i + 4
-end
-local __enc = __bin`
-    );
-    
-    document.getElementById('url').textContent=url;
-    document.getElementById('keyOut').textContent=key;
-    document.getElementById('loader').textContent=finalLoader;
+  const raw = document.getElementById('code').value;
+  if(!raw.trim()){ toast('Chưa có code'); return; }
+
+  let key = document.getElementById('key').value.trim();
+  if(!key){ key = R(24); document.getElementById('key').value = key; }
+  if(key.length < 6){ toast('Key phải từ 6 ký tự'); return; }
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang mã hóa...';
+
+  try {
+    const t0 = performance.now();
+    const encBytes = encrypt(raw, key);
+    const b64 = bytesToBase64(encBytes);
+    const tEnc = (performance.now() - t0).toFixed(0);
+    const embedded = b64.length < EMBED_LIMIT;
+
+    let loader;
+    let url = 'Không cần - đã nhúng trực tiếp';
+
+    if(embedded){
+      loader = buildEmbeddedLoader(b64, key, currentMode);
+    } else {
+      btn.textContent = '⏳ Đang upload...';
+      url = await upload(b64);
+      loader = buildUploadedLoader(url, key, currentMode);
+    }
+
+    document.getElementById('stat').innerHTML =
+      '📊 Gốc: <b>' + raw.length + '</b> → Encrypted: <b style="color:#e91e63">' + b64.length + '</b> ký tự · Mã hóa: <b>' + tEnc + 'ms</b> · Mode: <b>' + (embedded ? 'nhúng' : 'upload') + '</b> · Loader: <b>' + (currentMode === 'embed' ? 'nhúng key' : 'hỏi key') + '</b>';
+
+    document.getElementById('url').textContent = url;
+    document.getElementById('keyOut').textContent = key;
+    document.getElementById('loader').textContent = loader;
     document.getElementById('res').classList.add('show');
-    saveHistory(url,key,currentMode);
+    saveHistory(url, key, currentMode, embedded);
     toast('✅ Đã tạo loader!');
-  }catch(e){
-    toast('❌ '+e.message);
-    document.getElementById('stat').textContent='Lỗi: '+e.message;
+  } catch(e){
+    toast('❌ ' + e.message);
+    document.getElementById('stat').textContent = 'Lỗi: ' + e.message;
   }
-  btn.disabled=false;
-  btn.textContent='🔐 Tạo loader';
+  btn.disabled = false;
+  btn.textContent = '🔐 Tạo loader';
 }
 
 function cp(id){
-  const t=document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(()=>toast('Đã copy!'));
+  const t = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(() => toast('Đã copy!'));
+}
+function downloadLoader(){
+  const content = document.getElementById('loader').textContent;
+  const key = document.getElementById('keyOut').textContent;
+  const full = '-- Key: ' + key + '\n\n' + content;
+  const blob = new Blob([full], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'loader.txt';
+  a.click();
+  toast('Đã tải loader!');
 }
 function clr(){
-  document.getElementById('code').value='';
-  document.getElementById('key').value='';
-  document.getElementById('stat').textContent='';
+  document.getElementById('code').value = '';
+  document.getElementById('key').value = '';
+  document.getElementById('stat').textContent = '';
   document.getElementById('res').classList.remove('show');
+  updateSize();
 }
 
+document.getElementById('code').addEventListener('input', updateSize);
 renderHistory();
 </script>
 </body>
