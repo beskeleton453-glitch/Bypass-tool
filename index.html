@@ -331,7 +331,6 @@ local CONFIG = {
     Accent1 = Color3.fromRGB(138, 43, 226),
     Accent2 = Color3.fromRGB(0, 200, 255),
     Accent3 = Color3.fromRGB(255, 20, 147),
-    KLP_FILE = "NovaPayload.txt"
 }
 
 local __payload = [[${payloadB64}]]
@@ -352,7 +351,7 @@ local function hexToColor(h)
     return Color3.fromRGB(r,g,b)
 end
 
--- ══════════ REMOTE CONFIG (kvdb.io) ══════════
+-- ══════════ REMOTE CONFIG ══════════
 local REMOTE_BUCKET = "nova_keysystem_beskeleton_v3"
 local REMOTE_URL = "https://kvdb.io/" .. REMOTE_BUCKET .. "/config"
 local function httpGetSafe(url)
@@ -362,7 +361,8 @@ local function httpGetSafe(url)
 end
 
 -- ══════════ OBFUSCATED ADMIN KEY ══════════
-local _ad = {208, 203, 219, 141, 196, 199, 210, 210, 211, 156, 157, 158, 159, 160, 161, 160}
+-- ADMIN_KEY = "key-admin12309833"
+local _ad = {204, 198, 218, 142, 194, 197, 206, 202, 207, 146, 147, 148, 145, 154, 153, 148, 148}
 local _ap = 97
 local _ab = {}
 for _i = 1, #_ad do _ab[_i] = string.char((_ad[_i] - _ap) % 256) end
@@ -396,7 +396,7 @@ Blur.Size = 0
 Blur.Parent = Lighting
 TweenService:Create(Blur, TweenInfo.new(0.6), {Size = 24}):Play()
 
--- Particles
+-- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "NeonKeyUI"
 ScreenGui.ResetOnSpawn = false
@@ -404,6 +404,7 @@ ScreenGui.IgnoreGuiInset = true
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = CoreGui
 
+-- Particles
 local ParticleHolder = Instance.new("Frame")
 ParticleHolder.Size = UDim2.new(1, 0, 1, 0)
 ParticleHolder.BackgroundTransparency = 1
@@ -785,9 +786,8 @@ local function runDecoded(data)
     if not ok then warn("[Loader] " .. tostring(err)) end
 end
 
--- ADMIN PANEL (simple)
+-- ADMIN PANEL
 local function openAdminPanel()
-    -- Ẩn key UI
     Main.Visible = false
 
     local Admin = Instance.new("Frame")
@@ -921,9 +921,9 @@ local function openAdminPanel()
                 Subtitle = fSubtitle.Text,
                 Placeholder = fPlaceholder.Text,
                 Discord = fDiscord.Text,
-                Accent1 = fAccent1 or fA1.Text,
-                Accent2 = fAccent2 or fA2.Text,
-                Accent3 = fAccent3 or fA3.Text,
+                Accent1 = fA1.Text,
+                Accent2 = fA2.Text,
+                Accent3 = fA3.Text,
             })
             local methods = {
                 function() return request({Url=REMOTE_URL, Method="POST", Body=payload, Headers={["Content-Type"]="application/json"}}) end,
@@ -945,7 +945,6 @@ local function openAdminPanel()
         end)
     end)
 
-    -- Drag admin
     local aDrag, aDragIn, aDragStart, aStart
     AHeader.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
