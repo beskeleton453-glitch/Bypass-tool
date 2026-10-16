@@ -112,7 +112,7 @@
 
 <div class="c" id="appRoot" style="display:none">
   <h1>🚀 Gist Loader Pro</h1>
-  <p class="s">Dynamic template • Auto-update • Rate limit</p>
+  <p class="s">Shell V7.2 • Auto-update • Fallback safe</p>
 
   <div class="card" id="gistCard">
     <div class="ct">📦 Config Gist</div>
@@ -214,7 +214,7 @@
     <div id="adminTabMenu" style="display:none">
       <div class="hint-box">
         📜 <b>Menu Lua</b> — code chạy khi user chạy loadstring.<br>
-        <b>Loadstring là shell</b> — khi user chạy sẽ fetch template mới nhất từ Config Gist, nên sửa ở đây là tất cả user (cũ & mới) đều dùng template mới.<br>
+        Loadstring là <b>shell</b> — tự fetch template mới từ Config Gist mỗi lần chạy.<br>
         Biến: <code>{{PAYLOAD}}</code>, <code>{{KEY}}</code>, <code>{{ADMINKEY}}</code>, <code>{{WEBUSER}}</code>
       </div>
 
@@ -283,20 +283,25 @@
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   CONSTANTS + OBFUSCATED ADMIN CREDS
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ OBFUSCATED ADMIN CREDS ═══════════ */
 const _xor = a => a.map(c => String.fromCharCode(c ^ 0x5A)).join('');
 const ADMIN_USER = _xor([41,49,63,54,63,46,53,52,56,63,106]).toLowerCase();
 const ADMIN_PASS = _xor([41,49,63,54,63,46,53,52,105,111,110,99]);
 
+/* ═══════════ CONSTANTS ═══════════ */
 const CONFIG_GIST_KEY = 'glpConfigGistId';
+const CONFIG_RAW_KEY = 'glpConfigRawUrl';
+const CONFIG_OWNER_KEY = 'glpConfigOwner';
 const CONFIG_CACHE_TTL = 3000;
 let _configCache = null;
 let _configCacheAt = 0;
 
 const getConfigGistId = () => localStorage.getItem(CONFIG_GIST_KEY) || '';
 const setConfigGistId = id => { if(id) localStorage.setItem(CONFIG_GIST_KEY, id); else localStorage.removeItem(CONFIG_GIST_KEY); };
+const getConfigRawUrl = () => localStorage.getItem(CONFIG_RAW_KEY) || '';
+const setConfigRawUrl = u => { if(u) localStorage.setItem(CONFIG_RAW_KEY, u); else localStorage.removeItem(CONFIG_RAW_KEY); };
+const getConfigOwner = () => localStorage.getItem(CONFIG_OWNER_KEY) || '';
+const setConfigOwner = o => { if(o) localStorage.setItem(CONFIG_OWNER_KEY, o); else localStorage.removeItem(CONFIG_OWNER_KEY); };
 const getGhToken = () => localStorage.getItem('ghToken') || '';
 
 const LS = {
@@ -304,9 +309,7 @@ const LS = {
   set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 };
 
-/* ═══════════════════════════════════════════════════════
-   GIST STORAGE
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ FETCH WITH TIMEOUT ═══════════ */
 async function fetchWithTimeout(url, opts = {}, timeoutMs = 6000){
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -317,9 +320,26 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 6000){
   } catch(e){ clearTimeout(t); throw e; }
 }
 
+/* ═══════════ GIST STORAGE ═══════════ */
 async function loadRemoteConfig(force = false){
   const now = Date.now();
   if(!force && _configCache && (now - _configCacheAt) < CONFIG_CACHE_TTL) return _configCache;
+
+  // Ưu tiên RAW URL
+  const rawUrl = getConfigRawUrl();
+  if(rawUrl){
+    try {
+      const r = await fetchWithTimeout(rawUrl + '?_=' + now, {}, 6000);
+      if(r.ok){
+        const cfg = JSON.parse(await r.text());
+        _configCache = cfg;
+        _configCacheAt = now;
+        return cfg;
+      }
+    } catch(e){ console.warn('raw fail:', e.message); }
+  }
+
+  // Fallback API
   const id = getConfigGistId();
   if(!id) return null;
   try {
@@ -331,10 +351,12 @@ async function loadRemoteConfig(force = false){
     const file = data.files && data.files['config.json'];
     if(!file || !file.content) return null;
     const cfg = JSON.parse(file.content);
+    if(file.raw_url) setConfigRawUrl(file.raw_url);
+    if(data.owner && data.owner.login) setConfigOwner(data.owner.login);
     _configCache = cfg;
     _configCacheAt = now;
     return cfg;
-  } catch(e){ console.warn('loadRemoteConfig:', e.message); return null; }
+  } catch(e){ console.warn('api fail:', e.message); return null; }
 }
 
 async function saveRemoteConfig(cfg){
@@ -349,7 +371,15 @@ async function saveRemoteConfig(cfg){
     body: JSON.stringify(body)
   }, 10000);
   if(!r.ok) throw new Error('GitHub ' + r.status);
-  _configCache = null; _configCacheAt = 0;
+  // Cập nhật raw URL (có thể thay đổi sau mỗi lần PATCH)
+  try {
+    const data = await r.json();
+    if(data.files && data.files['config.json'] && data.files['config.json'].raw_url){
+      setConfigRawUrl(data.files['config.json'].raw_url);
+    }
+  } catch(e){}
+  _configCache = null;
+  _configCacheAt = 0;
   return true;
 }
 
@@ -377,7 +407,12 @@ async function createConfigGist(){
   if(!r.ok) throw new Error('GitHub ' + r.status);
   const data = await r.json();
   setConfigGistId(data.id);
-  _configCache = initial; _configCacheAt = Date.now();
+  if(data.owner && data.owner.login) setConfigOwner(data.owner.login);
+  if(data.files && data.files['config.json'] && data.files['config.json'].raw_url){
+    setConfigRawUrl(data.files['config.json'].raw_url);
+  }
+  _configCache = initial;
+  _configCacheAt = Date.now();
   return data.id;
 }
 
@@ -389,7 +424,8 @@ async function patchConfig(patch){
   };
   const merged = { ...cfg, ...patch, updatedAt: Date.now() };
   await saveRemoteConfig(merged);
-  _configCache = merged; _configCacheAt = Date.now();
+  _configCache = merged;
+  _configCacheAt = Date.now();
   return merged;
 }
 
@@ -402,9 +438,7 @@ async function updateBlocks(b){ return patchConfig({ blocks: b }); }
 async function updateKicks(k){ return patchConfig({ kicks: k }); }
 async function updateRoles(r){ return patchConfig({ roles: r }); }
 
-/* ═══════════════════════════════════════════════════════
-   AUTH
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ AUTH ═══════════ */
 let loginMode = 'login';
 const simpleHash = str => {
   let h = 5381;
@@ -517,9 +551,7 @@ function logout(){
 }
 const roleIcon = role => ({ admin: '👑', mod: '🛡️', vip: '⭐', user: '💬' }[role] || '💬');
 
-/* ═══════════════════════════════════════════════════════
-   IP + RATE LIMIT
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ IP + RATE LIMIT ═══════════ */
 let _myIP = null;
 async function getMyIP(){
   if(_myIP) return _myIP;
@@ -570,9 +602,7 @@ async function updateRateInfo(){
   el.style.color = rl.used >= rl.max ? '#f44336' : '#888';
 }
 
-/* ═══════════════════════════════════════════════════════
-   LUA TEMPLATES
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ LUA TEMPLATES ═══════════ */
 const LUA_DECODE = `local __b64map={}
 local __b64chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 for i=1,#__b64chars do __b64map[__b64chars:sub(i,i)]=i-1 end
@@ -618,7 +648,6 @@ local function __decrypt(enc,k)
   return table.concat(out)
 end`;
 
-/* Admin Panel Lua trong game — đọc user từ kvdb */
 const LUA_ADMIN_PANEL = `local function __openAdminPanel()
   local HttpService=game:GetService("HttpService")
   local KV_BUCKET="glp_webusers_v7"
@@ -684,12 +713,18 @@ const LUA_ADMIN_PANEL = `local function __openAdminPanel()
   end
   local function httpGet(url)
     local ok,res=pcall(function() return game:HttpGet(url) end)
-    if ok then return res end
+    if ok and res then return res end
+    ok,res=pcall(function() return game:HttpGetAsync(url) end)
+    if ok and res then return res end
     return nil
   end
   local function httpPost(url,body)
     local ok=pcall(function()
       request({Url=url,Method="POST",Body=body,Headers={["Content-Type"]="application/json"}})
+    end)
+    if ok then return true end
+    ok=pcall(function()
+      http_request({Url=url,Method="POST",Body=body,Headers={["Content-Type"]="application/json"}})
     end)
     return ok
   end
@@ -813,14 +848,13 @@ const LUA_ADMIN_PANEL = `local function __openAdminPanel()
   end)
 end`;
 
-const DEFAULT_ASK = `-- Gist Loader Pro
+const DEFAULT_ASK = `-- Gist Loader Pro Template Ask
 local __payload=[[{{PAYLOAD}}]]
 ${LUA_DECODE}
 local __enc=__b64decode(__payload)
 local ADMIN_KEY="{{ADMINKEY}}"
 local WEBUSER="{{WEBUSER}}"
 ${LUA_ADMIN_PANEL}
--- Heartbeat gửi kvdb
 task.spawn(function()
   local HttpService=game:GetService("HttpService")
   local KV_BUCKET="glp_webusers_v7"
@@ -959,7 +993,7 @@ bt.MouseButton1Click:Connect(function() __try(bx.Text) end)
 task.wait(0.1)
 if bx and bx.Parent then pcall(function() bx:CaptureFocus() end) end`;
 
-const DEFAULT_EMBED = `-- Gist Loader Pro
+const DEFAULT_EMBED = `-- Gist Loader Pro Template Embed
 local __payload=[[{{PAYLOAD}}]]
 ${LUA_DECODE}
 local __enc=__b64decode(__payload)
@@ -968,128 +1002,152 @@ if __data:sub(1,5)~="KLP3\\n" then warn("[Loader] Key invalid") return end
 local __ok,__err=pcall(function() loadstring(__data:sub(6))() end)
 if not __ok then warn("[Loader] "..tostring(__err)) end`;
 
-/* ═══════════════════════════════════════════════════════
-   LOADSTRING SHELL — fetch template từ config gist runtime
-   ═══════════════════════════════════════════════════════ */
-function buildShell(configGistId, payloadB64, key, mode, webuser){
-  // Escape strings để nhúng vào Lua
-  const esc = s => String(s || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
-  return `-- Gist Loader Pro Shell V7
--- Loadstring này CHỈ chứa metadata, không chứa template cứng.
--- Mỗi lần chạy sẽ fetch template mới nhất từ Config Gist.
-local __CFG_ID="${esc(configGistId)}"
-local __PAYLOAD="${esc(payloadB64)}"
-local __KEY="${esc(key)}"
-local __MODE="${esc(mode)}"
-local __WEBUSER="${esc(webuser)}"
+/* ═══════════ BUILD SHELL V7.2 ═══════════ */
+function buildShell(configGistId, configRawUrl, payloadB64, key, mode, webuser, askTemplate, embedTemplate, adminKey){
+  const esc = s => String(s || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
 
-local HttpService=game:GetService("HttpService")
-local function __fetchGist(id)
-  local ok,r=pcall(function()
-    return game:HttpGet("https://api.github.com/gists/"..id.."?_="..tostring(os.time()))
-  end)
-  if not ok then return nil end
-  local ok2,d=pcall(function() return HttpService:JSONDecode(r) end)
-  if not ok2 then return nil end
-  return d
+  const b64enc = str => btoa(unescape(encodeURIComponent(str || '')));
+  const askB64 = b64enc(askTemplate || DEFAULT_ASK);
+  const embedB64 = b64enc(embedTemplate || DEFAULT_EMBED);
+
+  return `-- Gist Loader Pro Shell V7.2
+print("[GLP] Shell started")
+
+pcall(function()
+  local cg = game:GetService("CoreGui")
+  for _, n in ipairs({"GistLoaderKey","GistLoaderAdmin"}) do
+    local x = cg:FindFirstChild(n); if x then x:Destroy() end
+  end
+  local pg = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+  if pg then
+    for _, n in ipairs({"GistLoaderKey","GistLoaderAdmin"}) do
+      local x = pg:FindFirstChild(n); if x then x:Destroy() end
+    end
+  end
+end)
+
+local CFG_ID = "${esc(configGistId)}"
+local CFG_RAW = "${esc(configRawUrl)}"
+local PAYLOAD = "${esc(payloadB64)}"
+local KEY = "${esc(key)}"
+local MODE = "${esc(mode)}"
+local WEBUSER = "${esc(webuser)}"
+local FB_ADMIN = "${esc(adminKey || 'key-admin12309833')}"
+local FB_ASK_B64 = "${askB64}"
+local FB_EMBED_B64 = "${embedB64}"
+
+local HS = game:GetService("HttpService")
+
+local B64M = {}
+do
+  local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+  for i = 1, #chars do B64M[chars:sub(i,i)] = i - 1 end
 end
-
--- Đọc config từ gist
-local cfgGist=__fetchGist(__CFG_ID)
-local cfg={}
-if cfgGist and cfgGist.files and cfgGist.files["config.json"] then
-  local ok,c=pcall(function() return HttpService:JSONDecode(cfgGist.files["config.json"].content) end)
-  if ok and type(c)=="table" then cfg=c end
-end
-
--- Chọn template
-local tmpl = nil
-if __MODE=="embed" then
-  tmpl = cfg.menuEmbed
-elseif __MODE=="ask" then
-  tmpl = cfg.menuAsk
-end
-
--- Fallback mặc định nếu config trống
-if not tmpl or tmpl=="" then
-  if __MODE=="ask" then
-    warn("[Loader] Không có template trong Config Gist — dùng fallback")
-    tmpl = [[
-local __payload=[[{{PAYLOAD}}]]
-local HttpService=game:GetService("HttpService")
-local __enc=nil
--- (fallback đơn giản — chỉ decrypt, không UI)
-warn("[Loader] Fallback mode chưa được hỗ trợ đầy đủ. Vui lòng liên hệ admin.")
-]]
-  else
-    tmpl = [[
-local __payload=[[{{PAYLOAD}}]]
 local function b64d(s)
-  local map={}
-  local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-  for i=1,#chars do map[chars:sub(i,i)]=i-1 end
-  s=s:gsub("[^A-Za-z0-9+/=]","")
-  local out={}; local i=1
-  while i<=#s do
-    local a=map[s:sub(i,i)] or 0
-    local b=map[s:sub(i+1,i+1)] or 0
-    local c=map[s:sub(i+2,i+2)] or 0
-    local d=map[s:sub(i+3,i+3)] or 0
-    local n=a*262144+b*4096+c*64+d
-    out[#out+1]=string.char(math.floor(n/65536)%256)
-    if s:sub(i+2,i+2)~="=" then out[#out+1]=string.char(math.floor(n/256)%256) end
-    if s:sub(i+3,i+3)~="=" then out[#out+1]=string.char(n%256) end
-    i=i+4
+  s = tostring(s):gsub("[^A-Za-z0-9+/=]", "")
+  local out = {}
+  local i = 1
+  while i <= #s do
+    local a = B64M[s:sub(i,i)] or 0
+    local b = B64M[s:sub(i+1,i+1)] or 0
+    local c = B64M[s:sub(i+2,i+2)] or 0
+    local d = B64M[s:sub(i+3,i+3)] or 0
+    local n = a*262144 + b*4096 + c*64 + d
+    out[#out+1] = string.char(math.floor(n/65536) % 256)
+    if s:sub(i+2,i+2) ~= "=" then out[#out+1] = string.char(math.floor(n/256) % 256) end
+    if s:sub(i+3,i+3) ~= "=" then out[#out+1] = string.char(n % 256) end
+    i = i + 4
   end
   return table.concat(out)
 end
-local function dt(enc,k)
-  local t={}
-  for i=0,255 do
-    local h=i
-    for j=1,#k do h=(h*31+k:byte(j)+(j-1))%256 end
-    t[i+1]=h
+
+local function httpGet(url)
+  local ok, res
+  ok, res = pcall(function() return game:HttpGet(url) end)
+  if ok and res and #tostring(res) > 0 then return tostring(res) end
+  ok, res = pcall(function() return game:HttpGetAsync(url) end)
+  if ok and res and #tostring(res) > 0 then return tostring(res) end
+  if type(httpget) == "function" then
+    ok, res = pcall(function() return httpget(url) end)
+    if ok and res and #tostring(res) > 0 then return tostring(res) end
   end
-  local out={}; local prev=0; local prev2=0
-  for i=1,#enc do
-    local e=enc:byte(i)
-    local kk=t[bit32.band(i-1,255)+1]
-    local x=bit32.bxor(e,prev)
-    x=bit32.bxor(x,bit32.band(prev2*7+13,255))
-    local b=bit32.band(x-(i-1),255)
-    out[i]=string.char(bit32.bxor(b,kk))
-    prev2=prev; prev=e
+  if type(http_get) == "function" then
+    ok, res = pcall(function() return http_get(url) end)
+    if ok and res and #tostring(res) > 0 then return tostring(res) end
   end
-  return table.concat(out)
+  return nil
 end
-local data=dt(b64d(__payload),"{{KEY}}")
-if data:sub(1,5)~="KLP3\\n" then warn("[Loader] Key invalid") return end
-local ok,err=pcall(function() loadstring(data:sub(6))() end)
-if not ok then warn("[Loader] "..tostring(err)) end
-]]
+
+local cfg = nil
+local function tryUrl(url)
+  if not url or url == "" then return nil end
+  print("[GLP] Fetching config: "..url:sub(1, 100))
+  local raw = httpGet(url)
+  if not raw then print("[GLP] HTTP failed") return nil end
+  local ok, data = pcall(function() return HS:JSONDecode(raw) end)
+  if not ok then print("[GLP] JSON parse failed") return nil end
+  if type(data) ~= "table" then return nil end
+  if data.adminKey or data.menuAsk or data.menuEmbed then
+    print("[GLP] Got config (raw)")
+    return data
+  end
+  if data.files and data.files["config.json"] then
+    local ok2, c = pcall(function() return HS:JSONDecode(data.files["config.json"].content) end)
+    if ok2 and type(c) == "table" then
+      print("[GLP] Got config (api)")
+      return c
+    end
+  end
+  return nil
+end
+
+if CFG_RAW ~= "" then cfg = tryUrl(CFG_RAW) end
+if not cfg and CFG_ID ~= "" then
+  cfg = tryUrl("https://api.github.com/gists/"..CFG_ID)
+end
+
+if cfg then print("[GLP] Remote config OK") else print("[GLP] Using fallback template") end
+
+local tmpl = nil
+if cfg then
+  if MODE == "embed" then tmpl = cfg.menuEmbed else tmpl = cfg.menuAsk end
+end
+if not tmpl or tmpl == "" then
+  print("[GLP] Loading embedded fallback: "..MODE)
+  if MODE == "embed" then
+    tmpl = b64d(FB_EMBED_B64)
+  else
+    tmpl = b64d(FB_ASK_B64)
   end
 end
 
--- Thay placeholder
-local adminKey = cfg.adminKey or "key-admin12309833"
-tmpl = tmpl:gsub("{{PAYLOAD}}", function() return __PAYLOAD end)
-tmpl = tmpl:gsub("{{KEY}}", function() return __KEY end)
+local adminKey = FB_ADMIN
+if cfg and cfg.adminKey and cfg.adminKey ~= "" then adminKey = cfg.adminKey end
+
+tmpl = tmpl:gsub("{{PAYLOAD}}", function() return PAYLOAD end)
+tmpl = tmpl:gsub("{{KEY}}", function() return KEY end)
 tmpl = tmpl:gsub("{{ADMINKEY}}", function() return adminKey end)
-tmpl = tmpl:gsub("{{WEBUSER}}", function() return __WEBUSER end)
+tmpl = tmpl:gsub("{{WEBUSER}}", function() return WEBUSER end)
 
--- Chạy
-local fn,err = loadstring(tmpl)
+print("[GLP] Compiling template (len="..#tmpl..")")
+local fn, err = loadstring(tmpl)
 if not fn then
-  warn("[Loader] Compile error: "..tostring(err))
+  warn("[GLP] Compile error: "..tostring(err))
   return
 end
-local ok2,runErr = pcall(fn)
-if not ok2 then warn("[Loader] Runtime error: "..tostring(runErr)) end`;
+print("[GLP] Running template...")
+local ok, runErr = pcall(fn)
+if not ok then
+  warn("[GLP] Runtime error: "..tostring(runErr))
+end
+print("[GLP] Done")`;
 }
 
-/* ═══════════════════════════════════════════════════════
-   HEARTBEAT (gist-based)
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ HEARTBEAT ═══════════ */
 let checkTimer = null;
 function startHeartbeat(){
   const s = getSession();
@@ -1129,9 +1187,7 @@ function startHeartbeat(){
 }
 function stopHeartbeat(){ if(checkTimer){ clearInterval(checkTimer); checkTimer = null; } }
 
-/* ═══════════════════════════════════════════════════════
-   MOD TOOLS
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ MOD TOOLS ═══════════ */
 async function modRefreshUsers(){
   const roles = await getRoles();
   const users = getUsers();
@@ -1164,9 +1220,7 @@ async function modKick(name){
   } catch(e){ toast('❌ ' + e.message); }
 }
 
-/* ═══════════════════════════════════════════════════════
-   ADMIN PANEL
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ ADMIN PANEL ═══════════ */
 function switchAdminTab(t){
   ['user','menu','code','tool'].forEach(k => {
     const id = 'adminTab' + k.charAt(0).toUpperCase() + k.slice(1);
@@ -1290,9 +1344,7 @@ function adminCopyCode(id){
   if(codes[id]) navigator.clipboard.writeText(codes[id].code).then(() => toast('Đã copy'));
 }
 
-/* ═══════════════════════════════════════════════════════
-   MENU LUA EDITOR
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ MENU LUA EDITOR ═══════════ */
 async function adminLoadLuaMenu(){
   const cfg = await loadRemoteConfig(true);
   document.getElementById('luaAskTmpl').value = (cfg && cfg.menuAsk) || '';
@@ -1311,7 +1363,7 @@ async function adminSaveLuaMenu(ev){
     const embed = document.getElementById('luaEmbedTmpl').value;
     const adminKey = document.getElementById('luaAdminKey').value.trim() || 'key-admin12309833';
     await patchConfig({ menuAsk: ask, menuEmbed: embed, adminKey });
-    setStatus('✅ Đã lưu! Mọi loadstring (cũ & mới) sẽ dùng template này.', '#00e676');
+    setStatus('✅ Đã lưu! Mọi loadstring (cũ & mới) sẽ fetch template này.', '#00e676');
     toast('✅ Đã update — áp dụng cho TẤT CẢ user');
   } catch(e){
     setStatus('❌ ' + e.message, '#f44336');
@@ -1332,12 +1384,10 @@ async function adminResetLuaMenu(){
   } catch(e){ toast('❌ ' + e.message); }
 }
 
-/* ═══════════════════════════════════════════════════════
-   TOOL TAB
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ TOOL TAB ═══════════ */
 async function toolCreateGist(){
   if(!getGhToken()){ toast('⚠ Cần GitHub token trước'); return; }
-  if(!confirm('Tạo Config Gist mới? Gist cũ (nếu có) sẽ bị ngắt.')) return;
+  if(!confirm('Tạo Config Gist mới?')) return;
   try {
     const id = await createConfigGist();
     toast('✅ Đã tạo: ' + id.substring(0, 8) + '...');
@@ -1350,7 +1400,12 @@ async function toolConnectGist(){
   try {
     const r = await fetchWithTimeout('https://api.github.com/gists/' + id, {}, 6000);
     if(!r.ok){ toast('❌ Gist không tồn tại'); return; }
+    const data = await r.json();
     setConfigGistId(id);
+    if(data.owner && data.owner.login) setConfigOwner(data.owner.login);
+    if(data.files && data.files['config.json'] && data.files['config.json'].raw_url){
+      setConfigRawUrl(data.files['config.json'].raw_url);
+    }
     await loadRemoteConfig(true);
     toast('✅ Đã kết nối');
     toolUpdateGistInfo();
@@ -1359,6 +1414,8 @@ async function toolConnectGist(){
 function toolDisconnectGist(){
   if(!confirm('Ngắt kết nối?')) return;
   setConfigGistId('');
+  setConfigRawUrl('');
+  setConfigOwner('');
   _configCache = null;
   toast('Đã ngắt');
   toolUpdateGistInfo();
@@ -1404,7 +1461,12 @@ async function userConnectGist(){
   try {
     const r = await fetchWithTimeout('https://api.github.com/gists/' + id, {}, 6000);
     if(!r.ok){ toast('❌ Gist không tồn tại'); return; }
+    const data = await r.json();
     setConfigGistId(id);
+    if(data.owner && data.owner.login) setConfigOwner(data.owner.login);
+    if(data.files && data.files['config.json'] && data.files['config.json'].raw_url){
+      setConfigRawUrl(data.files['config.json'].raw_url);
+    }
     await loadRemoteConfig(true);
     toast('✅ Đã kết nối!');
     updateGistInfo();
@@ -1453,9 +1515,7 @@ function adminSetRole(){
   adminChangeRole(n, r);
 }
 
-/* ═══════════════════════════════════════════════════════
-   CORE
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ CORE ═══════════ */
 let currentMode = 'ask';
 let currentGist = null;
 
@@ -1659,9 +1719,7 @@ function handleImport(e){
 
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
 
-/* ═══════════════════════════════════════════════════════
-   MAIN GENERATE — Tạo loadstring shell
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════ MAIN GENERATE ═══════════ */
 async function gen(){
   const s = getSession();
   if(!s){ toast('Chưa đăng nhập'); return; }
@@ -1672,7 +1730,6 @@ async function gen(){
   const cfgId = getConfigGistId();
   if(!cfgId){ toast('⚠ Chưa kết nối Config Gist'); return; }
 
-  // RATE LIMIT
   const rl = await checkRateLimit(s.role || 'user');
   if(!rl.allowed){
     toast('⚠ Hết lượt hôm nay (' + rl.used + '/' + rl.max + ')');
@@ -1691,7 +1748,6 @@ async function gen(){
   try {
     await new Promise(r => setTimeout(r, 30));
 
-    // Mode none → upload thẳng code lên gist
     if(currentMode === 'none'){
       const rand = Math.random().toString(36).substring(2, 15);
       const filename = 'script_' + rand + '.lua';
@@ -1723,11 +1779,16 @@ async function gen(){
       return;
     }
 
-    // Mode ask/embed → tạo shell loadstring
     const enc = encryptBytes(strToBytes(raw), key);
     const b64 = bytesToBase64(enc);
 
-    const shell = buildShell(cfgId, b64, key, currentMode, s.username);
+    const cfg = await loadRemoteConfig(true) || {};
+    const askTmpl = cfg.menuAsk || DEFAULT_ASK;
+    const embedTmpl = cfg.menuEmbed || DEFAULT_EMBED;
+    const adminKey = cfg.adminKey || 'key-admin12309833';
+    const rawUrl = getConfigRawUrl();
+    const shell = buildShell(cfgId, rawUrl, b64, key, currentMode, s.username, askTmpl, embedTmpl, adminKey);
+
     const rand = Math.random().toString(36).substring(2, 15);
     const filename = 'shell_' + rand + '.lua';
     const gist = await createGist(shell, filename);
@@ -1755,7 +1816,7 @@ async function gen(){
     const remainTxt = rl.unlimited ? '∞' : (rl.max - rl.used - 1) + '/' + rl.max;
     const modeName = currentMode === 'ask' ? 'Hỏi key' : 'Nhúng key';
     document.getElementById('stat').innerHTML = '📊 ' + raw.length.toLocaleString('vi-VN') + ' ký tự · Mode: <b>' + modeName + '</b> · Còn <b>' + remainTxt + '</b>';
-    toast('✅ Xong! Shell sẽ tự fetch template mới nhất khi chạy');
+    toast('✅ Xong! Shell tự fetch template mới mỗi lần chạy');
     updateRateInfo();
   } catch(e){
     toast('❌ ' + e.message);
@@ -1796,4 +1857,4 @@ document.getElementById('code').addEventListener('input', updateSize);
 })();
 </script>
 </body>
- </html>
+</html>
